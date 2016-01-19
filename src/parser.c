@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a;");
+	ast_node *root = parse("import x; using a; func b() {} struct c{} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -33,6 +33,7 @@ ast_node* parse(char* data) {
 			if(brace_level == 0)
 			{
 				slice start = buffer;
+				start.begin++;
 				start.end = start.begin + 6; //length of "struct"
 				if(equals_string(start, "struct"))
 					parse_struct(buffer);
