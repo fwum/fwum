@@ -1,29 +1,30 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "slice.h"
 #include "ast.h"
 
-void parse_toplevel(slice str);
+ast_node* parse_toplevel(slice str);
 void parse_function(slice data);
 void parse_struct(slice data);
-void parse(char* data);
+ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root=new_node(ROOT, "TEST");
+	ast_node *root = parse("import x; using a;");
 	printf("%s\n", to_string(root));
-	parse("import x; a {potato} some more stuff; struct potato{}");
 	return 0;
 }
 
-void parse(char* data) {
+ast_node* parse(char* data) {
 	int len = strlen(data);
 	slice buffer;
 	buffer.data = data;
 	buffer.begin = 0;
 	buffer.end = 0;
 	int brace_level = 0;
+	ast_node *root = new_node(ROOT, "");
 	for(int i = 0; i < len; i++)
 	{
 		buffer.end += 1;
@@ -45,16 +46,31 @@ void parse(char* data) {
 			}
 		} else if(data[i] == ';' && brace_level == 0)
 		{
-			parse_toplevel(buffer);
+			//ast_node *top = parse_toplevel(buffer);
+			//top->next = root->child;
+			//root->child = top;
 			buffer.begin = buffer.end;
 		}
-
 	}
+	return root;
 }
 
-void parse_toplevel(slice data)
+ast_node* parse_toplevel(slice data)
 {
-	printf("TOPLEVEL: %s\n", evaluate(data));
+	ast_type type;
+	int displace = 0;
+	if(starts_with(data, new_slice("import")))
+	{
+		type = IMPORT;
+		displace = strlen("import");
+	} else if(starts_with(data, new_slice("using")))
+	{
+		type = USING;
+		displace = strlen("using");
+	}
+	data.begin += displace;
+	ast_node *toplevel = new_node(type, evaluate(data));
+	return toplevel;
 }
 
 void parse_function(slice data)
