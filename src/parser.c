@@ -46,9 +46,9 @@ ast_node* parse(char* data) {
 			}
 		} else if(data[i] == ';' && brace_level == 0)
 		{
-			//ast_node *top = parse_toplevel(buffer);
-			//top->next = root->child;
-			//root->child = top;
+			ast_node *top = parse_toplevel(buffer);
+			top->next = root->child;
+			root->child = top;
 			buffer.begin = buffer.end;
 		}
 	}
