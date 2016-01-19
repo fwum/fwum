@@ -62,13 +62,14 @@ ast_node* parse_toplevel(slice data)
 	if(starts_with(data, new_slice("import")))
 	{
 		type = IMPORT;
-		displace = strlen("import");
+		displace = strlen("import ");
 	} else if(starts_with(data, new_slice("using")))
 	{
 		type = USING;
-		displace = strlen("using");
+		displace = strlen("using ");
 	}
 	data.begin += displace;
+	data.end--; //Remove semicolon
 	ast_node *toplevel = new_node(type, evaluate(data));
 	return toplevel;
 }
