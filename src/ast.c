@@ -1,6 +1,7 @@
 #include "ast.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 ast_node* new_node(ast_type type, char* data)
 {
@@ -23,20 +24,36 @@ int length_list(ast_node *first)
 	return len;
 }
 
+void add_child(ast_node *root, ast_node *child)
+{
+	child->next = root->child;
+	root->child = child;
+}
+
+char* type_to_string(ast_type type)
+{
+	switch(type) {
+	case ROOT:
+		return "ROOT ";
+	case IMPORT:
+		return "IMPORT ";
+	case USING:
+		return "USING ";
+	case VARTYPE:
+		return "VARTYPE ";
+	case STRUCT:
+		return "STRUCT ";
+	case TYPE:
+		return "TYPE ";
+	}
+	fprintf(stderr, "type_to_string was passed an unexpected value.");
+	exit(-1);
+}
+
 char* to_string(ast_node *root)
 {
 	char *child = "", *next = "", *type;
-	switch(root->type) {
-	case ROOT:
-		type = "ROOT ";
-		break;
-	case IMPORT:
-		type = "IMPORT ";
-		break;
-	case USING:
-		type = "USING ";
-		break;
-	}
+	type = type_to_string(root->type);
 	if(root->child != NULL)
 		child = to_string(root->child);
 	if (root->next != NULL)
