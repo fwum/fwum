@@ -19,19 +19,15 @@ int main()
 
 ast_node* parse(char* data) {
 	int len = strlen(data);
-	slice buffer;
-	buffer.data = data;
-	buffer.begin = 0;
-	buffer.end = 0;
+	slice buffer = make_slice(data, 0, 0);
 	int brace_level = 0;
 	ast_node *root = new_node(ROOT, "");
 	for(int i = 0; i < len; i++)
 	{
 		buffer.end += 1;
 		if(data[i] == '{')
-		{
 			brace_level += 1;
-		} else if(data[i] == '}')
+		else if(data[i] == '}')
 		{
 			brace_level -= 1;
 			if(brace_level == 0)
@@ -44,7 +40,8 @@ ast_node* parse(char* data) {
 					parse_function(buffer);
 				buffer.begin = buffer.end;
 			}
-		} else if(data[i] == ';' && brace_level == 0)
+		}
+		else if(data[i] == ';' && brace_level == 0)
 		{
 			ast_node *top = parse_toplevel(buffer);
 			top->next = root->child;
