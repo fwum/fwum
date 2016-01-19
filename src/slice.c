@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 #include "slice.h"
 
 slice new_slice(char* string)
@@ -42,6 +43,12 @@ bool equals_string(slice s1, char* data)
 char* evaluate(slice str)
 {
 	char* string = malloc(sizeof(*string) * (str.end - str.begin + 1));
+	if (str.end < str.begin)
+	{
+		fprintf(stderr, "Evaluate was passed an end value less than its begin value.");
+		end(-1);
+		return "";
+	}
 	int i = 0;
 	for(; i < str.end - str.begin; i++)
 	{
