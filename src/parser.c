@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "slice.h"
+#include "ast.h"
 
 void parse_toplevel(slice str);
 void parse_function(slice data);
@@ -10,6 +11,8 @@ void parse(char* data);
 
 int main()
 {
+	ast_node *root=new_node(ROOT, "TEST");
+	printf("%s\n", to_string(root));
 	parse("import x; a {potato} some more stuff; struct potato{}");
 	return 0;
 }
