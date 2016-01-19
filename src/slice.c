@@ -50,3 +50,13 @@ char* evaluate(slice str)
 	string[i] = '\0';
 	return string;
 }
+
+char get(slice s1, int pos)
+{
+	return s1.data[s1.begin + pos];
+}
+
+bool is_whitespace(char c)
+{
+	return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+}
