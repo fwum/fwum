@@ -25,24 +25,33 @@ int length_list(ast_node *first)
 
 char* to_string(ast_node *root)
 {
-	int list = length_list(root);
-	char** same_level = NULL;
-	if(list != 0)
-		same_level = malloc(sizeof(*same_level) * list);
-	char* child = "";
+	char *child = "", *next = "", *type;
+	switch(root->type) {
+	case ROOT:
+		type = "ROOT ";
+		break;
+	case IMPORT:
+		type = "IMPORT ";
+		break;
+	case USING:
+		type = "USING ";
+		break;
+	}
 	if(root->child != NULL)
 		child = to_string(root->child);
+	if (root->next != NULL)
+		next = to_string(root->next);
 	int result_len = strlen(root->data) + 2;
 	result_len += strlen(child);
-	for(int i = 0; i < list; i++)
-		result_len += strlen(same_level[i]);
+	result_len += strlen(next);
+	result_len += strlen(type);
 	char* result = malloc(sizeof(*result) * (result_len + 1));
 	result[result_len] = '\0';
 	strcat(result, "(");
+	strcat(result, type);
 	strcat(result, root->data);
 	strcat(result, child);
 	strcat(result, ")");
-	for(int i = 0; i < list; i++)
-		strcat(result, same_level[i]);
+	strcat(result, next);
 	return result;
 }
