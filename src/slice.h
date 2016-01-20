@@ -7,6 +7,7 @@ typedef struct slice
 } slice;
 slice new_slice(char* string);
 slice make_slice(char* string, int start, int end);
+slice clone_slice(slice s, int newStart, int newEnd);
 bool equals(slice s1, slice s2);
 bool equals_string(slice s1, char* data);
 bool starts_with(slice s1, slice s2);

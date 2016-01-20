@@ -77,20 +77,17 @@ ast_node* parse_function(slice data)
 {
 	while(is_whitespace(get(data, 0)))
 		data.begin++;
-	slice type = data;
-	type.end = type.begin;
+	slice type = clone_slice(data, data.begin, data.begin);
 	while(!is_whitespace(get_last(type)))
 		type.end++;
-	slice name = data;
-	name.begin = type.end + 1;
+	slice name = clone_slice(data, type.end + 1, type.end + 1);
 	while(is_whitespace(get(name, 0)))
 		name.begin++;
 	name.end = name.begin;
 	while(is_identifier(get_last(name)))
 		name.end++;
-	ast_node *root, *returnType;
-	root = new_node(FUNC, evaluate(name));
-	returnType = new_node(TYPE, evaluate(type));
+	ast_node *root = new_node(FUNC, evaluate(name));
+	ast_node *returnType = new_node(TYPE, evaluate(type));
 	add_child(root, returnType);
 	slice vartype = name;
 	vartype.begin = vartype.end = name.end + 1;
@@ -106,16 +103,14 @@ ast_node* parse_function(slice data)
 		if(current == ';' || current == ')')
 			add_child(root, parse_vartype(vartype));
 	}
-	slice block = vartype;
-	block.begin = block.end;
+	slice block = clone_slice(vartype, vartype.end, vartype.end);
 	while(get(block, -1) != '{')
 		block.begin++;
 	int block_level = 0;
 	block.end = block.begin;
 	while(!(block_level == 0 && get_last(block) == '}')) {
 		char current = get_last(block);
-		if(current == '{')
-			block_level++;
+		if(current == '{') block_level++;
 		if(current == '}') block_level--;
 		block.end++;
 	}

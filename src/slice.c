@@ -18,6 +18,11 @@ slice make_slice(char* string, int begin, int end)
 	return s;
 }
 
+slice clone_slice(slice s, int beginNew, int endNew)
+{
+	return make_slice(s.data, beginNew, endNew);
+}
+
 bool equals(slice s1, slice s2)
 {
 	return s1.data == s2.data && s1.begin == s2.begin && s1.end == s2.end;
