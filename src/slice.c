@@ -46,7 +46,7 @@ char* evaluate(slice str)
 	if (str.end < str.begin)
 	{
 		fprintf(stderr, "Evaluate was passed an end value less than its begin value.");
-		end(-1);
+		exit(-1);
 		return "";
 	}
 	int i = 0;
