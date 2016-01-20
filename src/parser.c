@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC() {} struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) {} struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -71,6 +71,7 @@ ast_node* parse_toplevel(slice data)
 }
 
 void parse_block(slice data);
+ast_node* parse_vartype(slice data);
 
 ast_node* parse_function(slice data)
 {
@@ -87,12 +88,27 @@ ast_node* parse_function(slice data)
 	name.end = name.begin;
 	while(is_identifier(get(name, name.end - name.begin)))
 		name.end++;
-	data.begin = name.end;
-	printf("REST OF FUNC: %s\n", evaluate(data));
 	ast_node *root, *returnType;
 	root = new_node(FUNC, evaluate(name));
 	returnType = new_node(TYPE, evaluate(type));
-	root->child = returnType;
+	add_child(root, returnType);
+	slice vartype = name;
+	vartype.begin = vartype.end = name.end + 1;
+	while(get(vartype, -1) != '(')
+		vartype.begin++;
+	while(is_whitespace(get(vartype, 0)))
+		vartype.begin++;
+	vartype.end = vartype.begin + 1;
+	while(get(vartype, 0) != ')' && get(vartype, vartype.end - vartype.begin) != ')')
+	{
+		vartype.end++;
+		char current = get(vartype, vartype.end - vartype.begin);
+		if(current == ';' || current == ')')
+			add_child(root, parse_vartype(vartype));
+	}
+	slice block = vartype;
+	block.begin = block.end;
+	printf("REST OF FUNC: %s\n", evaluate(block));
 	return root;
 }
 
@@ -100,8 +116,6 @@ void parse_block(slice data)
 {
 	printf("BLOCK: %s\n", evaluate(data));
 }
-
-ast_node* parse_vartype(slice data);
 
 ast_node* parse_struct(slice data)
 {
