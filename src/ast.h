@@ -2,7 +2,7 @@
 #define AST_H_
 typedef enum ast_type
 {
-	ROOT, IMPORT, USING, VARTYPE, STRUCT, TYPE
+	ROOT, IMPORT, USING, VARTYPE, STRUCT, TYPE, FUNC
 } ast_type;
 typedef struct ast_node
 {

@@ -6,13 +6,13 @@
 #include "ast.h"
 
 ast_node* parse_toplevel(slice str);
-void parse_function(slice data);
+ast_node* parse_function(slice data);
 ast_node* parse_struct(slice data);
 ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; func b() {} struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC() {} struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -38,7 +38,7 @@ ast_node* parse(char* data) {
 				if(equals_string(start, "struct"))
 					add_child(root, parse_struct(buffer));
 				else
-					parse_function(buffer);
+					add_child(root, parse_function(buffer));
 				buffer.begin = buffer.end;
 			}
 		}
@@ -70,9 +70,35 @@ ast_node* parse_toplevel(slice data)
 	return toplevel;
 }
 
-void parse_function(slice data)
+void parse_block(slice data);
+
+ast_node* parse_function(slice data)
 {
-	printf("FUNC: %s\n", evaluate(data));
+	while(is_whitespace(get(data, 0)))
+		data.begin++;
+	slice type = data;
+	type.end = type.begin;
+	while(!is_whitespace(get(type, type.end - type.begin)))
+		type.end++;
+	slice name = data;
+	name.begin = type.end + 1;
+	while(is_whitespace(get(name, 0)))
+		name.begin++;
+	name.end = name.begin;
+	while(is_identifier(get(name, name.end - name.begin)))
+		name.end++;
+	data.begin = name.end;
+	printf("REST OF FUNC: %s\n", evaluate(data));
+	ast_node *root, *returnType;
+	root = new_node(FUNC, evaluate(name));
+	returnType = new_node(TYPE, evaluate(type));
+	root->child = returnType;
+	return root;
+}
+
+void parse_block(slice data)
+{
+	printf("BLOCK: %s\n", evaluate(data));
 }
 
 ast_node* parse_vartype(slice data);
