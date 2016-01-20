@@ -14,4 +14,5 @@ char* evaluate(slice s1);
 bool is_whitespace(char c);
 bool is_identifier(char c);
 char get(slice s, int position);
+char get_last(slice s);
 #endif

@@ -79,14 +79,14 @@ ast_node* parse_function(slice data)
 		data.begin++;
 	slice type = data;
 	type.end = type.begin;
-	while(!is_whitespace(get(type, type.end - type.begin)))
+	while(!is_whitespace(get_last(type)))
 		type.end++;
 	slice name = data;
 	name.begin = type.end + 1;
 	while(is_whitespace(get(name, 0)))
 		name.begin++;
 	name.end = name.begin;
-	while(is_identifier(get(name, name.end - name.begin)))
+	while(is_identifier(get_last(name)))
 		name.end++;
 	ast_node *root, *returnType;
 	root = new_node(FUNC, evaluate(name));
@@ -99,10 +99,10 @@ ast_node* parse_function(slice data)
 	while(is_whitespace(get(vartype, 0)))
 		vartype.begin++;
 	vartype.end = vartype.begin + 1;
-	while(get(vartype, 0) != ')' && get(vartype, vartype.end - vartype.begin) != ')')
+	while(get(vartype, 0) != ')' && get_last(vartype) != ')')
 	{
 		vartype.end++;
-		char current = get(vartype, vartype.end - vartype.begin);
+		char current = get_last(vartype);
 		if(current == ';' || current == ')')
 			add_child(root, parse_vartype(vartype));
 	}
@@ -112,8 +112,8 @@ ast_node* parse_function(slice data)
 		block.begin++;
 	int block_level = 0;
 	block.end = block.begin;
-	while(!(block_level == 0 && get(block, block.end - block.begin) == '}')) {
-		char current = get(block, block.end - block.begin);
+	while(!(block_level == 0 && get_last(block) == '}')) {
+		char current = get_last(block);
 		if(current == '{')
 			block_level++;
 		if(current == '}') block_level--;

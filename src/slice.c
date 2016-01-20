@@ -63,6 +63,11 @@ char get(slice s1, int pos)
 	return s1.data[s1.begin + pos];
 }
 
+char get_last(slice s)
+{
+	return get(s, s.end - s.begin);
+}
+
 bool is_whitespace(char c)
 {
 	return c == ' ' || c == '\t' || c == '\n' || c == '\r';
