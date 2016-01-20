@@ -12,5 +12,6 @@ bool equals_string(slice s1, char* data);
 bool starts_with(slice s1, slice s2);
 char* evaluate(slice s1);
 bool is_whitespace(char c);
+bool is_identifier(char c);
 char get(slice s, int position);
 #endif
