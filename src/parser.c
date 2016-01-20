@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC(a : b) {} struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) { return c{a}; } struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -108,7 +108,18 @@ ast_node* parse_function(slice data)
 	}
 	slice block = vartype;
 	block.begin = block.end;
-	printf("REST OF FUNC: %s\n", evaluate(block));
+	while(get(block, -1) != '{')
+		block.begin++;
+	int block_level = 0;
+	block.end = block.begin;
+	while(!(block_level == 0 && get(block, block.end - block.begin) == '}')) {
+		char current = get(block, block.end - block.begin);
+		if(current == '{')
+			block_level++;
+		if(current == '}') block_level--;
+		block.end++;
+	}
+	parse_block(block);
 	return root;
 }
 
