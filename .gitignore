@@ -1,4 +1,5 @@
 /obj/
 out.*
+out
 /.vs/
 /FwumDeLang/Debug/
