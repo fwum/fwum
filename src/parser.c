@@ -131,7 +131,7 @@ ast_node* parse_assignment(slice assign)
 	while(is_whitespace(get(data, 0)))
 		data.begin++;
 	ast_node *root;
-	if(starts_with(data.data, new_slice("let")))
+	if(starts_with(data, new_slice("let")))
 	{
 		type = BIND;
 		int i = 0;
@@ -184,11 +184,17 @@ ast_node* parse_assignment(slice assign)
 ast_node* parse_call(slice data)
 {
 	//TODO: (STUB)
+	return NULL;
 }
 
 ast_node* parse_val(slice data)
 {
-	//TODO: (STUB)
+	if(is_number_literal(data))
+		return new_node(NUMBER, evaluate(data));
+	else if(is_string_literal(data))
+		return new_node(STRING, evaluate(data));
+	else if(is_identifier_literal(data))
+		return new_node(VAR, evaluate(data));
 }
 
 ast_node* parse_struct(slice data)
