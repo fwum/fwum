@@ -1,8 +1,10 @@
 #ifndef AST_H_
 #define AST_H_
+#include <stdbool.h>
+#include "slice.h"
 typedef enum ast_type
 {
-	ROOT, IMPORT, USING, VARTYPE, STRUCT, TYPE, FUNC, BIND, TYPED_BIND, ASSIGN, STRING, NUMBER, VAR
+	ROOT, IMPORT, USING, VARTYPE, STRUCT, TYPE, FUNC, BIND, TYPED_BIND, ASSIGN, STRING, NUMBER, VAR, CALL, BLOCK
 } ast_type;
 typedef struct ast_node
 {

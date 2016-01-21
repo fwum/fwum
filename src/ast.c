@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include "slice.h"
 
 ast_node* new_node(ast_type type, char* data)
 {
@@ -66,6 +68,10 @@ char* type_to_string(ast_type type)
 		return "NUMBER ";
 	case VAR:
 		return "VAR ";
+	case CALL:
+		return "CALL ";
+	case BLOCK:
+		return "BLOCK ";
 	}
 	fprintf(stderr, "type_to_string was passed an unexpected value.");
 	exit(-1);
@@ -97,7 +103,7 @@ char* to_string(ast_node *root)
 bool is_number_literal(slice literal)
 {
 	for(int i = literal.begin; i < literal.end; i++)
-		if(!(literal.data[i] >= '0' && litera.data[i] <= '9'))
+		if(!(literal.data[i] >= '0' && literal.data[i] <= '9'))
 			return false;
 	return true;
 }

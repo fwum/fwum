@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC(a : b) { return c{a}; } struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) { call(param); } struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -70,8 +70,10 @@ ast_node* parse_toplevel(slice data)
 	return toplevel;
 }
 
-void parse_block(slice data);
+ast_node* parse_block(slice data);
 ast_node* parse_vartype(slice data);
+ast_node* parse_call(slice data);
+ast_node* parse_val(slice data);
 
 ast_node* parse_function(slice data)
 {
@@ -114,14 +116,24 @@ ast_node* parse_function(slice data)
 		if(current == '}') block_level--;
 		block.end++;
 	}
-	parse_block(block);
+	add_child(root, parse_block(block));
 	return root;
 }
 
-void parse_block(slice data)
+ast_node* parse_block(slice data)
 {
-	//TODO: STUB
-	printf("BLOCK: %s\n", evaluate(data));
+	slice current = clone_slice(data, data.begin, data.end);
+	ast_node *root = new_node(BLOCK, "");
+	for(int i = data.begin; i < data.end; i++)
+	{
+		current.end = i;
+		if(data.data[i] == ';')
+		{
+			add_child(root, parse_val(current));
+			current.begin = current.end;
+		}
+	}
+	return root;
 }
 
 ast_node* parse_assignment(slice assign)
@@ -181,20 +193,80 @@ ast_node* parse_assignment(slice assign)
 	return root;
 }
 
-ast_node* parse_call(slice data)
-{
-	//TODO: (STUB)
-	return NULL;
-}
-
 ast_node* parse_val(slice data)
 {
+	while(is_whitespace(get(data, 0)))
+		data.begin++;
 	if(is_number_literal(data))
 		return new_node(NUMBER, evaluate(data));
 	else if(is_string_literal(data))
 		return new_node(STRING, evaluate(data));
 	else if(is_identifier_literal(data))
 		return new_node(VAR, evaluate(data));
+	else
+	{
+		//Determine if the value is a function call
+		bool startsID = false, precedingParen = false;
+		for(int i = data.begin; i < data.end; i++)
+		{
+			if(is_identifier(data.data[i]))
+				startsID = true;
+			if(data.data[i] == '(' && startsID)
+			{
+				precedingParen = true;
+				break;
+			}
+			if(!is_whitespace(data.data[i]) && !is_identifier(data.data[i]))
+			{
+				startsID = false;
+				break;
+			}
+		}
+		printf("%d:%d", startsID, precedingParen);
+		if(startsID && precedingParen)
+		{
+			slice call = clone_slice(data, data.begin, data.end);
+			int paren_level = 0;
+			call.end = call.begin;
+			while(!(paren_level == 1 && get(call, call.end - call.begin) == ')'))
+			{
+				char current = get(call, call.end - call.begin);
+				if(current == '(') paren_level++;
+				if(current == ')') paren_level--;
+				call.end++;
+			}
+			return parse_call(call);
+		}
+		else
+		{
+			//TODO: PARSE MATH EXPRESSIONS
+			return NULL;
+		}
+	}
+}
+
+
+ast_node* parse_call(slice data)
+{
+	slice name = clone_slice(data, data.begin, data.end);
+	while(is_whitespace(get(name, 0)))
+		name.begin++;
+	name.end = name.begin;
+	while(!is_whitespace(get(name, name.end - name.begin)))
+		name.end++;
+	ast_node *root = new_node(CALL, evaluate(name));
+	slice parameter = clone_slice(data, data.begin, data.end);
+	while(get(parameter, -1) != '(')
+		parameter.begin++;
+	parameter.end = parameter.begin;
+	for(int i = data.begin; i < data.end; i++)
+	{
+		parameter.end++;
+		char current = get(parameter, parameter.end - parameter.begin);
+		if(current == ',' || current == ')')
+			add_child(root, parse_val(parameter));
+	}
+	return root;
 }
 
 ast_node* parse_struct(slice data)
