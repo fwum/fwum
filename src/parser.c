@@ -222,7 +222,6 @@ ast_node* parse_val(slice data)
 				break;
 			}
 		}
-		printf("%d:%d", startsID, precedingParen);
 		if(startsID && precedingParen)
 		{
 			slice call = clone_slice(data, data.begin, data.end);
@@ -252,7 +251,7 @@ ast_node* parse_call(slice data)
 	while(is_whitespace(get(name, 0)))
 		name.begin++;
 	name.end = name.begin;
-	while(!is_whitespace(get(name, name.end - name.begin)))
+	while(!is_whitespace(get(name, name.end - name.begin)) && get(name, name.end - name.begin) != '(')
 		name.end++;
 	ast_node *root = new_node(CALL, evaluate(name));
 	slice parameter = clone_slice(data, data.begin, data.end);
