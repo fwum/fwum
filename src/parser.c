@@ -125,7 +125,75 @@ ast_node* parse_function(slice data)
 
 void parse_block(slice data)
 {
+	//TODO: STUB
 	printf("BLOCK: %s\n", evaluate(data));
+}
+
+ast_node* parse_assignment(slice assign)
+{
+	slice data = assign;
+	ast_type type;
+	while(is_whitespace(get(data, 0)))
+		data.begin++;
+	ast_node *root;
+	if(starts_with(data.data, new_slice("let")))
+	{
+		type = BIND;
+		int i = 0;
+		while(get(data, i) != '=')
+		{
+			if(get(data, i) == ':')
+			{
+				type = TYPED_BIND;
+				break;
+			}
+		}
+		data.begin += 4; //length of let and at least 1 whitespace token
+		while(is_whitespace(get(data, 0)))
+			data.begin++;
+		data.end = data.begin+1;
+		while(!is_whitespace(get(data, data.end - data.begin)) && get(data, data.end - data.begin) == ':')
+			data.end++;
+		char *name = evaluate(data);
+		root = new_node(type, name);
+		if(type == TYPED_BIND)
+		{
+			data.begin = data.end;
+			while(get(data, -1) != ':')
+				data.begin++;
+			data.end = data.begin + 1;
+			while(get(data, data.end - data.begin + 1) != '=')
+				data.end++;
+			char *typeStr = evaluate(data);
+			data.begin = data.end + 1;
+			data.end = assign.end;
+			ast_node *typeNode = new_node(TYPE, typeStr);
+			add_child(root, typeNode);
+		}
+	}
+	else
+	{
+		type = ASSIGN;
+		data.end = data.begin;
+		while(get(data, data.end - data.begin + 1) != '=')
+			data.end++;
+		char *name = evaluate(data);
+		root = new_node(type, name);
+		data.begin = data.end + 2;
+		data.end = assign.end;
+	}
+	//TODO: PARSE AND ADD RIGHT SIDE OF ASSIGNMENT
+	return root;
+}
+
+ast_node* parse_call(slice data)
+{
+	//TODO: (STUB)
+}
+
+ast_node* parse_val(slice data)
+{
+	//TODO: (STUB)
 }
 
 ast_node* parse_struct(slice data)

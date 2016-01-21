@@ -54,6 +54,12 @@ char* type_to_string(ast_type type)
 		return "TYPE ";
 	case FUNC:
 		return "FUNC ";
+	case BIND:
+		return "BIND ";
+	case TYPED_BIND:
+		return "TYPED_BIND";
+	case ASSIGN:
+		return "ASSIGN";
 	}
 	fprintf(stderr, "type_to_string was passed an unexpected value.");
 	exit(-1);
