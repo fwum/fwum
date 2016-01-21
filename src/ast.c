@@ -26,8 +26,15 @@ int length_list(ast_node *first)
 
 void add_child(ast_node *root, ast_node *child)
 {
-	child->next = root->child;
-	root->child = child;
+	if(root->child == NULL)
+		root->child = child;
+	else
+	{
+		ast_node *current = root->child;
+		while(current->next != NULL)
+			current = current->next;
+		current->next = child;
+	}
 }
 
 char* type_to_string(ast_type type)
@@ -47,6 +54,12 @@ char* type_to_string(ast_type type)
 		return "TYPE ";
 	case FUNC:
 		return "FUNC ";
+	case BIND:
+		return "BIND ";
+	case TYPED_BIND:
+		return "TYPED_BIND";
+	case ASSIGN:
+		return "ASSIGN";
 	}
 	fprintf(stderr, "type_to_string was passed an unexpected value.");
 	exit(-1);
