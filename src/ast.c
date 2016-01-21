@@ -60,6 +60,12 @@ char* type_to_string(ast_type type)
 		return "TYPED_BIND";
 	case ASSIGN:
 		return "ASSIGN";
+	case STRING:
+		return "STRING";
+	case NUMBER:
+		return "NUMBER ";
+	case VAR:
+		return "VAR ";
 	}
 	fprintf(stderr, "type_to_string was passed an unexpected value.");
 	exit(-1);
@@ -86,4 +92,30 @@ char* to_string(ast_node *root)
 	strcat(result, ")");
 	strcat(result, next);
 	return result;
+}
+
+bool is_number_literal(slice literal)
+{
+	for(int i = literal.begin; i < literal.end; i++)
+		if(!(literal.data[i] >= '0' && litera.data[i] <= '9'))
+			return false;
+	return true;
+}
+
+bool is_string_literal(slice literal)
+{
+	if(get(literal, 0) != '"' || get(literal, literal.end - literal.begin) != '"')
+		return false;
+	for(int i = literal.begin + 1; i < literal.end; i++)
+		if(literal.data[i] == '=')
+			return false;
+	return true;
+}
+
+bool is_identifier_literal(slice literal)
+{
+	for(int i = literal.begin; i < literal.end; i++)
+		if(!is_identifier(literal.data[i]))
+			return false;
+	return true;
 }
