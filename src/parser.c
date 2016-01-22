@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC(a : b) { call(param); } struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) { value = call(param); } struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -145,6 +145,7 @@ ast_node* parse_assignment(slice assign)
 	ast_node *root;
 	if(starts_with(data, new_slice("let")))
 	{
+		printf("%s\n", evaluate(data));
 		type = BIND;
 		int i = 0;
 		while(get(data, i) != '=')
@@ -154,12 +155,13 @@ ast_node* parse_assignment(slice assign)
 				type = TYPED_BIND;
 				break;
 			}
+			i++;
 		}
 		data.begin += 4; //length of let and at least 1 whitespace token
 		while(is_whitespace(get(data, 0)))
 			data.begin++;
 		data.end = data.begin+1;
-		while(!is_whitespace(get(data, data.end - data.begin)) && get(data, data.end - data.begin) == ':')
+		while(!is_whitespace(get(data, data.end - data.begin)) && get(data, data.end - data.begin) != ':')
 			data.end++;
 		char *name = evaluate(data);
 		root = new_node(type, name);
@@ -177,6 +179,7 @@ ast_node* parse_assignment(slice assign)
 			ast_node *typeNode = new_node(TYPE, typeStr);
 			add_child(root, typeNode);
 		}
+		data.end = assign.end;
 	}
 	else
 	{
@@ -189,7 +192,8 @@ ast_node* parse_assignment(slice assign)
 		data.begin = data.end + 2;
 		data.end = assign.end;
 	}
-	//TODO: PARSE AND ADD RIGHT SIDE OF ASSIGNMENT
+	printf("%s\n", evaluate(data));
+	add_child(root, parse_val(data));
 	return root;
 }
 
@@ -238,8 +242,24 @@ ast_node* parse_val(slice data)
 		}
 		else
 		{
-			//TODO: PARSE MATH EXPRESSIONS
-			return NULL;
+			//Determine if the current value is an assignment or not
+			//TODO: INCLUDE COMPARISON OPERRATORS
+			bool isAssignment = false;
+			for(int i = data.begin; i < data.end; i++)
+				if(data.data[i] == '=')
+				{
+					isAssignment = true;
+					break;
+				}
+			if(isAssignment)
+			{
+				return parse_assignment(data);
+			}
+			else
+			{
+				//TODO: PARSE MATH EXPRESSIONS
+				return NULL;
+			}
 		}
 	}
 }
