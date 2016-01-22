@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC(a : b) { value = call(param); } struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) { let value = 1 + call(param); } struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -145,7 +145,6 @@ ast_node* parse_assignment(slice assign)
 	ast_node *root;
 	if(starts_with(data, new_slice("let")))
 	{
-		printf("%s\n", evaluate(data));
 		type = BIND;
 		int i = 0;
 		while(get(data, i) != '=')
@@ -192,15 +191,18 @@ ast_node* parse_assignment(slice assign)
 		data.begin = data.end + 2;
 		data.end = assign.end;
 	}
-	printf("%s\n", evaluate(data));
 	add_child(root, parse_val(data));
 	return root;
 }
+
+slice operator_token(slice data);
 
 ast_node* parse_val(slice data)
 {
 	while(is_whitespace(get(data, 0)))
 		data.begin++;
+	while(is_whitespace(get(data, data.end - data.begin - 1)))
+		data.end--;
 	if(is_number_literal(data))
 		return new_node(NUMBER, evaluate(data));
 	else if(is_string_literal(data))
@@ -258,12 +260,42 @@ ast_node* parse_val(slice data)
 			else
 			{
 				//TODO: PARSE MATH EXPRESSIONS
-				return NULL;
+				slice token = operator_token(data);
+				slice operator = clone_slice(token, token.end + 1, token.end + 1);
+				while(is_whitespace(get(operator, 0)))
+					operator.begin++;
+				operator.end = operator.begin;
+				while(!is_whitespace(get(operator, operator.end - operator.begin))
+					&& !is_identifier(get(operator, operator.end - operator.begin)))
+					operator.end++;
+				ast_node *root, *operand1, *operand2;
+				root = new_node(OPERATOR, evaluate(operator));
+				operand1 = parse_val(token);
+				operand2 = parse_val(clone_slice(data, operator.end, data.end));
+				add_child(root, operand1);
+				add_child(root, operand2);
+				return root;
 			}
 		}
 	}
 }
 
+slice operator_token(slice data)
+{
+	slice result = clone_slice(data, data.begin, data.begin);
+	int paren_level = 0;
+	while(result.end < data.end)
+	{
+		result.end++;
+		char current = get(result, result.end - result.begin);
+		if(current == '(') paren_level++;
+		if(current == ')') paren_level--;
+		if(paren_level == 0 && !is_whitespace(current) && !is_identifier(current)
+			&& current != '(' && current != ')' && current != ',')
+			break;
+	}
+	return result;
+}
 
 ast_node* parse_call(slice data)
 {

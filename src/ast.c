@@ -72,6 +72,8 @@ char* type_to_string(ast_type type)
 		return "CALL ";
 	case BLOCK:
 		return "BLOCK ";
+	case OPERATOR:
+		return "OPERATOR ";
 	}
 	fprintf(stderr, "type_to_string was passed an unexpected value.");
 	exit(-1);
