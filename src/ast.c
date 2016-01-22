@@ -59,11 +59,11 @@ char* type_to_string(ast_type type)
 	case BIND:
 		return "BIND ";
 	case TYPED_BIND:
-		return "TYPED_BIND";
+		return "TYPED_BIND ";
 	case ASSIGN:
-		return "ASSIGN";
+		return "ASSIGN ";
 	case STRING:
-		return "STRING";
+		return "STRING ";
 	case NUMBER:
 		return "NUMBER ";
 	case VAR:
