@@ -30,10 +30,12 @@ bool equals(slice s1, slice s2)
 
 bool starts_with(slice s1, slice s2)
 {
-	if(s1.end - s1.begin < s2.end - s2.begin) return false;
-	for(int i = 0; i < s2.end - s2.end; i++)
-		if(s1.data[s1.begin + i] != s2.data[s2.begin + i])
+	//if(s1.end - s1.begin < s2.end - s2.begin) return false;
+	for(int i = 0; i < s2.end - s2.begin; i++)
+	{
+		if(get(s1, i) != get(s2, i))
 			return false;
+	}
 	return true;
 }
 
