@@ -4,6 +4,8 @@
 
 - Parse ~~basic control flow such as `if`, `while`, and~~ `for`
 
+- Parse operators with precedence
+
 - Parse relational operators
 
 - Parse export top-level blocks
