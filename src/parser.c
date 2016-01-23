@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC(a : b) { if(a == b) { let value = (1 + call(param) + 3); } } struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) { if(a == b) { let value = 1 + (call(param) + 3); } } struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -348,12 +348,9 @@ ast_node* parse_call(slice data)
 	while(!is_whitespace(get(name, name.end - name.begin)) && get(name, name.end - name.begin) != '(')
 		name.end++;
 	ast_node *root = new_node(CALL, evaluate(name));
-	slice parameter = clone_slice(data, data.begin, data.end);
-	while(get(parameter, -1) != '(')
-		parameter.begin++;
-	for(parameter.end = parameter.begin; parameter.end < data.end; )
+	slice parameter = clone_slice(data, name.end + 1, name.end + 1);
+	for(parameter.end = parameter.begin; parameter.end < data.end; parameter.end++)
 	{
-		parameter.end++;
 		char current = get(parameter, parameter.end - parameter.begin);
 		if(current == ',' || current == ')')
 			add_child(root, parse_val(parameter));

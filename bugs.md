@@ -1,1 +1,0 @@
-- Parentheses cause segfaults, sometimes
