@@ -9,3 +9,5 @@
 - Better parser errors
 
 - Better documentation for the parser
+
+- Fix widespread memory leaks
