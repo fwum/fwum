@@ -160,20 +160,34 @@ ast_node* parse_controlflow(slice data)
 		&& get(control_name, control_name.end - control_name.begin) != '(')
 		control_name.end++;
 	ast_node *root = new_node(CONTROL, evaluate(control_name));
+	slice header = clone_slice(data, control_name.end + 1, control_name.end + 1);
+	int paren_level = 0;
+	while(paren_level != 0 || get(header, header.end - header.begin) != ')')
+	{
+		if(get(header, header.end - header.begin) == '(') paren_level++;
+		if(get(header, header.end - header.begin) == ')') paren_level--;
+		header.end++;
+	}
 	if(equals(control_name, new_slice("if")) || equals(control_name, new_slice("while")))
 	{
-		slice header = clone_slice(data, control_name.end + 1, control_name.end + 1);
-		while(get(header, header.end - header.begin) != ')')
-			header.end++;
 		add_child(root, parse_val(header));
-		data.begin = header.end + 1;
-		bool opened_bracket = false;
-		while(is_whitespace(get(data, 0)) || (get(data, 0) == '{' && !opened_bracket))
-		{
-			if(get(data, 0) == '{')
-				opened_bracket = true;
-			data.begin++;
-		}
+	}
+	else if(equals(control_name, new_slice("for")))
+	{
+
+	}
+	else
+	{
+		fprintf(stderr, "Unknown control flow name: %s\n", evaluate(control_name));
+		exit(-1);
+	}
+	data.begin = header.end + 1;
+	bool opened_bracket = false;
+	while(is_whitespace(get(data, 0)) || (get(data, 0) == '{' && !opened_bracket))
+	{
+		if(get(data, 0) == '{')
+			opened_bracket = true;
+		data.begin++;
 	}
 	add_child(root, parse_block(data));
 	return root;

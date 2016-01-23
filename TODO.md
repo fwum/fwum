@@ -2,6 +2,8 @@
 
 ##Parser
 
+- Allow nested parens in expressions
+
 - Parse ~~basic control flow such as `if`, `while`, and~~ `for`
 
 - Parse operators with precedence
