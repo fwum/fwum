@@ -6,6 +6,8 @@
 
 - Parse relational operators
 
+- Parse export top-level blocks
+
 - Better parser errors
 
 - Better documentation for the parser
