@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC(a : b) { if(a == b) { let value = 1 + call(param) + 3; } } struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) { if(a == b) { let value = (1 + call(param) + 3); } } struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -301,6 +301,11 @@ ast_node* parse_val(slice data)
 		}
 		else
 		{
+			while (get(data, 0) == '(' && get(data, data.end - data.begin - 1) == ')')
+			{
+				data.begin++;
+				data.end--;
+			}
 			slice token = operator_token(data);
 			slice operator = clone_slice(token, token.end, token.end + 1);
 			while(is_whitespace(get(operator, 0)))
@@ -314,7 +319,8 @@ ast_node* parse_val(slice data)
 			ast_node *root, *operand1, *operand2;
 			root = new_node(OPERATOR, evaluate(operator));
 			operand1 = parse_val(token);
-			operand2 = parse_val(clone_slice(data, operator.end, data.end));
+			slice right_side = clone_slice(data, operator.end, data.end);
+			operand2 = parse_val(right_side);
 			add_child(root, operand1);
 			add_child(root, operand2);
 			return root;
@@ -324,8 +330,12 @@ ast_node* parse_val(slice data)
 
 slice operator_token(slice data)
 {
-	slice result = clone_slice(data, data.begin, data.begin);
 	int paren_level = 0;
+	while(is_whitespace(get(data, 0)))
+		data.begin++;
+	while(is_whitespace(get(data, data.end - data.begin - 1)))
+		data.end--;
+	slice result = clone_slice(data, data.begin, data.begin);
 	while(result.end < data.end)
 	{
 		result.end++;
