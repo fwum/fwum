@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC(a : b) { if(a) { let value = 1 + call(param) + 3; } } struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) { if(a == b) { let value = 1 + call(param) + 3; } } struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -289,35 +289,24 @@ ast_node* parse_val(slice data)
 		{
 			//Determine if the current value is an assignment or not
 			//TODO: INCLUDE COMPARISON OPERRATORS
-			bool isAssignment = false;
-			for(int i = data.begin; i < data.end; i++)
-				if(data.data[i] == '=')
-				{
-					isAssignment = true;
-					break;
-				}
-			if(isAssignment)
-			{
+			printf("%s\n", evaluate(operator_token(data)));
+			slice token = operator_token(data);
+			slice operator = clone_slice(token, token.end, token.end + 1);
+			while(is_whitespace(get(operator, 0)))
+				operator.begin++;
+			operator.end = operator.begin;
+			while(!is_whitespace(get(operator, operator.end - operator.begin))
+				&& !is_identifier(get(operator, operator.end - operator.begin)))
+				operator.end++;
+			if(equals(operator, new_slice("=")))
 				return parse_assignment(data);
-			}
-			else
-			{
-				slice token = operator_token(data);
-				slice operator = clone_slice(token, token.end, token.end + 1);
-				while(is_whitespace(get(operator, 0)))
-					operator.begin++;
-				operator.end = operator.begin;
-				while(!is_whitespace(get(operator, operator.end - operator.begin))
-					&& !is_identifier(get(operator, operator.end - operator.begin)))
-					operator.end++;
-				ast_node *root, *operand1, *operand2;
-				root = new_node(OPERATOR, evaluate(operator));
-				operand1 = parse_val(token);
-				operand2 = parse_val(clone_slice(data, operator.end, data.end));
-				add_child(root, operand1);
-				add_child(root, operand2);
-				return root;
-			}
+			ast_node *root, *operand1, *operand2;
+			root = new_node(OPERATOR, evaluate(operator));
+			operand1 = parse_val(token);
+			operand2 = parse_val(clone_slice(data, operator.end, data.end));
+			add_child(root, operand1);
+			add_child(root, operand2);
+			return root;
 		}
 	}
 }

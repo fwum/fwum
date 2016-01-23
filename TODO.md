@@ -6,8 +6,6 @@
 
 - Parse operators with precedence
 
-- Parse relational operators
-
 - Parse export top-level blocks
 
 - Better parser errors
