@@ -287,9 +287,6 @@ ast_node* parse_val(slice data)
 		}
 		else
 		{
-			//Determine if the current value is an assignment or not
-			//TODO: INCLUDE COMPARISON OPERRATORS
-			printf("%s\n", evaluate(operator_token(data)));
 			slice token = operator_token(data);
 			slice operator = clone_slice(token, token.end, token.end + 1);
 			while(is_whitespace(get(operator, 0)))
