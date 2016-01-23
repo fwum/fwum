@@ -259,7 +259,6 @@ ast_node* parse_val(slice data)
 			}
 			else
 			{
-				//TODO: PARSE MATH EXPRESSIONS
 				slice token = operator_token(data);
 				slice operator = clone_slice(token, token.end, token.end + 1);
 				while(is_whitespace(get(operator, 0)))
