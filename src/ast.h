@@ -5,7 +5,7 @@
 typedef enum ast_type
 {
 	ROOT, IMPORT, USING, VARTYPE, STRUCT, TYPE, FUNC, BIND, TYPED_BIND, ASSIGN,
-	STRING, NUMBER, VAR, CALL, BLOCK, OPERATOR
+	STRING, NUMBER, VAR, CALL, BLOCK, OPERATOR, CONTROL
 } ast_type;
 typedef struct ast_node
 {
