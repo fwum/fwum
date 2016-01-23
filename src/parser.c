@@ -12,7 +12,7 @@ ast_node* parse(char* data);
 
 int main()
 {
-	ast_node *root = parse("import x; using a; c getC(a : b) { let value = 1 + call(param) + 3; } struct c{a:b;} import f;");
+	ast_node *root = parse("import x; using a; c getC(a : b) { if(a) { let value = 1 + call(param) + 3; } } struct c{a:b;} import f;");
 	printf("%s\n", to_string(root));
 	return 0;
 }
@@ -122,19 +122,60 @@ ast_node* parse_function(slice data)
 	return root;
 }
 
+ast_node* parse_controlflow(slice data);
+
 ast_node* parse_block(slice data)
 {
 	slice current = clone_slice(data, data.begin, data.end);
 	ast_node *root = new_node(BLOCK, "");
+	int block_level = 0;
 	for(int i = data.begin; i < data.end; i++)
 	{
 		current.end = i;
-		if(data.data[i] == ';')
+		if(data.data[i] == '{') block_level++;
+		if(data.data[i] == '}')
+		{
+			block_level--;
+			if(block_level == 0)
+			{
+				add_child(root, parse_controlflow(current));
+				current.begin = current.end;
+			}
+		}
+		if(block_level == 0 && data.data[i] == ';')
 		{
 			add_child(root, parse_val(current));
 			current.begin = current.end;
 		}
 	}
+	return root;
+}
+
+ast_node* parse_controlflow(slice data)
+{
+	while(is_whitespace(get(data, 0)))
+		data.begin++;
+	slice control_name = clone_slice(data, data.begin, data.begin);
+	while(!is_whitespace(get(control_name, control_name.end - control_name.begin))
+		&& get(control_name, control_name.end - control_name.begin) != '(')
+		control_name.end++;
+	ast_node *root = new_node(CONTROL, evaluate(control_name));
+	if(equals(control_name, new_slice("if")) || equals(control_name, new_slice("while")))
+	{
+		slice header = clone_slice(data, control_name.end + 1, control_name.end + 1);
+		while(get(header, header.end - header.begin) != ')')
+			header.end++;
+		add_child(root, parse_val(header));
+		data.begin = header.end + 1;
+		bool opened_bracket = false;
+		while(is_whitespace(get(data, 0)) || (get(data, 0) == '{' && !opened_bracket))
+		{
+			if(get(data, 0) == '{')
+				opened_bracket = true;
+			data.begin++;
+		}
+	}
+	add_child(root, parse_block(data));
 	return root;
 }
 

@@ -2,7 +2,7 @@
 
 ##Parser
 
-- Parse basic control flow such as `if`, `while`, and `for`
+- Parse ~basic control flow such as `if`, `while`, and~ `for`
 
 - Parse relational operators
 
