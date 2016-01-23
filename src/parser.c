@@ -173,11 +173,10 @@ ast_node* parse_assignment(slice assign)
 			while(get(data, data.end - data.begin + 1) != '=')
 				data.end++;
 			char *typeStr = evaluate(data);
-			data.begin = data.end + 1;
-			data.end = assign.end;
 			ast_node *typeNode = new_node(TYPE, typeStr);
 			add_child(root, typeNode);
 		}
+		data.begin = data.end + 2;
 		data.end = assign.end;
 	}
 	else
