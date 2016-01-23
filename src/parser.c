@@ -287,17 +287,7 @@ ast_node* parse_val(slice data)
 		//Starts with a function call and ends without any other operation
 		if(startsID && precedingParen && get(data, data.end - data.begin - 1) == ')')
 		{
-			slice call = clone_slice(data, data.begin, data.end);
-			int paren_level = 0;
-			call.end = call.begin;
-			while(!(paren_level == 1 && get(call, call.end - call.begin) == ')'))
-			{
-				char current = get(call, call.end - call.begin);
-				if(current == '(') paren_level++;
-				if(current == ')') paren_level--;
-				call.end++;
-			}
-			return parse_call(call);
+			return parse_call(data);
 		}
 		else
 		{
@@ -361,8 +351,7 @@ ast_node* parse_call(slice data)
 	slice parameter = clone_slice(data, data.begin, data.end);
 	while(get(parameter, -1) != '(')
 		parameter.begin++;
-	parameter.end = parameter.begin;
-	for(int i = data.begin; i < data.end; i++)
+	for(parameter.end = parameter.begin; parameter.end < data.end; )
 	{
 		parameter.end++;
 		char current = get(parameter, parameter.end - parameter.begin);
