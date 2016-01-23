@@ -55,6 +55,8 @@ ast_node* parse_toplevel(slice data)
 {
 	ast_type type;
 	int displace = 0;
+	while(is_whitespace(get(data, 0)))
+		data.begin++;
 	if(starts_with(data, new_slice("import")))
 	{
 		type = IMPORT;

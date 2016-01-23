@@ -1,1 +1,0 @@
-- Top-level parsing doesn't work at all
