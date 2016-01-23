@@ -25,7 +25,12 @@ slice clone_slice(slice s, int beginNew, int endNew)
 
 bool equals(slice s1, slice s2)
 {
-	return s1.data == s2.data && s1.begin == s2.begin && s1.end == s2.end;
+	if(s1.end - s1.begin != s2.end - s2.begin)
+		return false;
+	for(int i = 0; i < s1.end - s1.begin; i++)
+		if(get(s1, i) != get(s2, i))
+			return false;
+	return true;
 }
 
 bool starts_with(slice s1, slice s2)
