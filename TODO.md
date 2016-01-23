@@ -37,6 +37,14 @@
 
 - Basic wrappers around C standard library functions currently used in the compiler
 
+##General Backend
+
+- Parse AST back from a string
+
+- Create object files with manifests of the contents
+
+- Retrieve object files on compiler search path
+
 ##C Backend
 
 - Conversion of AST to C code
