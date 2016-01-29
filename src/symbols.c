@@ -34,3 +34,21 @@ bool contains(symbol *start, char *name)
 	else
 		return contains(start->next, name);
 }
+
+type* new_type(char *name, symbol *members)
+{
+	type *t = malloc(sizeof(*t));
+	t->name = name;
+	t->members = members;
+	return t;
+}
+
+bool has_member(type *t, char *name)
+{
+	return contains(t->members, name);
+}
+
+bool has_member_oftype(type *t, char *name, char *type)
+{
+	return strcomp(get_type(t->members, name), type) == 0;
+}
