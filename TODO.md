@@ -48,3 +48,9 @@
 ##C Backend
 
 - Conversion of AST to C code
+
+##Tests
+
+- Basic unit tests for the parser
+
+- Basic unit tests for the symbol table
