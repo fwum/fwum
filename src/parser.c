@@ -10,13 +10,6 @@ ast_node* parse_function(slice data);
 ast_node* parse_struct(slice data);
 ast_node* parse(char* data);
 
-int main()
-{
-	ast_node *root = parse("import x; using a; c getC(a : b) { if((a == b)) { let value = 2.1 + (call(param) + 3); } } struct c{a:b;} import f;");
-	printf("%s\n", to_string(root));
-	return 0;
-}
-
 ast_node* parse(char* data) {
 	int len = strlen(data);
 	slice buffer = make_slice(data, 0, 0);
