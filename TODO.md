@@ -17,14 +17,6 @@
 
 ##Semantic Analyzer
 
-- A symbol table type and functions to interact with it
-
-	- Add a symbol
-
-	- Check if a symbol exists
-
-	- Get the type of a symbol
-
 - Check for undeclared variables or functions
 
 - Retrieve type of a given expression
