@@ -334,7 +334,7 @@ slice operator_token(slice data)
 		if(current == '(') paren_level++;
 		if(current == ')') paren_level--;
 		if(paren_level == 0 && !is_whitespace(current) && !is_identifier(current)
-			&& current != '(' && current != ')' && current != ',')
+			&& current != '(' && current != ')' && current != ',' && !is_identifier_literal(result))
 			break;
 	}
 	return result;

@@ -4,8 +4,6 @@
 
 - Parse ~~basic control flow such as `if`, `while`, and~~ `for`
 
-- Support for floating-point numbers
-
 - Parse operators with precedence
 
 - Parse export top-level blocks
