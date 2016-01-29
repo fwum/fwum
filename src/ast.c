@@ -106,7 +106,6 @@ char* to_string(ast_node *root)
 
 bool is_number_literal(slice literal)
 {
-	printf("%s\n", evaluate(literal));
 	for(int i = literal.begin; i < literal.end; i++)
 		if(!(literal.data[i] >= '0' && literal.data[i] <= '9') && !(literal.data[i] == '.' && i != literal.begin))
 			return false;
