@@ -37,9 +37,19 @@
 
 - Retrieve object files on compiler search path
 
+##Optimizer / Analyzer
+
+- Remove unnecessary statements
+
+- Provide types to type-inference binds
+
 ##C Backend
 
 - Conversion of AST to C code
+
+##JS Backend
+
+- Conversion of AST to Javascript code
 
 ##Tests
 
