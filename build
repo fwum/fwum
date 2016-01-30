@@ -1,0 +1,3 @@
+#!/bin/sh
+make
+./out | gcc -o output -xc - -c
