@@ -1,5 +1,7 @@
 #include "cbackend.h"
 #include <stdio.h>
+#include <stdlib.h>
+
 void compile_struct(ast_node *structNode, FILE* stream);
 void compile_vartype(ast_node *vartypeNode, FILE* stream);
 void compile_func(ast_node *funcNode, FILE* stream);
