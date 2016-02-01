@@ -6,6 +6,8 @@
 void compile_struct(ast_node *structNode, FILE* stream);
 void compile_vartype(ast_node *vartypeNode, FILE* stream);
 void compile_func(ast_node *funcNode, FILE* stream);
+void compile_import(ast_node *importNode, FILE* stream);
+void compile_using(ast_node *usingNode, FILE* stream);
 
 void compile(ast_node *root, FILE* stream)
 {
@@ -19,11 +21,27 @@ void compile(ast_node *root, FILE* stream)
 		case STRUCT:
 			compile_struct(child, stream);
 			break;
+		case IMPORT:
+			compile_import(child, stream);
+			break;
+		case USING:
+			compile_using(child, stream);
+			break;
 		default:
 			fprintf(stderr, "Internal compiler error: %s is not a valid top-level element.\n", type_to_string(child->type));
 			break;
 		}
 	}
+}
+
+void compile_import(ast_node *importNode, FILE* stream)
+{
+	fprintf(stderr, "Cannot import %s as imports are not yet implemented.\n", importNode->data);
+}
+
+void compile_using(ast_node *usingNode, FILE* stream)
+{
+	fprintf(stderr, "Cannot use %s as using statments are not yet implemented.\n", usingNode->data);
 }
 
 void compile_struct(ast_node *structNode, FILE* stream)
