@@ -1,1 +1,2 @@
 - Function names are cut off during the parse
+- Segfaults on run
