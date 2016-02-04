@@ -74,6 +74,8 @@ void compile_expression(ast_node *node, FILE* stream)
 	case STRING:
 		fprintf(stream, "\"%s\"", node->data);
 		break;
+	default:
+		break;
 	}
 }
 
