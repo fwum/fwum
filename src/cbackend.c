@@ -1,7 +1,8 @@
 #include "cbackend.h"
 #include "ast.h"
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 void compile_struct(ast_node *structNode, FILE* stream);
 void compile_vartype(ast_node *vartypeNode, FILE* stream);
@@ -60,6 +61,20 @@ void compile_struct(ast_node *structNode, FILE* stream)
 void compile_func(ast_node *funcNode, FILE* stream)
 {
 
+}
+
+void compile_expression(ast_node *node, FILE* stream)
+{
+	switch(node->type)
+	{
+	case NUMBER:
+	case VAR:
+		fprintf(stream, "%s", node->data);
+		break;
+	case STRING:
+		fprintf(stream, "\"%s\"", node->data);
+		break;
+	}
 }
 
 void compile_vartype(ast_node *vartypeNode, FILE* stream)
