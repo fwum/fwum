@@ -94,6 +94,7 @@ void compile_expression(ast_node *node, FILE* stream)
 			compile_expression(child, stream);
 			if(child->next != NULL)
 				fprintf(stream, ",");
+			child = child->next;
 		}
 		fprintf(stream, ")");
 		break;
@@ -119,6 +120,7 @@ void compile_expression(ast_node *node, FILE* stream)
 		{
 			compile_expression(child, stream);
 			fprintf(stream, ";");
+			child = child->next;
 		}
 		fprintf(stream, "}");
 		break;
@@ -128,6 +130,10 @@ void compile_expression(ast_node *node, FILE* stream)
 		fprintf(stream, ")");
 		compile_expression(node->child->next, stream);
 		break;
+	case OPERATOR:
+		compile_expression(node->child, stream);
+		fprintf(stream, "%s", node->data);
+		compile_expression(node->child->next, stream);
 	default:
 		break;
 	}
