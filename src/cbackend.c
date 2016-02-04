@@ -57,22 +57,76 @@ void compile_struct(ast_node *structNode, FILE* stream)
 	}
 	fprintf(stream, "}%s;\n", structNode->data);
 }
+void compile_expression(ast_node *node, FILE* stream);
 
 void compile_func(ast_node *funcNode, FILE* stream)
 {
-
+	compile_expression(funcNode->child, stream);
+	ast_node *child = funcNode->child->next;
+	fprintf(stream, " %s(", funcNode->data);
+	while(child->type != BLOCK)
+	{
+		compile_expression(child, stream);
+		child = child->next;
+	}
+	fprintf(stream, ")");
+	compile_expression(child, stream);
 }
 
 void compile_expression(ast_node *node, FILE* stream)
 {
+	ast_node *child;
 	switch(node->type)
 	{
 	case NUMBER:
 	case VAR:
+	case TYPE:
 		fprintf(stream, "%s", node->data);
 		break;
 	case STRING:
 		fprintf(stream, "\"%s\"", node->data);
+		break;
+	case CALL:
+		fprintf(stream, "%s(", node->data);
+		child = node->child;
+		while(child != NULL)
+		{
+			compile_expression(child, stream);
+			if(child->next != NULL)
+				fprintf(stream, ",");
+		}
+		fprintf(stream, ")");
+		break;
+	case VARTYPE:
+		compile_vartype(node, stream);
+		break;
+	case BIND:
+		fprintf(stderr, "Internal compiler error: Analyzer failed to give a type to a bind.\n");
+		break;
+	case TYPED_BIND:
+		compile_expression(node->child, stream);
+		fprintf(stream, " %s = ", node->data);
+		compile_expression(node->child->next, stream);
+		break;
+	case ASSIGN:
+		fprintf(stream, " %s = ", node->data);
+		compile_expression(node->child->next, stream);
+		break;
+	case BLOCK:
+		fprintf(stream, "{");
+		child = node->child;
+		while(child != NULL)
+		{
+			compile_expression(child, stream);
+			fprintf(stream, ";");
+		}
+		fprintf(stream, "}");
+		break;
+	case CONTROL:
+		fprintf(stream, "%s(", node->data);
+		compile_expression(node->child, stream);
+		fprintf(stream, ")");
+		compile_expression(node->child->next, stream);
 		break;
 	default:
 		break;
