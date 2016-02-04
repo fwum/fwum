@@ -280,35 +280,47 @@ ast_node* parse_val(slice data)
 		}
 		//Starts with a function call and ends without any other operation
 		if(startsID && precedingParen && get(data, data.end - data.begin - 1) == ')')
-		{
 			return parse_call(data);
-		}
-		else
+		bool encounteredColon = false;
+		for(int i = data.begin; i < data.end; i++)
 		{
-			while (get(data, 0) == '(' && get(data, data.end - data.begin - 1) == ')')
+			if(is_identifier(data.data[i]) || is_whitespace(data.data[i]))
+				continue;
+			if(data.data[i] == ':')
 			{
-				data.begin++;
-				data.end--;
+				if(encounteredColon)
+					break;
+				encounteredColon = true;
 			}
-			slice token = operator_token(data);
-			slice operator = clone_slice(token, token.end, token.end + 1);
-			while(is_whitespace(get(operator, 0)))
-				operator.begin++;
-			operator.end = operator.begin;
-			while(!is_whitespace(get(operator, operator.end - operator.begin))
-				&& !is_identifier(get(operator, operator.end - operator.begin)))
-				operator.end++;
-			if(equals(operator, new_slice("=")))
+			if(data.data[i] == '=')
+			{
+				if(data.data[i + 1] == '=') break;
 				return parse_assignment(data);
-			ast_node *root, *operand1, *operand2;
-			root = new_node(OPERATOR, evaluate(operator));
-			operand1 = parse_val(token);
-			slice right_side = clone_slice(data, operator.end, data.end);
-			operand2 = parse_val(right_side);
-			add_child(root, operand1);
-			add_child(root, operand2);
-			return root;
+			}
 		}
+		while (get(data, 0) == '(' && get(data, data.end - data.begin - 1) == ')')
+		{
+			data.begin++;
+			data.end--;
+		}
+		slice token = operator_token(data);
+		slice operator = clone_slice(token, token.end, token.end + 1);
+		while(is_whitespace(get(operator, 0)))
+			operator.begin++;
+		operator.end = operator.begin;
+		while(!is_whitespace(get(operator, operator.end - operator.begin))
+			&& !is_identifier(get(operator, operator.end - operator.begin)))
+			operator.end++;
+		if(equals(operator, new_slice("=")))
+			return parse_assignment(data);
+		ast_node *root, *operand1, *operand2;
+		root = new_node(OPERATOR, evaluate(operator));
+		operand1 = parse_val(token);
+		slice right_side = clone_slice(data, operator.end, data.end);
+		operand2 = parse_val(right_side);
+		add_child(root, operand1);
+		add_child(root, operand2);
+		return root;
 	}
 }
 
