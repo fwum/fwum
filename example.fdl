@@ -1,0 +1,4 @@
+void main()
+{
+	let a : int = 5;
+}
