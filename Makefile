@@ -4,7 +4,7 @@ LD_FLAGS :=
 CC_FLAGS := -Wall -Werror -pedantic -std=c99
 CC := gcc
 run: out
-	./out
+	./out example.fdl
 
 out: $(OBJ_FILES)
 	$(CC) $(LD_FLAGS) -o $@ $^
