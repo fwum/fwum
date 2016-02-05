@@ -1,2 +1,1 @@
 - Function names are cut off during the parse
-- nested comments leave artifacts

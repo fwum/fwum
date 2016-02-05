@@ -57,20 +57,17 @@ char* strip_whitespace(char* data)
 	for(int i = 0, j = 0; i < len; i++)
 	{
 		char current = data[i];
+		if(current == '/')
+		{
+			if(data[i + 1] == '/')
+				lineComment = true;
+			else if(data[i + 1] == '*')
+				multiComment += 1;
+		}
 		if(!lineComment && multiComment == 0)
 		{
-			if(current == '/')
-			{
-				if(data[i + 1] == '/')
-					lineComment = true;
-				else if(data[i + 1] == '*')
-					multiComment += 1;
-			}
-			else
-			{
-				newData[j] = data[i];
-				j++;
-			}
+			newData[j] = data[i];
+			j++;
 		}
 		else
 		{
