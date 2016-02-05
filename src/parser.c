@@ -17,6 +17,8 @@ ast_node* parse(char* data) {
 	ast_node *root = new_node(ROOT, "");
 	for(int i = 0; i < len; i++)
 	{
+		if(data[i] == '\r')
+			data[i] == '\n';
 		buffer.end += 1;
 		if(data[i] == '{')
 			brace_level += 1;
