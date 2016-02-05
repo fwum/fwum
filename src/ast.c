@@ -76,6 +76,8 @@ char* type_to_string(ast_type type)
 		return "OPERATOR ";
 	case CONTROL:
 		return "CONTROL ";
+	case RETURN:
+		return "RETURN ";
 	}
 	fprintf(stderr, "type_to_string was passed an unexpected value.");
 	exit(-1);

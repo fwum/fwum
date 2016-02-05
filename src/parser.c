@@ -138,7 +138,8 @@ ast_node* parse_block(slice data)
 		if(block_level == 0 && data.data[i] == ';')
 		{
 			add_child(root, parse_val(current));
-			current.begin = current.end;
+			current.begin = current.end + 1;
+			i++;
 		}
 	}
 	return root;
@@ -259,6 +260,13 @@ ast_node* parse_val(slice data)
 		return new_node(STRING, evaluate(data));
 	else if(is_identifier_literal(data))
 		return new_node(VAR, evaluate(data));
+	else if(starts_with(data, new_slice("return ")))
+	{
+		data.begin += 7; //length of return and a space
+		ast_node *root = new_node(RETURN, "");
+		root->child = parse_val(data);
+		return root;
+	}
 	else
 	{
 		//Determine if the value is a function call

@@ -134,7 +134,13 @@ void compile_expression(ast_node *node, FILE* stream)
 		compile_expression(node->child, stream);
 		fprintf(stream, "%s", node->data);
 		compile_expression(node->child->next, stream);
+		break;
+	case RETURN:
+		fprintf(stream, "return ");
+		compile_expression(node->child, stream);
+		break;
 	default:
+		fprintf(stderr, "\nNode with no compile rule: %s\n", type_to_string(node->type));
 		break;
 	}
 }
