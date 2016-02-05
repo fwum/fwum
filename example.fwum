@@ -1,3 +1,10 @@
+//COMMENT
+/*
+MULTI LINE COMMENT
+*/
+/* /*
+NESTED COMMENT
+*/ */
 int main()
 {
 	let a : int = 5;

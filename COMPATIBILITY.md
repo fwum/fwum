@@ -5,7 +5,10 @@ NOTE: The language standards are being developed in parallel to the compiler. As
 - I. Partially Implemented
 	- 1. This item consists of definitions for the rest of the standards.
 	- 2. Implemented
-	- 3. Not Implemented
+		- a. Implemented
+	- 3. Implemented
+		- a. Implemented
+		- b. Implemented
 	- 4. Partially Implemented
 		- a. Implemented
 		- b. Not Implemented

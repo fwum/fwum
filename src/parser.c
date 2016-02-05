@@ -9,8 +9,10 @@ ast_node* parse_toplevel(slice str);
 ast_node* parse_function(slice data);
 ast_node* parse_struct(slice data);
 ast_node* parse(char* data);
+char* strip_whitespace(char* data);
 
 ast_node* parse(char* data) {
+	data = strip_whitespace(data);
 	int len = strlen(data);
 	slice buffer = make_slice(data, 0, 0);
 	int brace_level = 0;
@@ -18,7 +20,7 @@ ast_node* parse(char* data) {
 	for(int i = 0; i < len; i++)
 	{
 		if(data[i] == '\r')
-			data[i] == '\n';
+			data[i] = '\n';
 		buffer.end += 1;
 		if(data[i] == '{')
 			brace_level += 1;
@@ -44,6 +46,41 @@ ast_node* parse(char* data) {
 		}
 	}
 	return root;
+}
+
+char* strip_whitespace(char* data)
+{
+	char *newData = malloc(sizeof(*newData) * (strlen(data) + 1));
+	int len = strlen(data);
+	bool lineComment = false;
+	int multiComment = 0;
+	for(int i = 0, j = 0; i < len; i++)
+	{
+		char current = data[i];
+		if(!lineComment && multiComment == 0)
+		{
+			if(current == '/')
+			{
+				if(data[i + 1] == '/')
+					lineComment = true;
+				else if(data[i + 1] == '*')
+					multiComment += 1;
+			}
+			else
+			{
+				newData[j] = data[i];
+				j++;
+			}
+		}
+		else
+		{
+			if(current == '\n')
+				lineComment = false;
+			else if(current == '/' && i != 0 && data[i - 1] == '*')
+				multiComment -= 1;
+		}
+	}
+	return newData;
 }
 
 ast_node* parse_toplevel(slice data)
