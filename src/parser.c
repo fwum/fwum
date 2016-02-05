@@ -298,6 +298,7 @@ ast_node* parse_val(slice data)
 				return parse_assignment(data);
 			}
 		}
+		//strip useless parens
 		while (get(data, 0) == '(' && get(data, data.end - data.begin - 1) == ')')
 		{
 			data.begin++;
