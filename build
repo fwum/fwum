@@ -1,3 +1,4 @@
 #!/bin/sh
 make
-./out | gcc -o output -xc - -c
+./out example.fwum | gcc -o output -xc -
+./output
