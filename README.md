@@ -1,4 +1,4 @@
-#FwumDeLang
+#Fwum
 The language has a few principle goals:
 
 - Be safer than C
