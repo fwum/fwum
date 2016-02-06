@@ -27,7 +27,12 @@ NOTE: The language standards are being developed in parallel to the compiler. As
 	- 6. Implemented
 		- a. Implemented
 		- b. Implemented
-	- 7. Implemented
+	- 7. Not Implemented
+		- a. Not Implemented
+	- 8. Not Implemented
+		- a. Not Implemented
+		- b. Not Implemented
+	- 9. Implemented
 		- a. Implemented
 		- b. Implemented
 		- c. Implemented
