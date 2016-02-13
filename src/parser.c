@@ -315,8 +315,8 @@ operator_node* set_child(operator_node *current, char *data)
 
 operator_node* get_node()
 {
-	operator_node *current = new_operator_node("**");
-	current = set_child(current, "*");
+	operator_node *root = new_operator_node("**");
+	operator_node *current = set_child(root, "*");
 	add_next(current, "/");
 	current = set_child(current, "+");
 	add_next(current, "-");
@@ -337,7 +337,7 @@ operator_node* get_node()
 	current = set_child(current, "^^");
 	add_next(current, "^");
 	current = set_child(current, "=");
-	return current;
+	return root;
 }
 
 ast_node* parse_val(slice data)
@@ -395,7 +395,9 @@ ast_node* parse_val(slice data)
 					for(int j = 0; j < len; j++)
 					{
 						if(data.data[i] == current->data[j])
+						{
 							i++;
+						}
 						else
 						{
 							matches = false;
@@ -411,6 +413,7 @@ ast_node* parse_val(slice data)
 						operand2 = parse_val(clone_slice(data, i, data.end));
 						add_child(root, operand1);
 						add_child(root, operand2);
+						return root;
 					}
 					current = current->next;
 				}
