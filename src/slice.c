@@ -89,3 +89,11 @@ bool is_identifier(char c)
 {
 	return (c >= 'a' && c <= 'z') || (c <= 'A' && c >= 'Z')  || (c >= '0' && c <= '9') || c == '_';
 }
+
+bool slice_contains(slice s1, char c)
+{
+	for(int i = s1.begin; i < s1.end; i++)
+		if(s1.data[i] == c)
+			return true;
+	return false;
+}
