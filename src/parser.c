@@ -315,28 +315,28 @@ operator_node* set_child(operator_node *current, char *data)
 
 operator_node* get_node()
 {
-	operator_node *root = new_operator_node("**");
-	operator_node *current = set_child(root, "*");
-	add_next(current, "/");
-	current = set_child(current, "+");
-	add_next(current, "-");
-	add_next(current, "%");
-	current = set_child(current, ">>");
-	add_next(current, ">>>");
-	add_next(current, ">>");
+	operator_node *root = new_operator_node("=");
+	operator_node *current = set_child(root, "||");
+	add_next(current, "|");
+	current = set_child(current, "^^");
+	add_next(current, "^");
+	current = set_child(current, "&&");
+	add_next(current, "&");
 	current = set_child(current, "!=");
 	add_next(current, "==");
 	add_next(current, "<=");
 	add_next(current, ">=");
 	add_next(current, "<");
 	add_next(current, ">");
-	current = set_child(current, "&&");
-	add_next(current, "&");
-	current = set_child(current, "||");
-	add_next(current, "|");
-	current = set_child(current, "^^");
-	add_next(current, "^");
-	current = set_child(current, "=");
+	current = set_child(current, ">>");
+	add_next(current, ">>>");
+	add_next(current, ">>");
+	current = set_child(current, "+");
+	add_next(current, "-");
+	add_next(current, "%");
+	current = set_child(current, "*");
+	add_next(current, "/");
+	current = set_child(current, "**");
 	return root;
 }
 
