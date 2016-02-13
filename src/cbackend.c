@@ -50,7 +50,9 @@ void compile_using(ast_node *usingNode, FILE* stream)
 
 void compile_struct(ast_node *structNode, FILE* stream)
 {
-	fprintf(stream, "typedef struct %s {", structNode->data);
+	fprintf(stream, "struct %s;", structNode->data);
+	fprintf(stream, "typedef struct %s %s;", structNode->data, structNode->data);
+	fprintf(stream, "struct %s {", structNode->data);
 	ast_node *child = structNode->child;
 	while(child != NULL)
 	{

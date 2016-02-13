@@ -19,6 +19,7 @@ int main(int argc, char **argv)
 		fclose(input);
 		ast_node *root = parse(data);
 		free(data);
+		printf("%s\n", to_string(root));
 		compile(root, stdout);
 		return 0;
 	}
