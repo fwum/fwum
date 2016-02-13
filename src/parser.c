@@ -100,6 +100,10 @@ ast_node* parse_toplevel(slice data)
 	{
 		type = USING;
 		displace = strlen("using ");
+	} else if(starts_with(data, new_slice("cimport")))
+	{
+		type = CIMPORT;
+		displace = strlen("cimport ");
 	}
 	data.begin += displace;
 	data.end--; //Remove semicolon

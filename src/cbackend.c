@@ -28,6 +28,9 @@ void compile(ast_node *root, FILE* stream)
 		case USING:
 			compile_using(child, stream);
 			break;
+		case CIMPORT:
+			fprintf(stream, "#include <%s>\n", child->data);
+			break;
 		default:
 			fprintf(stderr, "Internal compiler error: %s is not a valid top-level element.\n", type_to_string(child->type));
 			break;
