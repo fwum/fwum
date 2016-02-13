@@ -6,6 +6,13 @@ CC := gcc
 run: out
 	./out example.fwum
 
+devel: out
+	./out example.fwum devel
+
+exec:
+	./out example.fwum | gcc -xc - -o output
+	./output
+
 debug: dbg
 	gdb dbg
 
