@@ -9,6 +9,12 @@ ast_node* parse_toplevel(slice str);
 ast_node* parse_function(slice data);
 ast_node* parse_struct(slice data);
 ast_node* parse(char* data);
+ast_node* parse_operation(slice data);
+ast_node* parse_block(slice data);
+ast_node* parse_vartype(slice data);
+ast_node* parse_call(slice data);
+ast_node* parse_val(slice data);
+bool is_function(slice data);
 char* strip_whitespace(char* data);
 
 ast_node* parse(char* data) {
@@ -100,11 +106,6 @@ ast_node* parse_toplevel(slice data)
 	ast_node *toplevel = new_node(type, evaluate(data));
 	return toplevel;
 }
-
-ast_node* parse_block(slice data);
-ast_node* parse_vartype(slice data);
-ast_node* parse_call(slice data);
-ast_node* parse_val(slice data);
 
 ast_node* parse_function(slice data)
 {
@@ -341,8 +342,6 @@ operator_node* get_node()
 	add_next(current, "::");
 	return root;
 }
-
-bool is_function(slice data);
 
 bool is_function(slice data)
 {
