@@ -131,3 +131,14 @@ bool is_identifier_literal(slice literal)
 			return false;
 	return true;
 }
+
+void free_tree(ast_node *root)
+{
+	ast_node *current = root->child;
+	while(current != NULL)
+	{
+		free_tree(current);
+		current = current->next;
+	}
+	free(root);
+}

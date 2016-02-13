@@ -22,4 +22,5 @@ void add_child(ast_node *root, ast_node *child);
 bool is_number_literal(slice literal);
 bool is_string_literal(slice literal);
 bool is_identifier_literal(slice literal);
+void free_tree(ast_node *root);
 #endif
