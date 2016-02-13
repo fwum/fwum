@@ -111,7 +111,7 @@ void compile_expression(ast_node *node, FILE* stream)
 		break;
 	case ASSIGN:
 		fprintf(stream, " %s = ", node->data);
-		compile_expression(node->child->next, stream);
+		compile_expression(node->child, stream);
 		break;
 	case BLOCK:
 		fprintf(stream, "{");

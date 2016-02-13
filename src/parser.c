@@ -399,6 +399,28 @@ ast_node *parse_operation(slice data)
 					operand2 = parse_val(clone_slice(data, i, data.end));
 					add_child(root, operand1);
 					add_child(root, operand2);
+					if(strlen(root->data) == 1 && root->data[0] == '=')
+					{
+						root->type = ASSIGN;
+						ast_type type = root->child->type;
+						if(type == BIND)
+						{
+							root->type = BIND;
+							root->data = root->child->data;
+							root->child = root->child->next;
+						} else if(type == TYPED_BIND)
+						{
+							printf("%s\n", to_string(root));
+							root->type = TYPED_BIND;
+							root->data = root->child->data;
+							root->child->child->next = root->child->next;
+							root->child = root->child->child;
+						} else
+						{
+							root->data = root->child->data;
+							root->child = root->child->next;
+						}
+					}
 					return root;
 				}
 				current = current->next;
@@ -428,35 +450,31 @@ ast_node* parse_val(slice data)
 		root->child = parse_val(data);
 		return root;
 	}
-	else
+	else if(starts_with(data, new_slice("let ")) && !slice_contains(data, '='))
 	{
+		slice name = clone_slice(data, data.begin + 4, data.begin);
+		char current = get(name, name.end - name.begin);
+		ast_type type = BIND;
+		while(current != ':' && current != '=')
+		{
+			name.end++;
+			current = get(name, name.end - name.begin);
+		}
+		if(current == ':')
+			type = TYPED_BIND;
+		ast_node *root = new_node(type, evaluate(name));
+		if(type == TYPED_BIND)
+			add_child(root, new_node(TYPE, evaluate(clone_slice(data, name.end + 1, data.end))));
+		return root;
+	} else
+	{
+
 		//Starts with a function call and ends without any other operation
 		if(is_function(data))
 			return parse_call(data);
 		else
 			return parse_operation(data);
 	}
-}
-
-slice operator_token(slice data)
-{
-	int paren_level = 0;
-	while(is_whitespace(get(data, 0)))
-		data.begin++;
-	while(is_whitespace(get(data, data.end - data.begin - 1)))
-		data.end--;
-	slice result = clone_slice(data, data.begin, data.begin);
-	while(result.end < data.end)
-	{
-		result.end++;
-		char current = get(result, result.end - result.begin);
-		if(current == '(') paren_level++;
-		if(current == ')') paren_level--;
-		if(paren_level == 0 && !is_whitespace(current) && !is_identifier(current)
-			&& current != '(' && current != ')' && current != ',' && !is_identifier_literal(result))
-			break;
-	}
-	return result;
 }
 
 ast_node* parse_call(slice data)
