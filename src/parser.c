@@ -36,8 +36,11 @@ ast_node* parse(char* data) {
 			if(brace_level == 0)
 			{
 				slice start = buffer;
-				start.begin++;
+				while(is_whitespace(get(start, 0)))
+					start.begin++;
+				buffer.begin = start.begin;
 				start.end = start.begin + 6; //length of "struct"
+				printf("%s\n", evaluate(start));
 				if(equals_string(start, "struct"))
 					add_child(root, parse_struct(buffer));
 				else

@@ -1,2 +1,1 @@
 - Function names are cut off during the parse
-- Structs are being parsed as functions
