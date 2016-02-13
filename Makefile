@@ -1,7 +1,8 @@
 C_FILES := $(wildcard src/*.c)
 OBJ_FILES := $(addprefix obj/,$(notdir $(C_FILES:.c=.o)))
 LD_FLAGS :=
-CC_FLAGS := -Wall -Werror -pedantic -std=c99
+CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wmissing-prototypes -Wstrict-prototypes \
+-Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized
 CC := gcc
 run: out
 	./out example.fwum
