@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "slice.h"
 #include "ast.h"
+#include "operators.h"
 
 ast_node* parse_toplevel(slice str);
 ast_node* parse_function(slice data);
@@ -228,123 +229,6 @@ ast_node* parse_controlflow(slice data)
 		data.begin++;
 	}
 	add_child(root, parse_block(data));
-	return root;
-}
-
-ast_node* parse_assignment(slice assign)
-{
-	slice data = assign;
-	ast_type type;
-	while(is_whitespace(get(data, 0)))
-		data.begin++;
-	ast_node *root;
-	if(starts_with(data, new_slice("let")))
-	{
-		type = BIND;
-		int i = 0;
-		while(get(data, i) != '=')
-		{
-			if(get(data, i) == ':')
-			{
-				type = TYPED_BIND;
-				break;
-			}
-			i++;
-		}
-		data.begin += 4; //length of let and at least 1 whitespace token
-		while(is_whitespace(get(data, 0)))
-			data.begin++;
-		data.end = data.begin+1;
-		while(!is_whitespace(get(data, data.end - data.begin)) && get(data, data.end - data.begin) != ':')
-			data.end++;
-		char *name = evaluate(data);
-		root = new_node(type, name);
-		if(type == TYPED_BIND)
-		{
-			data.begin = data.end;
-			while(get(data, -1) != ':')
-				data.begin++;
-			data.end = data.begin + 1;
-			while(get(data, data.end - data.begin + 1) != '=')
-				data.end++;
-			char *typeStr = evaluate(data);
-			ast_node *typeNode = new_node(TYPE, typeStr);
-			add_child(root, typeNode);
-		}
-		data.begin = data.end + 2;
-		data.end = assign.end;
-	}
-	else
-	{
-		type = ASSIGN;
-		data.end = data.begin;
-		while(get(data, data.end - data.begin + 1) != '=')
-			data.end++;
-		char *name = evaluate(data);
-		root = new_node(type, name);
-		data.begin = data.end + 2;
-		data.end = assign.end;
-	}
-	add_child(root, parse_val(data));
-	return root;
-}
-
-slice operator_token(slice data);
-
-typedef struct operator_node {
-	char *data;
-	struct operator_node *next;
-	struct operator_node *child;
-} operator_node;
-
-operator_node *new_operator_node(char *data)
-{
-	operator_node *newNode = malloc(sizeof(*newNode));
-	newNode->data = data;
-	newNode->next = NULL;
-	newNode->child = NULL;
-	return newNode;
-}
-
-void add_next(operator_node *current, char *data)
-{
-	operator_node *newNode = new_operator_node(data);
-	newNode->next = current->next;
-	current->next = newNode;
-}
-
-operator_node* set_child(operator_node *current, char *data)
-{
-	operator_node *newNode = new_operator_node(data);
-	current->child = newNode;
-	return newNode;
-}
-
-operator_node* get_node()
-{
-	operator_node *root = new_operator_node("=");
-	operator_node *current = set_child(root, "||");
-	add_next(current, "|");
-	current = set_child(current, "^^");
-	add_next(current, "^");
-	current = set_child(current, "&&");
-	add_next(current, "&");
-	current = set_child(current, "!=");
-	add_next(current, "==");
-	add_next(current, "<=");
-	add_next(current, ">=");
-	add_next(current, "<");
-	add_next(current, ">");
-	current = set_child(current, ">>");
-	add_next(current, ">>>");
-	add_next(current, ">>");
-	current = set_child(current, "+");
-	add_next(current, "-");
-	add_next(current, "%");
-	current = set_child(current, "*");
-	add_next(current, "/");
-	current = set_child(current, "**");
-	current = set_child(current, ".");
 	return root;
 }
 
