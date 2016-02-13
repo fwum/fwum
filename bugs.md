@@ -1,2 +1,3 @@
 - Function names are cut off during the parse
 - Random root node being added at the end of the AST
+- Dot operator does not work on left side of assignment
