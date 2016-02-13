@@ -368,11 +368,23 @@ bool is_function(slice data)
 ast_node *parse_operation(slice data)
 {
 	operator_node *op = get_node();
+	while(get(data, 0) == '(' && data.data[data.end - 1] == ')')
+	{
+		data.begin++;
+		data.end--;
+	}
 	while(op != NULL)
 	{
+		int paren_level = 0;
 		for(int i = data.begin; i < data.end; i++)
 		{
 			operator_node *current = op;
+			if(data.data[i] == '(')
+				paren_level += 1;
+			else if(data.data[i] == ')')
+				paren_level -= 1;
+			if(paren_level != 0)
+				continue;
 			while(current != NULL)
 			{
 				int previous_i = i;
@@ -410,7 +422,6 @@ ast_node *parse_operation(slice data)
 							root->child = root->child->next;
 						} else if(type == TYPED_BIND)
 						{
-							printf("%s\n", to_string(root));
 							root->type = TYPED_BIND;
 							root->data = root->child->data;
 							root->child->child->next = root->child->next;
