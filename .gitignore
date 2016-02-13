@@ -6,3 +6,5 @@ out
 /Debug/
 output.*
 output
+dbg.*
+dbg
