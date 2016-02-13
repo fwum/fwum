@@ -6,6 +6,18 @@ CC := gcc
 run: out
 	./out example.fwum
 
+debug: dbg
+	gdb dbg
+
+clean:
+	./rmsafe.sh obj/*
+	./rmsafe.sh out*
+	./rmsafe.sh output*
+	./rmsafe.sh dbg*
+
+dbg: $(OBJ_FILES)
+	$(CC) $(LD_FLAGS) -g -o $@ $^
+
 out: $(OBJ_FILES)
 	$(CC) $(LD_FLAGS) -o $@ $^
 
