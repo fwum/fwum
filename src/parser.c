@@ -303,31 +303,7 @@ ast_node *parse_operation(slice data)
 					add_child(root, operand1);
 					add_child(root, operand2);
 					if(strlen(root->data) == 1 && root->data[0] == '=')
-					{
 						root->type = ASSIGN;
-						ast_type type = root->child->type;
-						ast_node *toDelete;
-						if(type == BIND)
-						{
-							root->type = BIND;
-							root->data = root->child->data;
-							toDelete = root->child;
-							root->child = root->child->next;
-						} else if(type == TYPED_BIND)
-						{
-							root->type = TYPED_BIND;
-							root->data = root->child->data;
-							root->child->child->next = root->child->next;
-							toDelete = root->child;
-							root->child = root->child->child;
-						} else
-						{
-							root->data = root->child->data;
-							toDelete = root->child;
-							root->child = root->child->next;
-						}
-						free(toDelete);
-					}
 					return root;
 				}
 				current = current->next;
