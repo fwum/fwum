@@ -131,9 +131,11 @@ void compile_expression(ast_node *node, FILE* stream)
 		compile_expression(node->child->next, stream);
 		break;
 	case OPERATOR:
+		fprintf(stream, "(");
 		compile_expression(node->child, stream);
 		fprintf(stream, "%s", node->data);
 		compile_expression(node->child->next, stream);
+		fprintf(stream, ")");
 		break;
 	case RETURN:
 		fprintf(stream, "return ");
