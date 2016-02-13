@@ -40,7 +40,6 @@ ast_node* parse(char* data) {
 					start.begin++;
 				buffer.begin = start.begin;
 				start.end = start.begin + 6; //length of "struct"
-				printf("%s\n", evaluate(start));
 				if(equals_string(start, "struct"))
 					add_child(root, parse_struct(buffer));
 				else
@@ -346,7 +345,6 @@ operator_node* get_node()
 	add_next(current, "/");
 	current = set_child(current, "**");
 	current = set_child(current, ".");
-	add_next(current, "::");
 	return root;
 }
 
