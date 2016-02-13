@@ -284,6 +284,62 @@ ast_node* parse_assignment(slice assign)
 
 slice operator_token(slice data);
 
+typedef struct operator_node {
+	char *data;
+	struct operator_node *next;
+	struct operator_node *child;
+} operator_node;
+
+operator_node *new_operator_node(char *data)
+{
+	operator_node *newNode = malloc(sizeof(*newNode));
+	newNode->data = data;
+	newNode->next = NULL;
+	newNode->child = NULL;
+	return newNode;
+}
+
+void add_next(operator_node *current, char *data)
+{
+	operator_node *newNode = new_operator_node(data);
+	newNode->next = current->next;
+	current->next = newNode;
+}
+
+operator_node* set_child(operator_node *current, char *data)
+{
+	operator_node *newNode = new_operator_node(data);
+	current->child = newNode;
+	return newNode;
+}
+
+operator_node* get_node()
+{
+	operator_node *current = new_operator_node("**");
+	current = set_child(current, "*");
+	add_next(current, "/");
+	current = set_child(current, "+");
+	add_next(current, "-");
+	add_next(current, "%");
+	current = set_child(current, ">>");
+	add_next(current, ">>>");
+	add_next(current, ">>");
+	current = set_child(current, "!=");
+	add_next(current, "==");
+	add_next(current, "<=");
+	add_next(current, ">=");
+	add_next(current, "<");
+	add_next(current, ">");
+	current = set_child(current, "&&");
+	add_next(current, "&");
+	current = set_child(current, "||");
+	add_next(current, "|");
+	current = set_child(current, "^^");
+	add_next(current, "^");
+	current = set_child(current, "=");
+	return current;
+}
+
 ast_node* parse_val(slice data)
 {
 	while(is_whitespace(get(data, 0)))
@@ -325,47 +381,45 @@ ast_node* parse_val(slice data)
 		//Starts with a function call and ends without any other operation
 		if(startsID && precedingParen && get(data, data.end - data.begin - 1) == ')')
 			return parse_call(data);
-		bool encounteredColon = false;
-		for(int i = data.begin; i < data.end; i++)
+		operator_node *op = get_node();
+		while(op != NULL)
 		{
-			if(is_identifier(data.data[i]) || is_whitespace(data.data[i]))
-				continue;
-			if(data.data[i] == ':')
+			for(int i = data.begin; i < data.end; i++)
 			{
-				if(encounteredColon)
-					break;
-				encounteredColon = true;
+				operator_node *current = op;
+				while(current != NULL)
+				{
+					int previous_i = i;
+					int len = strlen(current->data);
+					bool matches = true;
+					for(int j = 0; j < len; j++)
+					{
+						if(data.data[i] == current->data[j])
+							i++;
+						else
+						{
+							matches = false;
+							i = previous_i;
+							break;
+						}
+					}
+					if(matches)
+					{
+						ast_node *root, *operand1, *operand2;
+						root = new_node(OPERATOR, evaluate(clone_slice(data, previous_i, i)));
+						operand1 = parse_val(clone_slice(data, data.begin, previous_i));
+						operand2 = parse_val(clone_slice(data, i, data.end));
+						add_child(root, operand1);
+						add_child(root, operand2);
+					}
+					current = current->next;
+				}
 			}
-			if(data.data[i] == '=')
-			{
-				if(data.data[i + 1] == '=') break;
-				return parse_assignment(data);
-			}
+			op = op->child;
 		}
-		//strip useless parens
-		while (get(data, 0) == '(' && get(data, data.end - data.begin - 1) == ')')
-		{
-			data.begin++;
-			data.end--;
-		}
-		slice token = operator_token(data);
-		slice operator = clone_slice(token, token.end, token.end + 1);
-		while(is_whitespace(get(operator, 0)))
-			operator.begin++;
-		operator.end = operator.begin;
-		while(!is_whitespace(get(operator, operator.end - operator.begin))
-			&& !is_identifier(get(operator, operator.end - operator.begin)))
-			operator.end++;
-		if(equals(operator, new_slice("=")))
-			return parse_assignment(data);
-		ast_node *root, *operand1, *operand2;
-		root = new_node(OPERATOR, evaluate(operator));
-		operand1 = parse_val(token);
-		slice right_side = clone_slice(data, operator.end, data.end);
-		operand2 = parse_val(right_side);
-		add_child(root, operand1);
-		add_child(root, operand2);
-		return root;
+		fprintf(stderr, "No expression, literal, identifier, or function call found.");
+		exit(-1);
+		return NULL;
 	}
 }
 
