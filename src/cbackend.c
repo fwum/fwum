@@ -1,5 +1,6 @@
 #include "cbackend.h"
 #include "ast.h"
+#include "linker.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -22,12 +23,6 @@ void compile(ast_node *root, FILE* stream)
 		case STRUCT:
 			compile_struct(child, stream);
 			break;
-		case IMPORT:
-			compile_import(child, stream);
-			break;
-		case USING:
-			compile_using(child, stream);
-			break;
 		case CIMPORT:
 			fprintf(stream, "#include <%s>\n", child->data);
 			break;
@@ -36,16 +31,6 @@ void compile(ast_node *root, FILE* stream)
 			break;
 		}
 	}
-}
-
-void compile_import(ast_node *importNode, FILE* stream)
-{
-	fprintf(stderr, "Cannot import %s as imports are not yet implemented.\n", importNode->data);
-}
-
-void compile_using(ast_node *usingNode, FILE* stream)
-{
-	fprintf(stderr, "Cannot use %s as using statments are not yet implemented.\n", usingNode->data);
 }
 
 void compile_struct(ast_node *structNode, FILE* stream)
@@ -112,15 +97,11 @@ void compile_expression(ast_node *node, FILE* stream)
 	case TYPED_BIND:
 		compile_expression(node->child, stream);
 		fprintf(stream, " %s", node->data);
-		if(node->child->next != NULL)
-		{
-			fprintf(stream, " = ");
-			compile_expression(node->child->next, stream);
-		}
 		break;
 	case ASSIGN:
-		fprintf(stream, " %s = ", node->data);
 		compile_expression(node->child, stream);
+		fprintf(stream, " %s = ", node->data);
+		compile_expression(node->child->next, stream);
 		break;
 	case BLOCK:
 		fprintf(stream, "{");
