@@ -374,7 +374,10 @@ ast_node* parse_call(slice data)
 	{
 		char current = get(parameter, parameter.end - parameter.begin);
 		if(current == ',' || current == ')')
+		{
 			add_child(root, parse_val(parameter));
+			parameter.begin = parameter.end + 1;
+		}
 	}
 	return root;
 }

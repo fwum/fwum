@@ -107,10 +107,10 @@ bool is_number_literal(slice literal)
 
 bool is_string_literal(slice literal)
 {
-	if(get(literal, 0) != '"' || get(literal, literal.end - literal.begin) != '"')
+	if(get(literal, 0) != '"' || get(literal, literal.end - literal.begin - 1) != '"')
 		return false;
-	for(int i = literal.begin + 1; i < literal.end; i++)
-		if(literal.data[i] == '=')
+	for(int i = literal.begin + 1; i < literal.end - 1; i++)
+		if(literal.data[i] == '"')
 			return false;
 	return true;
 }
