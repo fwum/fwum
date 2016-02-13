@@ -16,10 +16,10 @@ ast_node* parse_vartype(slice data);
 ast_node* parse_call(slice data);
 ast_node* parse_val(slice data);
 bool is_function(slice data);
-char* strip_whitespace(char* data);
+char* strip_comments(char* data);
 
 ast_node* parse(char* data) {
-	data = strip_whitespace(data);
+	data = strip_comments(data);
 	int len = strlen(data);
 	slice buffer = make_slice(data, 0, 0);
 	int brace_level = 0;
@@ -57,7 +57,7 @@ ast_node* parse(char* data) {
 	return root;
 }
 
-char* strip_whitespace(char* data)
+char* strip_comments(char* data)
 {
 	char *newData = malloc(sizeof(*newData) * (strlen(data) + 1));
 	int len = strlen(data);
