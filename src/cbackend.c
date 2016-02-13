@@ -45,7 +45,7 @@ void compile_struct(ast_node *structNode, FILE* stream)
 		child = child->next;
 		fprintf(stream, "; \n");
 	}
-	fprintf(stream, "}%s;\n", structNode->data);
+	fprintf(stream, "};\n");
 }
 void compile_expression(ast_node *node, FILE* stream);
 
