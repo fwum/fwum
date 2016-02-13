@@ -1,3 +1,2 @@
 - Function names are cut off during the parse
-- Random root node is being added by top-level elements
 - Dot operator does not work on left side of assignment

@@ -63,7 +63,8 @@ char* strip_whitespace(char* data)
 	int len = strlen(data);
 	bool lineComment = false;
 	int multiComment = 0;
-	for(int i = 0, j = 0; i < len; i++)
+	int i, j;
+	for(i = 0, j = 0; i < len; i++)
 	{
 		char current = data[i];
 		if(current == '/')
@@ -86,6 +87,7 @@ char* strip_whitespace(char* data)
 				multiComment -= 1;
 		}
 	}
+	newData[j] = '\0';
 	return newData;
 }
 
