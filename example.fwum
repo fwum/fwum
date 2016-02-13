@@ -5,8 +5,11 @@ MULTI LINE COMMENT
 /* /*
 NESTED COMMENT
 */ */
+cimport stdio;
+
 int main()
 {
 	let a : int = (4 + 2) * 3;
+	clib.b(a);
 	return 0;
 }
