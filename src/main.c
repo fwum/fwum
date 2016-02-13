@@ -3,6 +3,7 @@
 #include "cbackend.h"
 #include "io.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char **argv)
 {
@@ -17,7 +18,7 @@ int main(int argc, char **argv)
 		char* data = read_file(input);
 		fclose(input);
 		ast_node *root = parse(data);
-		printf("%s\n", to_string(root));
+		free(data);
 		compile(root, stdout);
 		return 0;
 	}
