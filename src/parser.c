@@ -323,7 +323,7 @@ ast_node* parse_val(slice data)
 	if(is_number_literal(data))
 		return new_node(NUMBER, evaluate(data));
 	else if(is_string_literal(data))
-		return new_node(STRING, evaluate(data));
+		return new_node(STRING, evaluate(clone_slice(data, data.begin + 1, data.end - 1)));
 	else if(is_identifier_literal(data))
 		return new_node(VAR, evaluate(data));
 	else if(starts_with(data, new_slice("return ")))
