@@ -1,2 +1,0 @@
-- Function names are cut off during the parse
-- Dot operator does not work on left side of assignment
