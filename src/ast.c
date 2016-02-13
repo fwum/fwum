@@ -15,17 +15,6 @@ ast_node* new_node(ast_type type, char* data)
 	return new_node;
 }
 
-int length_list(ast_node *first)
-{
-	int len = 0;
-	while(first->next != NULL)
-	{
-		first = first->next;
-		len++;
-	}
-	return len;
-}
-
 void add_child(ast_node *root, ast_node *child)
 {
 	if(root->child == NULL)
