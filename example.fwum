@@ -7,6 +7,6 @@ NESTED COMMENT
 */ */
 int main()
 {
-	let a : int = 4 + 2 * 3;
+	let a : int = (4 + 2) * 3;
 	return 0;
 }
