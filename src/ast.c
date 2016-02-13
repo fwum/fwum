@@ -48,6 +48,8 @@ char* type_to_string(ast_type type)
 		return "IMPORT ";
 	case USING:
 		return "USING ";
+	case CIMPORT:
+		return "CIMPORT ";
 	case VARTYPE:
 		return "VARTYPE ";
 	case STRUCT:
