@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 		fclose(input);
 		ast_node *root = parse(data);
 		free(data);
-		if(argc >= 3 && strcmp(argv[2], "devel"))
+		if(argc >= 3 && strcmp(argv[2], "devel") == 0)
 			printf("%s\n", to_string(root));
 		compile(root, stdout);
 		return 0;
