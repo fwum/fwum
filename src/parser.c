@@ -337,7 +337,77 @@ operator_node* get_node()
 	current = set_child(current, "*");
 	add_next(current, "/");
 	current = set_child(current, "**");
+	current = set_child(current, ".");
+	add_next(current, "::");
 	return root;
+}
+
+bool is_function(slice data);
+
+bool is_function(slice data)
+{
+	//Determine if the value is a function call
+	bool startsID = false, precedingParen = false;
+	for(int i = data.begin; i < data.end; i++)
+	{
+		if(is_identifier(data.data[i]))
+			startsID = true;
+		if(data.data[i] == '(' && startsID)
+		{
+			precedingParen = true;
+			break;
+		}
+		if(!is_whitespace(data.data[i]) && !is_identifier(data.data[i]))
+		{
+			startsID = false;
+			break;
+		}
+	}
+	return startsID && precedingParen && get(data, data.end - data.begin - 1) == ')';
+}
+
+ast_node *parse_operation(slice data)
+{
+	operator_node *op = get_node();
+	while(op != NULL)
+	{
+		for(int i = data.begin; i < data.end; i++)
+		{
+			operator_node *current = op;
+			while(current != NULL)
+			{
+				int previous_i = i;
+				int len = strlen(current->data);
+				bool matches = true;
+				for(int j = 0; j < len; j++)
+				{
+					if(data.data[i] == current->data[j])
+					{
+						i++;
+					}
+					else
+					{
+						matches = false;
+						i = previous_i;
+						break;
+					}
+				}
+				if(matches)
+				{
+					ast_node *root, *operand1, *operand2;
+					root = new_node(OPERATOR, evaluate(clone_slice(data, previous_i, i)));
+					operand1 = parse_val(clone_slice(data, data.begin, previous_i));
+					operand2 = parse_val(clone_slice(data, i, data.end));
+					add_child(root, operand1);
+					add_child(root, operand2);
+					return root;
+				}
+				current = current->next;
+			}
+		}
+		op = op->child;
+	}
+	fprintf(stderr, "No expression, literal, identifier, or function call found."); exit(-1); return NULL;
 }
 
 ast_node* parse_val(slice data)
@@ -361,68 +431,11 @@ ast_node* parse_val(slice data)
 	}
 	else
 	{
-		//Determine if the value is a function call
-		bool startsID = false, precedingParen = false;
-		for(int i = data.begin; i < data.end; i++)
-		{
-			if(is_identifier(data.data[i]))
-				startsID = true;
-			if(data.data[i] == '(' && startsID)
-			{
-				precedingParen = true;
-				break;
-			}
-			if(!is_whitespace(data.data[i]) && !is_identifier(data.data[i]))
-			{
-				startsID = false;
-				break;
-			}
-		}
 		//Starts with a function call and ends without any other operation
-		if(startsID && precedingParen && get(data, data.end - data.begin - 1) == ')')
+		if(is_function(data))
 			return parse_call(data);
-		operator_node *op = get_node();
-		while(op != NULL)
-		{
-			for(int i = data.begin; i < data.end; i++)
-			{
-				operator_node *current = op;
-				while(current != NULL)
-				{
-					int previous_i = i;
-					int len = strlen(current->data);
-					bool matches = true;
-					for(int j = 0; j < len; j++)
-					{
-						if(data.data[i] == current->data[j])
-						{
-							i++;
-						}
-						else
-						{
-							matches = false;
-							i = previous_i;
-							break;
-						}
-					}
-					if(matches)
-					{
-						ast_node *root, *operand1, *operand2;
-						root = new_node(OPERATOR, evaluate(clone_slice(data, previous_i, i)));
-						operand1 = parse_val(clone_slice(data, data.begin, previous_i));
-						operand2 = parse_val(clone_slice(data, i, data.end));
-						add_child(root, operand1);
-						add_child(root, operand2);
-						return root;
-					}
-					current = current->next;
-				}
-			}
-			op = op->child;
-		}
-		fprintf(stderr, "No expression, literal, identifier, or function call found.");
-		exit(-1);
-		return NULL;
+		else
+			return parse_operation(data);
 	}
 }
 
