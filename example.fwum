@@ -5,7 +5,7 @@ MULTI LINE COMMENT
 /* /*
 NESTED COMMENT
 */ */
-cimport stdio;
+//cimport stdio;
 
 struct point {
 	x : int;
