@@ -5,7 +5,7 @@ MULTI LINE COMMENT
 /* /*
 NESTED COMMENT
 */ */
-cimport stdio;
+cimport io.h;
 
 struct point {
 	x : int;
@@ -17,6 +17,7 @@ int main()
 	let a : point;
 	a.x = 5;
 	a.y = 10;
-	clib.b(a);
+	let b : int = 5;
+	printf(1, 2);
 	return 0;
 }
