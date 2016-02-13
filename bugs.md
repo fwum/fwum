@@ -1,1 +1,2 @@
 - Function names are cut off during the parse
+- The new operator system broke paranthesis
