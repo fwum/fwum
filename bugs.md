@@ -1,0 +1,1 @@
+- Declarations and typedefs should be hoisted to the top of the file
