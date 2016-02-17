@@ -5,7 +5,7 @@ os.system("mkdir -p obj")
 if len(sys.argv) >= 2:
 	username = sys.argv[1]
 	os.system("git remote set-url origin https://" + username + "@github.com/fwum/fwum");
-	os.system("git remote add fwum https://" + username + "@gitlab.com/fwum/fwum");
+	os.system("git remote add gitlab https://" + username + "@gitlab.com/fwum/fwum");
 	os.system("git remote add bbucket https://" + username + "@bitbucket.org/fwum/fwum");
 else:
 	print("Please enter your username for Github, Gitlab, and BitBucket.");
