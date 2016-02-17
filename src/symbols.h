@@ -9,14 +9,12 @@ struct var_table;
 typedef struct func_entry func_entry;
 typedef struct type_entry type_entry;
 typedef struct var_entry var_entry;
-typedef struct func_table func_table;
-typedef struct type_table type_table;
-typedef struct var_table var_table;
 struct func_entry {
 	char *name;
 	char *returnType;
 	char **params;
 	int num_params;
+	func_entry *next;
 };
 struct type_entry {
 	char *name;
@@ -29,13 +27,11 @@ struct type_entry {
 			int bits;
 		} primitive;
 	};
+	type_entry *next;
 };
 struct var_entry {
 	char *name;
 	type_entry type;
-};
-struct func_table {
-	func_entry entry;
-	func_table *next;	
+	var_entry *next;
 };
 #endif
