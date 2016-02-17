@@ -29,4 +29,5 @@ out: $(OBJ_FILES)
 	$(CC) $(LD_FLAGS) -o $@ $^
 
 obj/%.o: src/%.c
+	mkdir -p obj
 	$(CC) $(CC_FLAGS) -c -o $@ $<
