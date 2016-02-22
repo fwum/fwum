@@ -10,11 +10,13 @@ typedef enum ast_type
 typedef struct ast_node
 {
 	ast_type type;
+	int sourceLine;
+	char *sourceFile;
 	char* data;
 	struct ast_node *next;
 	struct ast_node *child;
 } ast_node;
-ast_node* new_node(ast_type type, char* data);
+ast_node* new_node(ast_type type, char* data, int sourceLine, char *sourceFileName);
 char* to_string(ast_node *root);
 char* type_to_string(ast_type type);
 void add_child(ast_node *root, ast_node *child);

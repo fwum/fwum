@@ -5,13 +5,15 @@
 #include <stdbool.h>
 #include "slice.h"
 
-ast_node* new_node(ast_type type, char* data)
+ast_node* new_node(ast_type type, char* data, int sourceLine, char *sourceFileName)
 {
 	ast_node *new_node = malloc(sizeof(*new_node));
 	new_node->type = type;
 	new_node->data = data;
+	new_node->sourceLine = sourceLine;
 	new_node->next = NULL;
 	new_node->child = NULL;
+	new_node->sourceFile = sourceFileName;
 	return new_node;
 }
 
