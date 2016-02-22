@@ -9,7 +9,6 @@
 ast_node* parse_toplevel(slice str);
 ast_node* parse_function(slice data);
 ast_node* parse_struct(slice data);
-ast_node* parse(char* data);
 ast_node* parse_operation(slice data);
 ast_node* parse_block(slice data);
 ast_node* parse_vartype(slice data);
