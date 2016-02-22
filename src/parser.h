@@ -1,5 +1,5 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 #include "ast.h"
-ast_node* parse(char* data);
+ast_node* parse(char* data, char *filename);
 #endif

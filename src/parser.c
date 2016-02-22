@@ -17,14 +17,17 @@ ast_node* parse_val(slice data);
 bool is_function(slice data);
 char* strip_comments(char* data);
 
-ast_node* parse(char* data) {
+ast_node* parse(char* data, char *filename) {
 	data = strip_comments(data);
 	int len = strlen(data);
 	slice buffer = make_slice(data, 0, 0);
 	int brace_level = 0;
-	ast_node *root = new_node(ROOT, "");
+	ast_node *root = new_node(ROOT, "", 0, filename);
+	int line = 0;
 	for(int i = 0; i < len; i++)
 	{
+		if(data[i] == '\n')
+			line += 1;
 		if(data[i] == '\r')
 			data[i] = '\n';
 		buffer.end += 1;
@@ -38,18 +41,24 @@ ast_node* parse(char* data) {
 				slice start = buffer;
 				while(is_whitespace(get(start, 0)))
 					start.begin++;
+				for(int i = buffer.begin; i < start.begin; i++)
+					if(data[i] == '\n')
+						line += 1;
 				buffer.begin = start.begin;
 				start.end = start.begin + 6; //length of "struct"
 				if(equals_string(start, "struct"))
-					add_child(root, parse_struct(buffer));
+					add_child(root, parse_struct(buffer), line, filename);
 				else
-					add_child(root, parse_function(buffer));
+					add_child(root, parse_function(buffer), line, filename);
 				buffer.begin = buffer.end;
 			}
 		}
 		else if(data[i] == ';' && brace_level == 0)
 		{
-			add_child(root, parse_toplevel(buffer));
+			add_child(root, parse_toplevel(buffer), line, filename);
+			for(int i = buffer.begin; i < buffer.end; i++)
+				if(data[i] == '\n')
+					line += 1;
 			buffer.begin = buffer.end;
 		}
 	}
