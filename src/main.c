@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 		FILE* input = fopen(argv[1], "r");
 		char* data = read_file(input);
 		fclose(input);
-		ast_node *root = parse(data);
+		ast_node *root = parse(data, argv[1);
 		free(data);
 		if(argc >= 3 && strcmp(argv[2], "devel") == 0)
 			printf("%s\n", to_string(root));
