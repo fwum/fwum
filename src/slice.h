@@ -3,18 +3,13 @@
 typedef struct slice
 {
 	char* data;
-	int begin, end;
+	int len;
 } slice;
 slice new_slice(char* string);
-slice make_slice(char* string, int start, int end);
-slice clone_slice(slice s, int newStart, int newEnd);
+slice make_slice(char* string, int length);
 bool equals(slice s1, slice s2);
 bool equals_string(slice s1, char* data);
 bool starts_with(slice s1, slice s2);
 bool slice_contains(slice s1, char c);
 char* evaluate(slice s1);
-bool is_whitespace(char c);
-bool is_identifier(char c);
-char get(slice s, int position);
-char get_last(slice s);
 #endif

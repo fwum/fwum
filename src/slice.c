@@ -6,39 +6,33 @@
 
 slice new_slice(char* string)
 {
-	return make_slice(string, 0, strlen(string));
+	return make_slice(string, strlen(string));
 }
 
-slice make_slice(char* string, int begin, int end)
+slice make_slice(char* string, int length)
 {
 	slice s;
 	s.data = string;
-	s.begin = begin;
-	s.end = end;
+	s.len = length;
 	return s;
-}
-
-slice clone_slice(slice s, int beginNew, int endNew)
-{
-	return make_slice(s.data, beginNew, endNew);
 }
 
 bool equals(slice s1, slice s2)
 {
-	if(s1.end - s1.begin != s2.end - s2.begin)
+	if(s1.len != s2.len)
 		return false;
-	for(int i = 0; i < s1.end - s1.begin; i++)
-		if(get(s1, i) != get(s2, i))
+	for(int i = 0; i < s1.len; i++)
+		if(s1.data[i] != s2.data[i])
 			return false;
 	return true;
 }
 
 bool starts_with(slice s1, slice s2)
 {
-	//if(s1.end - s1.begin < s2.end - s2.begin) return false;
-	for(int i = 0; i < s2.end - s2.begin; i++)
+	if(s1.len < s2.len) return false;
+	for(int i = 0; i < s2.len; i++)
 	{
-		if(get(s1, i) != get(s2, i))
+		if(s1.data[i] != s2.data[i])
 			return false;
 	}
 	return true;
@@ -46,48 +40,22 @@ bool starts_with(slice s1, slice s2)
 
 bool equals_string(slice s1, char* data)
 {
-	for(int i = 0; i < s1.end - s1.begin; i++)
-		if(s1.data[i + s1.begin] != data[i])
+	for(int i = 0; i < s1.len; i++)
+		if(s1.data[i] != data[i])
 			return false;
 	return true;
 }
 
 char* evaluate(slice str)
 {
-	char* string = malloc(sizeof(*string) * (str.end - str.begin + 1));
-	if (str.end < str.begin)
-	{
-		fprintf(stderr, "Evaluate was passed an end value less than its begin value.");
-		exit(-1);
-		return "";
-	}
+	char *string = malloc(sizeof(*string) * str.len);
 	int i = 0;
-	for(; i < str.end - str.begin; i++)
+	for(; i < str.len; i++)
 	{
-		string[i] = str.data[i + str.begin];
+		string[i] = str.data[i];
 	}
 	string[i] = '\0';
 	return string;
-}
-
-char get(slice s1, int pos)
-{
-	return s1.data[s1.begin + pos];
-}
-
-char get_last(slice s)
-{
-	return get(s, s.end - s.begin);
-}
-
-bool is_whitespace(char c)
-{
-	return c == ' ' || c == '\t' || c == '\n' || c == '\r';
-}
-
-bool is_identifier(char c)
-{
-	return (c >= 'a' && c <= 'z') || (c <= 'A' && c >= 'Z')  || (c >= '0' && c <= '9') || c == '_';
 }
 
 bool slice_contains(slice s1, char c)
