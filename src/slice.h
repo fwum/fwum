@@ -1,5 +1,6 @@
 #ifndef SLICE_H_
 #define SLICE_H_
+#include <stdbool.h>
 typedef struct slice
 {
 	char* data;
