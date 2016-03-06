@@ -6,7 +6,7 @@ struct token_list;
 typedef struct parse_token parse_token;
 typedef struct token_list token_list;
 typedef enum token_type {
-    SYMBOL, WORD, NUMBER, STRING_LIT, CHAR_LIT;
+    SYMBOL, WORD, NUMBER, STRING_LIT, CHAR_LIT
 } token_type;
 struct parse_token {
     slice data;
