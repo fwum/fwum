@@ -19,5 +19,5 @@ struct token_list {
     parse_token *head, *tail;
 };
 token_list parse(char *data, char *filename);
-void print_tlist(char *data, char *filename);
+void print_tlist(token_list list);
 #endif
