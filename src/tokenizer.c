@@ -20,15 +20,36 @@ token_list parse(char *data, char *filename)
     int length = strlen(data);
     int token_begin = 0;
     int source_line = 0;
-    enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR} parse_mode;
+    enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR, M_COMMENT_LINE, M_COMMENT_MULTI} parse_mode;
     parse_mode = M_NONE;
     for(int i = 0; i < length; i++)
     {
         //Ingore carriage return characters so that windows newlines are identical to UNIX newlines
         if(data[i] == '\r') continue;
         if(data[i] == '\n') source_line += 1;
+        if(data[i] == '/' && parse_mode != M_STRING && parse_mode != M_CHAR)
+        {
+            if(data[i + 1] == '*')
+            {
+                parse_mode = M_COMMENT_MULTI;
+                continue;
+            }
+            else if(data[i + 1] == '/')
+            {
+                parse_mode = M_COMMENT_LINE;
+                continue;
+            }
+        }
         switch(parse_mode)
         {
+        case M_COMMENT_LINE:
+            if(data[i] == '\n')
+                parse_mode = M_NONE;
+            break;
+        case M_COMMENT_MULTI:
+            if(data[i] == '/' && data[i - 1] == '*')
+                parse_mode = M_NONE;
+            break;
         case M_NONE:
             if(is_whitespace(data[i])) continue;
             if(is_alpha(data[i]) || data[i] == '_')
