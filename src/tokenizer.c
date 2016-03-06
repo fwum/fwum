@@ -44,3 +44,8 @@ static void token_add(token_list list, parse_token token)
         list->tail = token;
     }
 }
+
+static bool is_whitespace(char c)
+{
+    return c == ' ' || c == '\t' || c == '\n';
+}
