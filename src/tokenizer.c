@@ -20,7 +20,7 @@ token_list parse(char *data, char *filename)
     int length = strlen(data);
     int token_begin = 0;
     int source_line = 0;
-    enum {M_NONE, M_WORD, M_STRING, M_CHAR} parse_mode;
+    enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR} parse_mode;
     parse_mode = M_NONE;
     for(int i = 0; i < length; i++)
     {
@@ -31,9 +31,14 @@ token_list parse(char *data, char *filename)
         {
         case M_NONE:
             if(is_whitespace(data[i])) continue;
-            if(is_alpha(data[i]) || is_num(data[i]) || data[i] == '_')
+            if(is_alpha(data[i]) || data[i] == '_')
             {
                 parse_mode = M_WORD;
+                token_begin = i;
+            }
+            else if(is_num(data[i]))
+            {
+                parse_mode = M_NUM;
                 token_begin = i;
             }
             else if(data[i] == '\"')
@@ -56,6 +61,31 @@ token_list parse(char *data, char *filename)
             {
                 int length = i - token_begin;
                 token_add(&list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
+                parse_mode = M_NONE;
+            }
+            else if(data[i] == '\"')
+            {
+                parse_mode = M_STRING;
+                token_begin = i + 1;
+            }
+            else if(data[i] == '\'')
+            {
+                parse_mode = M_CHAR;
+                token_begin = i + 1;
+            }
+            break;
+        case M_NUM:
+            if(is_whitespace(data[i]))
+            {
+                int length = i - token_begin;
+                token_add(&list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
+                parse_mode = M_NONE;
+            }
+            else if(!(is_num(data[i]) || data[i] == '.'))
+            {
+                int length = i - token_begin;
+                token_add(&list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
+                token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
                 parse_mode = M_NONE;
             }
             else if(data[i] == '\"')
