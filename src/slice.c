@@ -60,7 +60,7 @@ char* evaluate(slice str)
 
 bool slice_contains(slice s1, char c)
 {
-	for(int i = s1.begin; i < s1.end; i++)
+	for(int i = 0; i < s1.len; i++)
 		if(s1.data[i] == c)
 			return true;
 	return false;
