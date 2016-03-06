@@ -1,6 +1,4 @@
-#include "parser.h"
-#include "ast.h"
-#include "cbackend.h"
+#include "tokenizer.h"
 #include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,11 +16,8 @@ int main(int argc, char **argv)
 		FILE* input = fopen(argv[1], "r");
 		char* data = read_file(input);
 		fclose(input);
-		ast_node *root = parse(data);
-		free(data);
-		if(argc >= 3 && strcmp(argv[2], "devel") == 0)
-			printf("%s\n", to_string(root));
-		compile(root, stdout);
+		token_list tokens = parse(data, argv[1]);
+		print_tlist(tokens);
 		return 0;
 	}
 }
