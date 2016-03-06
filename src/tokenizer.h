@@ -7,7 +7,7 @@ typedef struct parse_token parse_token;
 typedef struct token_list token_list;
 struct parse_token {
     slice data;
-    enum {OPERATOR, WORD, NUMBER, BLOCK_START, BLOCK_END, STRING, CHARACTER} type;
+    enum {OPERATOR, WORD, NUMBER, START, END, STRING_LIT, CHAR_LIT} type;
     char *originFile;
     int line;
     parse_token *next;
