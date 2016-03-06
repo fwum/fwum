@@ -128,6 +128,12 @@ token_list parse(char *data, char *filename)
             }
             break;
         case M_STRING:
+            if(data[i] == '\"' && data[i - 1] != '\\')
+            {
+                int length = i - token_begin;
+                token_add(&list, new_token(make_slice(&data[token_begin], length), STRING_LIT, filename, source_line));
+                parse_mode = M_NONE;
+            }
             break;
         case M_CHAR:
             break;
