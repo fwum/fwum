@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 /*
 SYMBOL, WORD, NUMBER, START, END, STRING_LIT, CHAR_LIT
