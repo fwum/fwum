@@ -20,5 +20,5 @@ struct token_list {
 enum token_type {
     SYMBOL, WORD, NUMBER, START, END, STRING_LIT, CHAR_LIT;
 }
-parse_token *parse(char *data, char *filename);
+token_list parse(char *data, char *filename);
 #endif

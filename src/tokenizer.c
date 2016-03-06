@@ -5,7 +5,7 @@
 /*
 SYMBOL, WORD, NUMBER, START, END, STRING_LIT, CHAR_LIT
 */
-parse_token *parse(char *data, char *filename)
+token_list parse(char *data, char *filename)
 {
     token_list list = {NULL, NULL};
     slice current = make_slice(data, 0);
@@ -14,6 +14,7 @@ parse_token *parse(char *data, char *filename)
     {
 
     }
+    return list;
 }
 
 static parse_token *new_token(slice data, token_type type, char *filename, int line)
