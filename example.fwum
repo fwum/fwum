@@ -2,9 +2,6 @@
 /*
 MULTI LINE COMMENT
 */
-/* /*
-NESTED COMMENT
-*/ */
 cimport stdio.h;
 
 struct point {
