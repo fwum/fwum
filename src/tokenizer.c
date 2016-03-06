@@ -18,7 +18,7 @@ token_list parse(char *data, char *filename)
     {
         //Ingore carriage return characters so that windows newlines are identical to UNIX newlines
         if(data[i] == '\r') continue;
-        if(dtaa[i] == '\n') source_line += 1;
+        if(data[i] == '\n') source_line += 1;
 
     }
     return list;
