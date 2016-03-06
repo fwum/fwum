@@ -3,10 +3,11 @@
 #include "slice.h"
 struct parse_token;
 struct token_list;
-enum token_type;
 typedef struct parse_token parse_token;
 typedef struct token_list token_list;
-typedef enum token_type token_type;
+typedef enum token_type {
+    SYMBOL, WORD, NUMBER, STRING_LIT, CHAR_LIT;
+} token_type;
 struct parse_token {
     slice data;
     token_type type;
@@ -17,8 +18,6 @@ struct parse_token {
 struct token_list {
     parse_token *head, *tail;
 };
-enum token_type {
-    SYMBOL, WORD, NUMBER, STRING_LIT, CHAR_LIT;
-}
 token_list parse(char *data, char *filename);
+void print_tlist(char *data, char *filename);
 #endif
