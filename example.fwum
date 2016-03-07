@@ -14,7 +14,7 @@ int main()
 	point a;
 	a.x = 5;
 	a.y = 10;
-	let b : int = 5;
+	int b = 5;
 	printf("%d", 2);
 	return 0;
 }
