@@ -5,13 +5,13 @@ MULTI LINE COMMENT
 cimport stdio.h;
 
 struct point {
-	x : int;
-	y : int;
+	int x;
+	int y;
 }
 
 int main()
 {
-	let a : point;
+	point a;
 	a.x = 5;
 	a.y = 10;
 	let b : int = 5;
