@@ -177,8 +177,8 @@ static parse_token *new_token(slice data, token_type type, char *filename, int l
     parse_token *token = malloc(sizeof(*token));
     token->data = data;
     token->type = type;
-    token->originFile = filename;
-    token->line = line;
+    source_origin origin = {filename, line};
+    token->origin = origin;
     token->next = NULL;
     return token;
 }
