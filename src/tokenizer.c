@@ -141,6 +141,14 @@ token_list parse(char *data, char *filename)
             }
             break;
         case M_CHAR:
+            if(data[i] == '\'')
+            {
+                int length = i - token_begin;
+                token_add(&list, new_token(make_slice(&data[token_begin], length), CHAR_LIT, filename, source_line));
+                parse_mode = M_NONE;
+            }
+            else if(data[i + 1] != '\'' && data[i] != '\\')
+                tokenizer_error("Too many characters in a character literal", filename, source_line);
             break;
         }
     }
@@ -149,7 +157,7 @@ token_list parse(char *data, char *filename)
 
 static void tokenizer_error(char *error, char *file, int line)
 {
-    fprintf(stderr, "Error encountered while parsing %s at line %d:\n%s", file, line, error);
+    fprintf(stderr, "Error encountered while parsing %s at line %d:\n%s\n", file, line, error);
     exit(-1);
 }
 
