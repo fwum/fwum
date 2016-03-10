@@ -131,6 +131,8 @@ token_list parse(char *data, char *filename)
             }
             break;
         case M_STRING:
+            if(data[i] == '\n')
+                tokenizer_error("Encountered newline while parsing string literal.", filename, source_line);
             if(data[i] == '\"' && data[i - 1] != '\\')
             {
                 int length = i - token_begin;
