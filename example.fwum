@@ -11,6 +11,7 @@ struct point {
 
 int main()
 {
+	char b = 'a';
 	point a;
 	a.x = 5;
 	a.y = 10;
