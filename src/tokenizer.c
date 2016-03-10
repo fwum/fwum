@@ -10,7 +10,7 @@ static void token_add(token_list *list, parse_token *token);
 static bool is_whitespace(char c);
 static bool is_alpha(char c);
 static bool is_num(char c);
-
+static void tokenizer_error(char *error, char *file, int line);
 /*
 SYMBOL, WORD, NUMBER, START, END, STRING_LIT, CHAR_LIT
 */
@@ -143,6 +143,12 @@ token_list parse(char *data, char *filename)
         }
     }
     return list;
+}
+
+static void tokenizer_error(char *error, char *file, int line)
+{
+    fprintf(stderr, "Error encountered while parsing %s at line %d:\n%s", file, line, error);
+    exit(-1);
 }
 
 void print_tlist(token_list list)
