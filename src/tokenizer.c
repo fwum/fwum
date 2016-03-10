@@ -103,6 +103,11 @@ token_list parse(char *data, char *filename)
                 parse_mode = M_CHAR;
                 token_begin = i + 1;
             }
+            else if(i == length - 1)
+            {
+                token_add(&list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
+                parse_mode = M_NONE;
+            }
             break;
         case M_NUM:
             if(is_whitespace(data[i]))
@@ -129,15 +134,26 @@ token_list parse(char *data, char *filename)
                 parse_mode = M_CHAR;
                 token_begin = i + 1;
             }
+            else if(i == length - 1)
+            {
+                token_add(&list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
+                parse_mode = M_NONE;
+            }
             break;
         case M_STRING:
             if(data[i] == '\n')
+            {
                 tokenizer_error("Encountered newline while parsing string literal.", filename, source_line);
-            if(data[i] == '\"' && data[i - 1] != '\\')
+            }
+            else if(data[i] == '\"' && data[i - 1] != '\\')
             {
                 int length = i - token_begin;
                 token_add(&list, new_token(make_slice(&data[token_begin], length), STRING_LIT, filename, source_line));
                 parse_mode = M_NONE;
+            }
+            else if(i == length - 1)
+            {
+                tokenizer_error("Unexpected end of file while parsing string literal", filename, source_line);
             }
             break;
         case M_CHAR:
@@ -147,8 +163,14 @@ token_list parse(char *data, char *filename)
                 token_add(&list, new_token(make_slice(&data[token_begin], length), CHAR_LIT, filename, source_line));
                 parse_mode = M_NONE;
             }
+            else if(i == length - 1)
+            {
+                tokenizer_error("Unexpected end of file while parsing character literal", filename, source_line);
+            }
             else if(data[i + 1] != '\'' && data[i] != '\\')
+            {
                 tokenizer_error("Too many characters in a character literal", filename, source_line);
+            }
             break;
         }
     }
