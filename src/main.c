@@ -1,4 +1,5 @@
 #include "tokenizer.h"
+#include "semantic_analyzer.h"
 #include "io.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,6 +18,8 @@ int main(int argc, char **argv)
 		char* data = read_file(input);
 		fclose(input);
 		token_list tokens = parse(data, argv[1]);
+		file_contents contents = analyze(&tokens);
+		dump(contents);
 		print_tlist(tokens);
 		return 0;
 	}
