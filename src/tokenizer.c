@@ -74,8 +74,7 @@ token_list parse(char *data, char *filename)
             }
             else
             {
-                if(data[i] != ';')
-                    token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
+                token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
             }
             break;
         case M_WORD:
@@ -89,8 +88,7 @@ token_list parse(char *data, char *filename)
             {
                 int length = i - token_begin;
                 token_add(&list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
-                if(data[i] != ';')
-                    token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
+                token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
                 parse_mode = M_NONE;
             }
             else if(data[i] == '\"')
@@ -120,8 +118,7 @@ token_list parse(char *data, char *filename)
             {
                 int length = i - token_begin;
                 token_add(&list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
-                if(data[i] != ';')
-                    token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
+                token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
                 parse_mode = M_NONE;
             }
             else if(data[i] == '\"')
