@@ -1,53 +1,24 @@
 #ifndef LEXICAL_ANALYZER_H_
 #define LEXICAL_ANALYZER_H_
 #include "util.h"
-DEFSTRUCT(namespace);
-DEFSTRUCT(struct_definition);
-DEFSTRUCT(var_declaration);
-DEFSTRUCT(var_list);
-DEFSTRUCT(func_definition);
-DEFSTRUCT(operation);
-DEFSTRUCT(call);
-DEFSTRUCT(statement);
-DEFSTRUCT(statement_list);
-struct namespace {
-	namespace *parent;
-	char *name;
+#include "tokenizer.h"
+DEFSTRUCT(file_contents);
+DEFSTRUCT(struct_declaration);
+DEFSTRUCT(struct_member);
+struct file_contents {
+	struct_declaration *head, *tail;
 };
-struct struct_definition {
-	namespace *ns;
-	char *name;
-	var_list members;
+struct struct_declaration {
+	slice name;
+	struct_member *head, *tail;
+	source_origin origin;
+	struct_declaration *next;
 };
-struct var_list {
-	var_declaration *head, *tail;
+struct struct_member {
+	slice type, name;
+	struct_member *next;
 };
-struct var_declaration {
-	namespace *ns;
-	char *type;
-	char *name;
-	var_declaration *next;
-};
-struct func_definition {
-	namespace *ns;
-	char *name;
-	char *retunType;
-	var_list members;
-};
-struct operation {
-	char *operator;
-	statment_list operands;
-};
-struct call {
-	char *funcName;
-	statement_list parameters;
-};
-struct statement {
-	union {var_declaration *varDec, call call, char *name, operation op} value;
-	enum {VAR_DELARATION, CALL, VARIABLE, OPERATION} type;
-};
-struct statement_list {
-	statement *head, *tail;
-};
-//TODO: Define functions
+void dump(file_contents contents);
+file_contents analyze(token_list *tokens);
+struct_declaration *analyze_struct(token_list *token);
 #endif
