@@ -11,12 +11,13 @@ file_contents analyze(token_list *tokens)
 {
 	file_contents contents = {NULL, NULL, NULL, NULL};
 	parse_token *current = tokens->head;
-	while(current->next != NULL)
+	while(current != NULL)
 	{
 		if(equals(current->data, new_slice("struct")))
 		{
 			tokens->head = current->next;
 			struct_declaration *dec = analyze_struct(tokens);
+			current = tokens->head;
 			if(contents.head == NULL)
 				contents.head = dec;
 			else if(contents.tail == NULL)
@@ -34,6 +35,7 @@ file_contents analyze(token_list *tokens)
 		{
 			tokens->head = current;
 			func_declaration *func = analyze_func(tokens);
+			current = tokens->head;
 			if(contents.funcHead == NULL)
 				contents.funcHead = func;
 			else if(contents.funcTail == NULL)
@@ -47,7 +49,8 @@ file_contents analyze(token_list *tokens)
 				contents.funcTail = func;
 			}
 		}
-		current = current->next;
+		if(current != NULL)
+			current = current->next;
 	}
 	return contents;
 }
