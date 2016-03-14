@@ -10,7 +10,7 @@ DEFSTRUCT(statement);
 DEFSTRUCT(parameter);
 struct file_contents {
 	struct_declaration *head, *tail;
-	func_declaration *funcHead, funcTail;
+	func_declaration *funcHead, *funcTail;
 };
 struct struct_declaration {
 	slice name;

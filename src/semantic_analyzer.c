@@ -9,7 +9,7 @@ static func_declaration *analyze_func(token_list *tokens);
 
 file_contents analyze(token_list *tokens)
 {
-	file_contents contents = {NULL, NULL};
+	file_contents contents = {NULL, NULL, NULL, NULL};
 	parse_token *current = tokens->head;
 	while(current->next != NULL)
 	{
@@ -28,6 +28,23 @@ file_contents analyze(token_list *tokens)
 			{
 				contents.tail->next = dec;
 				contents.tail = dec;
+			}
+		}
+		else
+		{
+			tokens->head = current;
+			func_declaration *func = analyze_func(tokens);
+			if(contents.funcHead == NULL)
+				contents.funcHead = func;
+			else if(contents.funcTail == NULL)
+			{
+				contents.funcHead->next = func;
+				contents.funcTail = func;
+			}
+			else
+			{
+				contents.funcTail->next = func;
+				contents.funcTail = func;
 			}
 		}
 		current = current->next;
@@ -79,6 +96,7 @@ struct_declaration *analyze_struct(token_list *tokens)
 
 static func_declaration *analyze_func(token_list *tokens)
 {
+	parse_token *current = tokens->head;
 	func_declaration *func = malloc(sizeof(*func));
 	func->type = current->data;
 	current = current->next;
@@ -89,22 +107,22 @@ static func_declaration *analyze_func(token_list *tokens)
 	if(current == NULL || current->data.data[0] != '(')
 		semantic_error("Function name must be followed by an open parenthesis", current->origin.filename, current->origin.line);
 	current = current->next;
-	statment *type = malloc(sizeof(*type));
+	statement *type = malloc(sizeof(*type));
 	while(current->data.data[0] != ')')
 	{
 		if(current == NULL)
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
-		type->statement_type = TYPE;
+		type->type = TYPE;
 		type->next = malloc(sizeof(*type));
 		type = type->next;
-		if(current.type != WORD)
+		if(current->type != WORD)
 			semantic_error("Parameter types must be a valid identifier", current->origin.filename, current->origin.line);
 		type->data = current->data;
 		statement *name = malloc(sizeof(*name));
 		current = current->next;
 		if(current == NULL)
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
-		if(current.type != WORD)
+		if(current->type != WORD)
 			semantic_error("Parameter names must be valid identifiers.", current->origin.filename, current->origin.line);
 		name->data = current->data;
 		name->type = NAME;
@@ -116,24 +134,35 @@ static func_declaration *analyze_func(token_list *tokens)
 	current = current->next;
 	if(current->data.data[0] != '{')
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
-	
+
 	return func;
 }
 
 void dump(file_contents contents)
 {
-	struct_declaration *current = contents.head;
-	while(current != NULL)
 	{
-		printf("STRUCT: %s\n", evaluate(current->name));
-		struct_member *member = current->head;
-		while(member != NULL)
+		struct_declaration *current = contents.head;
+		while(current != NULL)
 		{
-			printf("MEMBER: NAME: %s | TYPE: %s\n", evaluate(member->type), evaluate(member->name));
-			member = member->next;
+			printf("STRUCT: %s\n", evaluate(current->name));
+			struct_member *member = current->head;
+			while(member != NULL)
+			{
+				printf("MEMBER: NAME: %s | TYPE: %s\n", evaluate(member->type), evaluate(member->name));
+				member = member->next;
+			}
+			current = current->next;
 		}
-		current = current->next;
 	}
+	{
+		func_declaration *current = contents.funcHead;
+		while(current != NULL)
+		{
+			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
+			current = current->next;
+		}
+	}
+
 }
 
 static void semantic_error(char *error, char *file, int line)
