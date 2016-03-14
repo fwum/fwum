@@ -8,7 +8,7 @@ struct point {
 	int x;
 	int y;
 }
-/*
+
 int main()
 {
 	char b = 'a';
@@ -19,4 +19,3 @@ int main()
 	printf("%d", 2);
 	return 0;
 }
-*/
