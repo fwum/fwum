@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 static void semantic_error(char *error, char *file, int line);
+static func_declaration *analyze_func(token_list *tokens);
 
 file_contents analyze(token_list *tokens)
 {
@@ -74,6 +75,49 @@ struct_declaration *analyze_struct(token_list *tokens)
 	tokens->head = current->next;
 	dec->next = NULL;
 	return dec;
+}
+
+static func_declaration *analyze_func(token_list *tokens)
+{
+	func_declaration *func = malloc(sizeof(*func));
+	func->type = current->data;
+	current = current->next;
+	if(current == NULL || current->type != WORD)
+		semantic_error("Function declaration must be in the form <rtype> <name>(<parameters>) {<block>}", current->origin.filename, current->origin.line);
+	func->name = current->data;
+	current = current->next;
+	if(current == NULL || current->data.data[0] != '(')
+		semantic_error("Function name must be followed by an open parenthesis", current->origin.filename, current->origin.line);
+	current = current->next;
+	statment *type = malloc(sizeof(*type));
+	while(current->data.data[0] != ')')
+	{
+		if(current == NULL)
+			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
+		type->statement_type = TYPE;
+		type->next = malloc(sizeof(*type));
+		type = type->next;
+		if(current.type != WORD)
+			semantic_error("Parameter types must be a valid identifier", current->origin.filename, current->origin.line);
+		type->data = current->data;
+		statement *name = malloc(sizeof(*name));
+		current = current->next;
+		if(current == NULL)
+			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
+		if(current.type != WORD)
+			semantic_error("Parameter names must be valid identifiers.", current->origin.filename, current->origin.line);
+		name->data = current->data;
+		name->type = NAME;
+		type->child = name;
+		name->next = name->child = NULL;
+		current = current->next;
+	}
+	func->params = type;
+	current = current->next;
+	if(current->data.data[0] != '{')
+		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
+	
+	return func;
 }
 
 void dump(file_contents contents)
