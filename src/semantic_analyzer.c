@@ -92,7 +92,7 @@ struct_declaration *analyze_struct(token_list *tokens)
 			dec->tail->next = member;
 		current = current->next;
 	}
-	tokens->head = current->next;
+	tokens->head = current;
 	dec->next = NULL;
 	return dec;
 }
@@ -138,6 +138,7 @@ static func_declaration *analyze_func(token_list *tokens)
 	if(current->data.data[0] != '{')
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
 
+	tokens->head = current;
 	return func;
 }
 
