@@ -24,7 +24,7 @@ struct struct_member {
 };
 struct func_declaration {
 	slice type, name;
-	statement *params;
+	statement *paramHead, *paramTail;
 	statement *root;
 	func_declaration *next;
 };

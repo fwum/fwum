@@ -112,17 +112,16 @@ static func_declaration *analyze_func(token_list *tokens)
 	if(current == NULL || current->data.data[0] != '(')
 		semantic_error("Function name must be followed by an open parenthesis", current->origin.filename, current->origin.line);
 	current = current->next;
-	statement *type = new(type);
 	while(current->data.data[0] != ')')
 	{
 		if(current == NULL)
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
-		type->type = TYPE;
-		type->next = new(type);
-		type = type->next;
+		statement *param_type = new(param_type);
+		param_type->type = TYPE;
+		param_type->next = param_type->child = NULL;
 		if(current->type != WORD)
 			semantic_error("Parameter types must be a valid identifier", current->origin.filename, current->origin.line);
-		type->data = current->data;
+		param_type->data = current->data;
 		statement *name = new(name);
 		current = current->next;
 		if(current == NULL)
@@ -131,13 +130,25 @@ static func_declaration *analyze_func(token_list *tokens)
 			semantic_error("Parameter names must be valid identifiers.", current->origin.filename, current->origin.line);
 		name->data = current->data;
 		name->type = NAME;
-		type->child = name;
+		param_type->child = name;
 		name->next = name->child = NULL;
+		param_type->child = name;
+		if(func->paramHead == NULL)
+			func->paramHead = param_type;
+		else if(func->paramTail == NULL)
+		{
+			func->paramTail = param_type;
+			func->paramHead->next = param_type;
+		}
+		else
+		{
+			func->paramTail->next = param_type;
+			func->paramTail = func->paramTail->next;
+		}
 		current = current->next;
 		if(current->data.data[0] == ',')
 			current = current->next;
 	}
-	func->params = type;
 	current = current->next;
 	if(current->data.data[0] != '{')
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
@@ -192,7 +203,7 @@ void dump(file_contents contents)
 		while(current != NULL)
 		{
 			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
-			dump_node(current->params);
+			dump_node(current->paramHead);
 			dump_node(current->root);
 			current = current->next;
 		}
