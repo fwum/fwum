@@ -6,6 +6,7 @@
 
 static void semantic_error(char *error, char *file, int line);
 static func_declaration *analyze_func(token_list *tokens);
+static void dump_node(statement *statement);
 
 file_contents analyze(token_list *tokens)
 {
@@ -139,15 +140,29 @@ static func_declaration *analyze_func(token_list *tokens)
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
 	current = current->next;
 	int bracket_level = 0;
+	statement *statement = malloc(sizeof(*statement));
+	statement->next = statement->child = statement->parent = NULL;
+	statement->type = ROOT;
 	while(bracket_level != 0 || current->data.data[0] != '}')
 	{
 		char value = current->data.data[0];
 		if(value == '{')
+		{
+			statement->child = malloc(sizeof(*(statement->child)));
+			statement->child->parent = statement;
+			statement = statement->child;
+			statement->next = statement->child = statement->parent = NULL;
+			statement->type = BLOCK;
 			bracket_level += 1;
+		}
 		if(value == '}')
+		{
 			bracket_level -= 1;
+			statement = statement->parent;
+		}
 		current = current->next;
 	}
+	func->root = statement;
 	current = current->next;
 	tokens->head = current;
 	return func;
@@ -174,10 +189,49 @@ void dump(file_contents contents)
 		while(current != NULL)
 		{
 			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
+			dump_node(current->params);
+			dump_node(current->root);
 			current = current->next;
 		}
 	}
 
+}
+
+static void dump_node(statement *state)
+{
+	if(state == NULL)
+		return;
+	switch(state->type)
+	{
+		case OPERATOR:
+			printf("OP: ");
+		break;
+		case IF:
+			printf("IF: ");
+		break;
+		case WHILE:
+			printf("WHILE: ");
+		break;
+		case BLOCK:
+			printf("BLOCK: ");
+		break;
+		case TYPE:
+			printf("TYPE: ");
+		break;
+		case NAME:
+			printf("NAME: ");
+		break;
+		case ROOT:
+			printf("ROOT: ");
+		break;
+	}
+	printf(" %s\n", evaluate(state->data));
+	if(state->child != NULL)
+		dump_node(state->child);
+	printf("END %s\n", evaluate(state->data));
+	statement *current = state->next;
+	while(current != NULL)
+		dump_node(current);
 }
 
 static void semantic_error(char *error, char *file, int line)

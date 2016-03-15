@@ -28,11 +28,11 @@ struct func_declaration {
 	statement *root;
 	func_declaration *next;
 };
-typedef enum statement_type {OPERATOR, IF, WHILE, BLOCK, TYPE, NAME} statement_type;
+typedef enum statement_type {OPERATOR, IF, WHILE, BLOCK, TYPE, NAME, ROOT} statement_type;
 struct statement {
 	slice data;
 	statement_type type;
-	statement *next, *child;
+	statement *next, *child, *parent;
 };
 
 void dump(file_contents contents);
