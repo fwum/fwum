@@ -1,5 +1,6 @@
 #include "semantic_analyzer.h"
 #include "slice.h"
+#include "util.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -59,7 +60,7 @@ file_contents analyze(token_list *tokens)
 struct_declaration *analyze_struct(token_list *tokens)
 {
 	parse_token *current = tokens->head;
-	struct_declaration *dec = malloc(sizeof(*dec));
+	struct_declaration *dec = new(dec);
 	dec->name = current->data;
 	dec->head = dec->tail = NULL;
 	dec->next = NULL;
@@ -70,7 +71,7 @@ struct_declaration *analyze_struct(token_list *tokens)
 	current = current->next;
 	while(current->data.data[0] != '}')
 	{
-		struct_member *member = malloc(sizeof(*member));
+		struct_member *member = new(member);
 		if(current->type != WORD)
 			semantic_error("Struct members must be declared as <type> <value>;",
 				current->origin.filename, current->origin.line);
@@ -101,7 +102,7 @@ struct_declaration *analyze_struct(token_list *tokens)
 static func_declaration *analyze_func(token_list *tokens)
 {
 	parse_token *current = tokens->head;
-	func_declaration *func = malloc(sizeof(*func));
+	func_declaration *func = new(func);
 	func->type = current->data;
 	current = current->next;
 	if(current == NULL || current->type != WORD)
@@ -111,18 +112,18 @@ static func_declaration *analyze_func(token_list *tokens)
 	if(current == NULL || current->data.data[0] != '(')
 		semantic_error("Function name must be followed by an open parenthesis", current->origin.filename, current->origin.line);
 	current = current->next;
-	statement *type = malloc(sizeof(*type));
+	statement *type = new(type);
 	while(current->data.data[0] != ')')
 	{
 		if(current == NULL)
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
 		type->type = TYPE;
-		type->next = malloc(sizeof(*type));
+		type->next = new(type);
 		type = type->next;
 		if(current->type != WORD)
 			semantic_error("Parameter types must be a valid identifier", current->origin.filename, current->origin.line);
 		type->data = current->data;
-		statement *name = malloc(sizeof(*name));
+		statement *name = new(name);
 		current = current->next;
 		if(current == NULL)
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
@@ -142,7 +143,7 @@ static func_declaration *analyze_func(token_list *tokens)
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
 	current = current->next;
 	int bracket_level = 0;
-	statement *statement = malloc(sizeof(*statement));
+	statement *statement = new(statement);
 	statement->next = statement->child = statement->parent = NULL;
 	statement->type = ROOT;
 	while(bracket_level != 0 || current->data.data[0] != '}')
@@ -150,7 +151,7 @@ static func_declaration *analyze_func(token_list *tokens)
 		char value = current->data.data[0];
 		if(value == '{')
 		{
-			statement->child = malloc(sizeof(*(statement->child)));
+			statement->child = new(statement->child);
 			statement->child->parent = statement;
 			statement = statement->child;
 			statement->next = statement->child = statement->parent = NULL;

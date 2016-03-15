@@ -1,11 +1,12 @@
 #include "io.h"
+#include "util.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 char* read_file(FILE* stream)
 {
-	char* contents = malloc(sizeof(*contents));
+	char* contents = new(contents);
 	int spot = 0, length = 0;
 	const int CHUNK = 1024;
 	char current = fgetc(stream);

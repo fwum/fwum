@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "slice.h"
+#include "util.h"
 
 slice new_slice(char* string)
 {
@@ -48,7 +49,7 @@ bool equals_string(slice s1, char* data)
 
 char* evaluate(slice str)
 {
-	char *string = malloc(sizeof(*string) * str.len);
+	char *string = array(string, str.len);
 	int i = 0;
 	for(; i < str.len; i++)
 	{

@@ -209,7 +209,7 @@ void print_tlist(token_list list)
 
 static parse_token *new_token(slice data, token_type type, char *filename, int line)
 {
-    parse_token *token = malloc(sizeof(*token));
+    parse_token *token = new(token);
     token->data = data;
     token->type = type;
     source_origin origin = {filename, line};
