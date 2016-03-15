@@ -245,7 +245,10 @@ static void dump_node(statement *state)
 	printf("END %s\n", evaluate(state->data));
 	statement *current = state->next;
 	while(current != NULL)
+	{
 		dump_node(current);
+		current = current->next;
+	}
 }
 
 static void semantic_error(char *error, char *file, int line)
