@@ -7,7 +7,7 @@
 
 static void semantic_error(char *error, char *file, int line);
 static func_declaration *analyze_func(token_list *tokens);
-static void dump_node(statement *statement);
+static void dump_node(statement *state, int indentation);
 
 file_contents analyze(token_list *tokens)
 {
@@ -203,18 +203,20 @@ void dump(file_contents contents)
 		while(current != NULL)
 		{
 			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
-			dump_node(current->paramHead);
-			dump_node(current->root);
+			dump_node(current->paramHead, 0);
+			dump_node(current->root, 0);
 			current = current->next;
 		}
 	}
 
 }
 
-static void dump_node(statement *state)
+static void dump_node(statement *state, int indentation)
 {
 	if(state == NULL)
 		return;
+	for(int i = 0; i < indentation; i++)
+		printf("\t");
 	switch(state->type)
 	{
 		case OPERATOR:
@@ -241,12 +243,14 @@ static void dump_node(statement *state)
 	}
 	printf(" %s\n", evaluate(state->data));
 	if(state->child != NULL)
-		dump_node(state->child);
+		dump_node(state->child, indentation + 1);
+	for(int i = 0; i < indentation; i++)
+		printf("\t");
 	printf("END %s\n", evaluate(state->data));
 	statement *current = state->next;
 	while(current != NULL)
 	{
-		dump_node(current);
+		dump_node(current, indentation );
 		current = current->next;
 	}
 }
