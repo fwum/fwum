@@ -1,15 +1,16 @@
 #ifndef SLICE_H_
 #define SLICE_H_
 #include <stdbool.h>
+DEFSTRUCT(slice);
 /*
 Create a slice of a string for much faster string manipulation
 Use pointer math to offset the beginning
 */
-typedef struct slice
+struct slice
 {
 	char* data;
 	int len;
-} slice;
+};
 slice new_slice(char* string);
 slice make_slice(char* string, int length);
 bool equals(slice s1, slice s2);
