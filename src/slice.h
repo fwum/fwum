@@ -1,6 +1,10 @@
 #ifndef SLICE_H_
 #define SLICE_H_
 #include <stdbool.h>
+/*
+Create a slice of a string for much faster string manipulation
+Use pointer math to offset the beginning
+*/
 typedef struct slice
 {
 	char* data;
