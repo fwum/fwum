@@ -17,7 +17,8 @@ debug: dbg
 	gdb dbg
 
 clean:
-	./rmsafe.sh obj/*
+	rm -r obj/
+	mkdir obj
 	./rmsafe.sh out*
 	./rmsafe.sh output*
 	./rmsafe.sh dbg*
