@@ -137,7 +137,18 @@ static func_declaration *analyze_func(token_list *tokens)
 	current = current->next;
 	if(current->data.data[0] != '{')
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
-
+	current = current->next;
+	int bracket_level = 0;
+	while(bracket_level != 0 || current->data.data[0] != '}')
+	{
+		char value = current->data.data[0];
+		if(value == '{')
+			bracket_level += 1;
+		if(value == '}')
+			bracket_level -= 1;
+		current = current->next;
+	}
+	current = current->next;
 	tokens->head = current;
 	return func;
 }
