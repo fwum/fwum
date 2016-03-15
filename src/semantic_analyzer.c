@@ -163,7 +163,7 @@ void dump(file_contents contents)
 			struct_member *member = current->head;
 			while(member != NULL)
 			{
-				printf("MEMBER: NAME: %s | TYPE: %s\n", evaluate(member->type), evaluate(member->name));
+				printf("MEMBER: NAME: %s | TYPE: %s\n", evaluate(member->name), evaluate(member->type));
 				member = member->next;
 			}
 			current = current->next;
