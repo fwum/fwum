@@ -11,11 +11,13 @@ struct point {
 
 int main()
 {
-	char b = 'a';
-	point a;
-	a.x = 5;
-	a.y = 10;
-	int b = 5;
-	printf("%d", 2);
-	return 0;
+	{
+		char b = 'a';
+		point a;
+		a.x = 5;
+		a.y = 10;
+		int b = 5;
+		printf("%d", 2);
+		return 0;
+	}
 }
