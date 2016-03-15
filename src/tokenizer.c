@@ -19,7 +19,7 @@ token_list parse(char *data, char *filename)
     token_list list = {NULL, NULL};
     int length = strlen(data);
     int token_begin = 0;
-    int source_line = 0;
+    int source_line = 1;
     enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR, M_COMMENT_LINE, M_COMMENT_MULTI} parse_mode;
     parse_mode = M_NONE;
     for(int i = 0; i < length; i++)
