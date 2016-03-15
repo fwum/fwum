@@ -133,6 +133,8 @@ static func_declaration *analyze_func(token_list *tokens)
 		type->child = name;
 		name->next = name->child = NULL;
 		current = current->next;
+		if(current->data.data[0] == ',')
+			current = current->next;
 	}
 	func->params = type;
 	current = current->next;
