@@ -1,6 +1,7 @@
 #ifndef SLICE_H_
 #define SLICE_H_
 #include <stdbool.h>
+#include "util.h"
 DEFSTRUCT(slice);
 /*
 Create a slice of a string for much faster string manipulation
