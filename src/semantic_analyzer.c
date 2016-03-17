@@ -244,13 +244,10 @@ static void dump_node(statement *state, int indentation)
 	printf(" %s\n", evaluate(state->data));
 	if(state->child != NULL)
 		dump_node(state->child, indentation + 1);
-	for(int i = 0; i < indentation; i++)
-		printf("\t");
-	printf("END %s\n", evaluate(state->data));
 	statement *current = state->next;
 	while(current != NULL)
 	{
-		dump_node(current, indentation );
+		dump_node(current, indentation);
 		current = current->next;
 	}
 }
