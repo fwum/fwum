@@ -251,6 +251,15 @@ static void dump_node(statement *state, int indentation)
 		case ROOT:
 			printf("ROOT: ");
 		break;
+		case STRING:
+		 	printf("STRING: ");
+		break;
+		case CHAR:
+		 	printf("CHAR: ");
+		break;
+		case NUM:
+			printf("NUM: ");
+		break;
 	}
 	printf(" %s\n", evaluate(state->data));
 	if(state->child != NULL)
