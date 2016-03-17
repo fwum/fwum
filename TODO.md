@@ -1,7 +1,5 @@
 #TODO
 
-- Implement function metadata parsing
-
 - Implement operator parsing
 
 - Implement control flow parsing

@@ -18,7 +18,14 @@ int main(int argc, char **argv)
 		char* data = read_file(input);
 		fclose(input);
 		token_list tokens = parse(data, argv[1]);
+		token_list backup = tokens;
 		file_contents contents = analyze(&tokens);
+		parse_token *current = backup.head;
+		while(current != NULL)
+		{
+			free(current);
+			current = current->next;
+		}
 		dump(contents);
 		print_tlist(tokens);
 		return 0;
