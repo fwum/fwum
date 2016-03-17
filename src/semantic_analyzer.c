@@ -157,7 +157,8 @@ static func_declaration *analyze_func(token_list *tokens)
 	statement *statement = new(statement);
 	statement->next = statement->child = statement->parent = NULL;
 	statement->type = ROOT;
-	while(bracket_level != 0 || current->data.data[0] != '}')
+	int last_line = current->origin.line;
+	while(current != NULL && (bracket_level != 0 || current->data.data[0] != '}'))
 	{
 		char value = current->data.data[0];
 		if(value == '{')
@@ -176,6 +177,15 @@ static func_declaration *analyze_func(token_list *tokens)
 				statement = statement->parent;
 		}
 		current = current->next;
+		last_line = current->origin.line;
+	}
+	if(bracket_level > 0)
+	{
+		semantic_error("There are too many opening braces.", current->origin.filename, last_line);
+	}
+	else if(bracket_level < 0)
+	{
+		semantic_error("There are too many closing braces.", current->origin.filename, last_line);
 	}
 	func->root = statement;
 	current = current->next;
