@@ -172,7 +172,8 @@ static func_declaration *analyze_func(token_list *tokens)
 		if(value == '}')
 		{
 			bracket_level -= 1;
-			statement = statement->parent;
+			if(statement->parent != NULL)
+				statement = statement->parent;
 		}
 		current = current->next;
 	}
