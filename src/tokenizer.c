@@ -56,8 +56,11 @@ token_list parse(char *data, char *filename)
             else if(i == length - 1)
                 tokenizer_error("Unexpected end of file reached during multi-line comment", filename, source_line);
             break;
+        //Continue until we begin to encounter useful character
         case M_NONE:
+            //Ignore extra whitespace
             if(is_whitespace(data[i])) continue;
+            //Beginning of a valid identifier
             if(is_alpha(data[i]) || data[i] == '_')
             {
                 parse_mode = M_WORD;
@@ -83,6 +86,7 @@ token_list parse(char *data, char *filename)
                 token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
             }
             break;
+        //Continue until the end of the word is reached, then add it as a token
         case M_WORD:
             if(is_whitespace(data[i]))
             {
@@ -113,6 +117,7 @@ token_list parse(char *data, char *filename)
                 parse_mode = M_NONE;
             }
             break;
+        //Continue until the end of the number is reached, then add it as a token
         case M_NUM:
             if(is_whitespace(data[i]))
             {
@@ -143,6 +148,7 @@ token_list parse(char *data, char *filename)
                 parse_mode = M_NONE;
             }
             break;
+        //Continue until the end of the string literal is reached, then add it as a token
         case M_STRING:
             if(data[i] == '\n')
             {
@@ -159,6 +165,7 @@ token_list parse(char *data, char *filename)
                 tokenizer_error("Unexpected end of file while parsing string literal", filename, source_line);
             }
             break;
+        //Parse a character literal
         case M_CHAR:
             if(data[i] == '\'')
             {
