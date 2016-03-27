@@ -53,6 +53,8 @@ token_list parse(char *data, char *filename)
         case M_COMMENT_MULTI:
             if(data[i] == '/' && data[i - 1] == '*')
                 parse_mode = M_NONE;
+            else if(i == length - 1)
+                tokenizer_error("Unexpected end of file reached during multi-line comment", filename, source_line);
             break;
         case M_NONE:
             if(is_whitespace(data[i])) continue;
