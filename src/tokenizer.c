@@ -16,10 +16,10 @@ SYMBOL, WORD, NUMBER, START, END, STRING_LIT, CHAR_LIT
 */
 token_list parse(char *data, char *filename)
 {
-    token_list list = {NULL, NULL};
+    token_list list = {NULL, NULL}; //Initialize the token list
     int length = strlen(data);
     int token_begin = 0;
-    int source_line = 1;
+    int source_line = 1; //keep track of the source line for error messages later
     enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR, M_COMMENT_LINE, M_COMMENT_MULTI} parse_mode;
     parse_mode = M_NONE;
     for(int i = 0; i < length; i++)
@@ -27,6 +27,7 @@ token_list parse(char *data, char *filename)
         //Ingore carriage return characters so that windows newlines are identical to UNIX newlines
         if(data[i] == '\r') continue;
         if(data[i] == '\n') source_line += 1;
+        //Handle comment parsing- comments are currently discarded
         if(data[i] == '/' && parse_mode != M_STRING && parse_mode != M_CHAR)
         {
             if(data[i + 1] == '*')
@@ -40,12 +41,15 @@ token_list parse(char *data, char *filename)
                 continue;
             }
         }
+        //Parse the current character depending on context
         switch(parse_mode)
         {
+        //Ignore all characters until a newline is reached
         case M_COMMENT_LINE:
             if(data[i] == '\n')
                 parse_mode = M_NONE;
             break;
+        //Ignore all characters until the end of the comment block is reached
         case M_COMMENT_MULTI:
             if(data[i] == '/' && data[i - 1] == '*')
                 parse_mode = M_NONE;
