@@ -1,5 +1,6 @@
 #ifndef UTIL_H_
 #define UTIL_H_
+#include <stdlib.h>
 //Forward declare a struct
 #define DEFSTRUCT(name) struct name; typedef struct name name
 //Allocates memory for a variable on the heap
