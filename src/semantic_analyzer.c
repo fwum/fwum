@@ -33,9 +33,9 @@ file_contents analyze(token_list *tokens)
 				contents.tail = dec;
 			}
 		}
-		else
+		else if(equals(current->data, new_slice("func")))
 		{
-			tokens->head = current;
+			tokens->head = current->next;
 			func_declaration *func = analyze_func(tokens);
 			current = tokens->head;
 			if(contents.funcHead == NULL)
@@ -103,10 +103,8 @@ static func_declaration *analyze_func(token_list *tokens)
 {
 	parse_token *current = tokens->head;
 	func_declaration *func = new(func);
-	func->type = current->data;
-	current = current->next;
 	if(current == NULL || current->type != WORD)
-		semantic_error("Function declaration must be in the form <rtype> <name>(<parameters>) {<block>}", current->origin.filename, current->origin.line);
+		semantic_error("Function declaration must be in the form func <name>(<parameters>) : <returntype> {<block>}", current->origin.filename, current->origin.line);
 	func->name = current->data;
 	current = current->next;
 	if(current == NULL || current->data.data[0] != '(')
@@ -150,6 +148,9 @@ static func_declaration *analyze_func(token_list *tokens)
 			current = current->next;
 	}
 	current = current->next;
+	func->type = current->data;
+	current = current->next;
+	printf("%s\n", evaluate(current->data));
 	if(current->data.data[0] != '{')
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
 	current = current->next;
