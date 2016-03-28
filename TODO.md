@@ -1,5 +1,7 @@
 #TODO
 
+- Keep a list of multi-character symbols for the tokenizer
+
 - Implement operator parsing
 
 - Implement control flow parsing
