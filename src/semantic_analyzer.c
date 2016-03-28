@@ -73,17 +73,17 @@ struct_declaration *analyze_struct(token_list *tokens)
 	{
 		struct_member *member = new(member);
 		if(current->type != WORD)
-			semantic_error("Struct members must be declared as <type> <value>;",
-				current->origin.filename, current->origin.line);
-		member->type = current->data;
-		current = current->next;
-		if(current->type != WORD)
-			semantic_error("Struct members must be declared as <type> <value>;",
+			semantic_error("Struct members must be declared as <value> : <type>;",
 				current->origin.filename, current->origin.line);
 		member->name = current->data;
 		current = current->next;
+		if(current->type != SYMBOL || current->data.data[0] != ':' || (current = current->next)->type != WORD)
+			semantic_error("Struct members must be declared as <value> : <type>;",
+				current->origin.filename, current->origin.line);
+		member->type = current->data;
+		current = current->next;
 		if(current->data.data[0] != ';')
-			semantic_error("Struct members must be declared as <type> <value>;",
+			semantic_error("Struct members must be declared as <value> : <type>;",
 				current->origin.filename, current->origin.line);
 		member->next = NULL;
 		if(dec->head == NULL)

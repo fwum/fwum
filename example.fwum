@@ -5,8 +5,8 @@ MULTI LINE COMMENT
 //cimport stdio.h;
 
 struct point {
-	int x;
-	int y;
+	x : int;
+	y : int;
 }
 
 int main(int argc, char argv)
