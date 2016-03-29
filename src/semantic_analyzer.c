@@ -7,7 +7,7 @@
 
 static void semantic_error(char *error, source_origin origin);
 static func_declaration *analyze_func(token_list *tokens);
-static statement *get_expression(token_list *tokens);
+static statement *get_expression(token_list *tokens, int indent_level);
 static void dump_node(statement *state, int indentation);
 
 file_contents analyze(token_list *tokens)
@@ -157,13 +157,13 @@ static func_declaration *analyze_func(token_list *tokens)
 	statement->next = statement->child = statement->parent = NULL;
 	statement->type = ROOT;
 	tokens->head = current->next;
-	statement->child = get_expression(tokens);
+	statement->child = get_expression(tokens, 0);
 	func->root = statement;
 	tokens->head = tokens->head->next;
 	return func;
 }
 
-static statement *get_expression(token_list *tokens)
+static statement *get_expression(token_list *tokens, int indent_level)
 {
 	parse_token *current = tokens->head;
 	if(current == NULL)
