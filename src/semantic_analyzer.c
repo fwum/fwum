@@ -5,9 +5,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-static void semantic_error(char *error, char *file, int line);
+static void semantic_error(char *error, source_origin origin);
 static func_declaration *analyze_func(token_list *tokens);
-static expression *get_expression(token_list *tokens);
+static statement *get_expression(token_list *tokens);
 static void dump_node(statement *state, int indentation);
 
 file_contents analyze(token_list *tokens)
@@ -67,25 +67,21 @@ struct_declaration *analyze_struct(token_list *tokens)
 	dec->next = NULL;
 	current = current->next;
 	if(current->data.data[0] != '{')
-		semantic_error("Expected opening brace after name in struct declaration.",
-			current->origin.filename, current->origin.line);
+		semantic_error("Expected opening brace after name in struct declaration.", current->origin);
 	current = current->next;
 	while(current->data.data[0] != '}')
 	{
 		struct_member *member = new(member);
 		if(current->type != WORD)
-			semantic_error("Struct members must be declared as <value> : <type>;",
-				current->origin.filename, current->origin.line);
+			semantic_error("Struct members must be declared as <value> : <type>;", current->origin);
 		member->name = current->data;
 		current = current->next;
 		if(current->type != SYMBOL || current->data.data[0] != ':' || (current = current->next)->type != WORD)
-			semantic_error("Struct members must be declared as <value> : <type>;",
-				current->origin.filename, current->origin.line);
+			semantic_error("Struct members must be declared as <value> : <type>;",current->origin);
 		member->type = current->data;
 		current = current->next;
 		if(current->data.data[0] != ';')
-			semantic_error("Struct members must be declared as <value> : <type>;",
-				current->origin.filename, current->origin.line);
+			semantic_error("Struct members must be declared as <value> : <type>;", current->origin);
 		member->next = NULL;
 		if(dec->head == NULL)
 			dec->head = member;
@@ -105,31 +101,31 @@ static func_declaration *analyze_func(token_list *tokens)
 	parse_token *current = tokens->head;
 	func_declaration *func = new(func);
 	if(current == NULL || current->type != WORD)
-		semantic_error("Function declaration must be in the form func <name>(<parameters>) : <returntype> {<block>}", current->origin.filename, current->origin.line);
+		semantic_error("Function declaration must be in the form func <name>(<parameters>) : <returntype> {<block>}", current->origin);
 	func->name = current->data;
 	current = current->next;
 	if(current == NULL || current->data.data[0] != '(')
-		semantic_error("Function name must be followed by an open parenthesis", current->origin.filename, current->origin.line);
+		semantic_error("Function name must be followed by an open parenthesis", current->origin);
 	current = current->next;
 	while(current->data.data[0] != ')')
 	{
 		if(current == NULL)
-			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
+			semantic_error("Unexpected EOF encountered in function declaration", current->origin);
 		statement *name = new(name);
 		name->type = NAME;
 		name->next = name->child = NULL;
 		if(current->type != WORD)
-			semantic_error("Parameter names must be a valid identifier", current->origin.filename, current->origin.line);
+			semantic_error("Parameter names must be a valid identifier", current->origin);
 		name->data = current->data;
 		current = current->next;
 		if(current->type != SYMBOL || current->data.data[0] != ':')
-			semantic_error("Parameters to functions must separate names and types with colons", current->origin.filename, current->origin.line);
+			semantic_error("Parameters to functions must separate names and types with colons", current->origin);
 		current = current->next;
 		statement *param_type = new(param_type);
 		if(current == NULL)
-			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
+			semantic_error("Unexpected EOF encountered in function declaration", current->origin);
 		if(current->type != WORD)
-			semantic_error("Parameter types must be valid identifiers.", current->origin.filename, current->origin.line);
+			semantic_error("Parameter types must be valid identifiers.", current->origin);
 		param_type->data = current->data;
 		param_type->type = TYPE;
 		name->child = param_type;
@@ -155,53 +151,23 @@ static func_declaration *analyze_func(token_list *tokens)
 	current = current->next;
 	printf("%s\n", evaluate(current->data));
 	if(current->data.data[0] != '{')
-		semantic_error("Function bodies must start with an open brace ('{')", current->origin.filename, current->origin.line);
+		semantic_error("Function bodies must start with an open brace ('{')", current->origin);
 	current = current->next;
-	int bracket_level = 0;
 	statement *statement = new(statement);
 	statement->next = statement->child = statement->parent = NULL;
 	statement->type = ROOT;
-	int last_line = current->origin.line;
-	while(current != NULL && (bracket_level != 0 || current->data.data[0] != '}'))
-	{
-		char value = current->data.data[0];
-		if(value == '{')
-		{
-			statement->child = new(statement->child);
-			statement->child->parent = statement;
-			statement = statement->child;
-			statement->next = statement->child = statement->parent = NULL;
-			statement->type = BLOCK;
-			bracket_level += 1;
-		}
-		if(value == '}')
-		{
-			bracket_level -= 1;
-			if(statement->parent != NULL)
-				statement = statement->parent;
-		}
-		current = current->next;
-		last_line = current->origin.line;
-	}
-	if(bracket_level > 0)
-	{
-		semantic_error("There are too many opening braces.", current->origin.filename, last_line);
-	}
-	else if(bracket_level < 0)
-	{
-		semantic_error("There are too many closing braces.", current->origin.filename, last_line);
-	}
+	tokens->head = current->next;
+	statement->child = get_expression(tokens);
 	func->root = statement;
-	current = current->next;
-	tokens->head = current;
+	tokens->head = tokens->head->next;
 	return func;
 }
 
-static expression *get_expression(token_list *tokens)
+static statement *get_expression(token_list *tokens)
 {
-	parse_token *current = token->head;
+	parse_token *current = tokens->head;
 	if(current == NULL)
-		semantic_error("Unexpected End of File", current->origin.filename, last_line);
+		semantic_error("Unexpected End of File", current->origin);
 	return NULL;
 }
 
@@ -284,8 +250,8 @@ static void dump_node(statement *state, int indentation)
 	}
 }
 
-static void semantic_error(char *error, char *file, int line)
+static void semantic_error(char *error, source_origin origin)
 {
-	fprintf(stderr, "Error encountered while analyzing %s at line %d:\n%s\n", file, line, error);
+	fprintf(stderr, "Error encountered while analyzing %s at line %d:\n%s\n", origin.filename, origin.line, error);
 	exit(-1);
 }
