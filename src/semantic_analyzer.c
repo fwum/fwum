@@ -7,6 +7,7 @@
 
 static void semantic_error(char *error, char *file, int line);
 static func_declaration *analyze_func(token_list *tokens);
+static expression *get_expression(token_list *tokens);
 static void dump_node(statement *state, int indentation);
 
 file_contents analyze(token_list *tokens)
@@ -194,6 +195,14 @@ static func_declaration *analyze_func(token_list *tokens)
 	current = current->next;
 	tokens->head = current;
 	return func;
+}
+
+static expression *get_expression(token_list *tokens)
+{
+	parse_token *current = token->head;
+	if(current == NULL)
+		semantic_error("Unexpected End of File", current->origin.filename, last_line);
+	return NULL;
 }
 
 void dump(file_contents contents)
