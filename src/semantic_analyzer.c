@@ -114,33 +114,35 @@ static func_declaration *analyze_func(token_list *tokens)
 	{
 		if(current == NULL)
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
-		statement *param_type = new(param_type);
-		param_type->type = TYPE;
-		param_type->next = param_type->child = NULL;
-		if(current->type != WORD)
-			semantic_error("Parameter types must be a valid identifier", current->origin.filename, current->origin.line);
-		param_type->data = current->data;
 		statement *name = new(name);
+		name->type = NAME;
+		name->next = name->child = NULL;
+		if(current->type != WORD)
+			semantic_error("Parameter names must be a valid identifier", current->origin.filename, current->origin.line);
+		name->data = current->data;
 		current = current->next;
+		if(current->type != SYMBOL || current->data.data[0] != ':')
+			semantic_error("Parameters to functions must separate names and types with colons", current->origin.filename, current->origin.line);
+		current = current->next;
+		statement *param_type = new(param_type);
 		if(current == NULL)
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin.filename, current->origin.line);
 		if(current->type != WORD)
-			semantic_error("Parameter names must be valid identifiers.", current->origin.filename, current->origin.line);
-		name->data = current->data;
-		name->type = NAME;
-		param_type->child = name;
-		name->next = name->child = NULL;
-		param_type->child = name;
+			semantic_error("Parameter types must be valid identifiers.", current->origin.filename, current->origin.line);
+		param_type->data = current->data;
+		param_type->type = TYPE;
+		name->child = param_type;
+		param_type->next = param_type->child = NULL;
 		if(func->paramHead == NULL)
-			func->paramHead = param_type;
+			func->paramHead = name;
 		else if(func->paramTail == NULL)
 		{
-			func->paramTail = param_type;
-			func->paramHead->next = param_type;
+			func->paramTail = name;
+			func->paramHead->next = name;
 		}
 		else
 		{
-			func->paramTail->next = param_type;
+			func->paramTail->next = name;
 			func->paramTail = func->paramTail->next;
 		}
 		current = current->next;

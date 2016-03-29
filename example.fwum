@@ -9,7 +9,7 @@ struct point {
 	y : int;
 }
 
-func main(int argc, char argv) int
+func main(argc : int, argv : char) int
 {
 	{
 		char b = 'a';
