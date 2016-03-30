@@ -1,1 +1,2 @@
 - OP nodes keep ending up everywhere, probably because they are the default type
+- Blocks seem to consume all tokens in the list
