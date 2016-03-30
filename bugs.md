@@ -1,1 +1,2 @@
-- Declarations and typedefs should be hoisted to the top of the file
+- OP nodes keep ending up everywhere, probably because they are the default type
+- There seems to be a problem with removing tokens from the list
