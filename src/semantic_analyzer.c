@@ -7,7 +7,7 @@
 
 static void semantic_error(char *error, source_origin origin);
 static func_declaration *analyze_func(token_list *tokens);
-static statement *get_expression(token_list *tokens, int indent_level);
+static statement *get_expression(token_list *tokens);
 static void dump_node(statement *state, int indentation);
 
 file_contents analyze(token_list *tokens)
@@ -149,26 +149,81 @@ static func_declaration *analyze_func(token_list *tokens)
 	current = current->next;
 	func->type = current->data;
 	current = current->next;
-	printf("%s\n", evaluate(current->data));
 	if(current->data.data[0] != '{')
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin);
-	current = current->next;
 	statement *statement = new(statement);
 	statement->next = statement->child = statement->parent = NULL;
 	statement->type = ROOT;
-	tokens->head = current->next;
-	statement->child = get_expression(tokens, 0);
+	tokens->head = current;
+	statement->child = get_expression(tokens);
 	func->root = statement;
 	tokens->head = tokens->head->next;
 	return func;
 }
 
-static statement *get_expression(token_list *tokens, int indent_level)
+static statement *get_expression(token_list *tokens)
 {
 	parse_token *current = tokens->head;
 	if(current == NULL)
 		semantic_error("Unexpected End of File", current->origin);
-	return NULL;
+	statement *expression = new(expression);
+	expression->child = expression->next = expression->parent = NULL;
+	switch(current->type)
+	{
+	case SYMBOL:
+		if(current->data.data[0] == '{')
+		{
+			expression->type = BLOCK;
+			tokens->head = tokens->head->next;
+			token_list body = *tokens;
+			int indent = 1;
+			parse_token *current = body.head;
+			while(indent > 0)
+			{
+				current = current->next;
+				if(current->data.data[0] == '{')
+					indent++;
+				if(current->data.data[0] == '}')
+					indent--;
+			}
+			body.tail = current;
+			expression->child = get_expression(&body);
+			expression->child->parent = expression;
+			if(body.tail != tokens->tail)
+				expression->next = get_expression(tokens);
+		}
+		break;
+	case WORD:
+		if(tokens->head == tokens->tail)
+		{
+			expression->type = NAME;
+			expression->data = current->data;
+		} else if(equals_string(current->data, "if") || equals_string(current->data, "while"))
+		{
+			if(equals_string(current->data, "if"))
+				expression->type = IF;
+			else
+				expression->type = WHILE;
+			expression->data = new_slice("");
+			tokens->head = tokens->head->next;
+			token_list header = *tokens;
+			parse_token *end_of_header = header.head;
+			while(end_of_header->next->data.data[0] != '{')
+				end_of_header = end_of_header->next;
+			header.tail = end_of_header;
+			expression->child = get_expression(&header);
+			tokens->head = header.tail;
+			expression->child->next = get_expression(tokens);
+		}
+		break;
+	case NUMBER:
+		break;
+	case STRING_LIT:
+		break;
+	case CHAR_LIT:
+		break;
+	}
+	return expression;
 }
 
 void dump(file_contents contents)

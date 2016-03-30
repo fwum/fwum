@@ -11,13 +11,7 @@ struct point {
 
 func main(argc : int, argv : char) int
 {
-	{
-		char b = 'a';
-		point a;
-		a.x = 5;
-		a.y = 10;
-		int b = 5;
-		printf("%d", 2);
-		return 0;
+	if a {
+		
 	}
 }
