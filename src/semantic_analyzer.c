@@ -189,6 +189,7 @@ static statement *get_expression(token_list *tokens)
 			body.tail = current;
 			expression->child = get_expression(&body);
 			expression->child->parent = expression;
+			tokens->head = body.tail;
 			if(body.tail != tokens->tail)
 				expression->next = get_expression(tokens);
 		}
