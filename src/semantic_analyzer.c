@@ -212,7 +212,7 @@ static statement *get_expression(token_list *tokens)
 				end_of_header = end_of_header->next;
 			header.tail = end_of_header;
 			expression->child = get_expression(&header);
-			tokens->head = header.tail;
+			tokens->head = header.tail->next;
 			expression->child->next = get_expression(tokens);
 		}
 		break;
