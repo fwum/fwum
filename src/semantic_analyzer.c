@@ -8,7 +8,6 @@
 static void semantic_error(char *error, source_origin origin);
 static func_declaration *analyze_func(token_list *tokens);
 static statement *get_expression(token_list *tokens);
-static void dump_node(statement *state, int indentation);
 
 file_contents analyze(token_list *tokens)
 {
@@ -168,6 +167,7 @@ static statement *get_expression(token_list *tokens)
 		semantic_error("Unexpected End of File", current->origin);
 	statement *expression = new(expression);
 	expression->child = expression->next = expression->parent = NULL;
+	expression->data.data = NULL;
 	switch(current->type)
 	{
 	case SYMBOL:
@@ -226,87 +226,7 @@ static statement *get_expression(token_list *tokens)
 	case CHAR_LIT:
 		break;
 	}
-	printf("%d:%s!\n", expression->type, evaluate(expression->data));
 	return expression;
-}
-
-void dump(file_contents contents)
-{
-	{
-		struct_declaration *current = contents.head;
-		while(current != NULL)
-		{
-			printf("STRUCT: %s\n", evaluate(current->name));
-			struct_member *member = current->head;
-			while(member != NULL)
-			{
-				printf("\tMEMBER: NAME: %s | TYPE: %s\n", evaluate(member->name), evaluate(member->type));
-				member = member->next;
-			}
-			current = current->next;
-		}
-	}
-	{
-		func_declaration *current = contents.funcHead;
-		while(current != NULL)
-		{
-			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
-			dump_node(current->paramHead, 0);
-			dump_node(current->root, 0);
-			current = current->next;
-		}
-	}
-
-}
-
-static void dump_node(statement *state, int indentation)
-{
-	if(state == NULL)
-		return;
-	for(int i = 0; i < indentation; i++)
-		printf("\t");
-	switch(state->type)
-	{
-		case OPERATOR:
-			printf("OP: ");
-		break;
-		case IF:
-			printf("IF: ");
-		break;
-		case WHILE:
-			printf("WHILE: ");
-		break;
-		case BLOCK:
-			printf("BLOCK: ");
-		break;
-		case TYPE:
-			printf("TYPE: ");
-		break;
-		case NAME:
-			printf("NAME: ");
-		break;
-		case ROOT:
-			printf("ROOT: ");
-		break;
-		case STRING:
-		 	printf("STRING: ");
-		break;
-		case CHAR:
-		 	printf("CHAR: ");
-		break;
-		case NUM:
-			printf("NUM: ");
-		break;
-	}
-	printf(" %s\n", evaluate(state->data));
-	if(state->child != NULL)
-		dump_node(state->child, indentation + 1);
-	statement *current = state->next;
-	while(current != NULL)
-	{
-		dump_node(current, indentation);
-		current = current->next;
-	}
 }
 
 static void semantic_error(char *error, source_origin origin)

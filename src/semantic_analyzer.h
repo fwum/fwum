@@ -28,14 +28,17 @@ struct func_declaration {
 	statement *root;
 	func_declaration *next;
 };
-typedef enum statement_type {OPERATOR, IF, WHILE, BLOCK, TYPE, NAME, ROOT, STRING, CHAR, NUM} statement_type;
+typedef enum statement_type {OP_ADD, OP_SUB, OP_MULT, OP_DIV, OP_MOD, OP_BIT_AND,
+	OP_BOOL_AND, OP_BIT_OR, OP_BOOL_OR, OP_BIT_XOR, OP_BOOL_XOR, OP_BIT_NOT, OP_BOOL_NOT,
+	OP_GREATER, OP_LESS, OP_GREATER_EQUAL, OP_LESS_EQUAL, OP_EQUAL, OP_NOT_EQUAL,
+	OP_ASSIGN, OP_MEMBER, OP_GETREF, OP_DEREF, OP_INDEX, RETURN, BREAK, CONTINUE,
+	FUNC_CALL, STACK_INIT, HEAP_INIT, IF, WHILE, FOR, FOREACH, BLOCK, TYPE, NAME,
+	ROOT, STRING, CHAR, NUM} statement_type;
 struct statement {
 	slice data;
 	statement_type type;
 	statement *next, *child, *parent;
 };
-
-void dump(file_contents contents);
 file_contents analyze(token_list *tokens);
 struct_declaration *analyze_struct(token_list *token);
 #endif

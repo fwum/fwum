@@ -193,33 +193,6 @@ static void tokenizer_error(char *error, char *file, int line)
     exit(-1);
 }
 
-void print_tlist(token_list list)
-{
-    parse_token *current = list.head;
-    while(current != NULL)
-    {
-        switch(current->type)
-        {
-        case SYMBOL:
-            printf("SYMBOL: %s\n", evaluate(current->data));
-            break;
-         case WORD:
-            printf("WORD: %s\n", evaluate(current->data));
-            break;
-        case NUMBER:
-            printf("NUMBER: %s\n", evaluate(current->data));
-            break;
-        case STRING_LIT:
-            printf("STRING: %s\n", evaluate(current->data));
-            break;
-        case CHAR_LIT:
-            printf("CHAR: %s\n", evaluate(current->data));
-            break;
-        }
-        current = current->next;
-    }
-}
-
 static parse_token *new_token(slice data, token_type type, char *filename, int line)
 {
     parse_token *token = new(token);

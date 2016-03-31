@@ -1,6 +1,7 @@
 #include "tokenizer.h"
 #include "semantic_analyzer.h"
 #include "io.h"
+#include "printing.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
