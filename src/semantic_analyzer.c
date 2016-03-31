@@ -188,10 +188,14 @@ static statement *get_expression(token_list *tokens)
 					indent--;
 			}
 			body.tail = current;
+			current = body.head;
+			while(current->next != body.tail)
+				current = current->next;
+			body.tail = current;
 			expression->child = get_expression(&body);
 			if(expression->child != NULL)
 				expression->child->parent = expression;
-			tokens->head = body.tail;
+			tokens->head = body.tail->next;
 			if(body.tail != tokens->tail)
 				expression->next = get_expression(tokens);
 		} else if(current->data.data[0] == '}')
