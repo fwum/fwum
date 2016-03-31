@@ -1,3 +1,1 @@
 - Blocks seem to consume all tokens in the list
-- There seems to be odd behavior with loop bodies
-- The AST has stopped printing values
