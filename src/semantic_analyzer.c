@@ -198,7 +198,6 @@ static statement *get_expression(token_list *tokens)
 			return NULL;
 		break;
 	case WORD:
-		printf("%s\n", evaluate(current->data));
 		if(tokens->head == tokens->tail)
 		{
 			if(equals_string(current->data, "break"))
