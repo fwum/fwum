@@ -199,13 +199,14 @@ static statement *get_expression(token_list *tokens)
 	case WORD:
 		if(tokens->head == tokens->tail)
 		{
-			if(equals_string(expression->data, "break"))
+			if(equals_string(current->data, "break"))
 			{
 				expression->type = BREAK;
-			} else if(equals_string(expression->data, "continue"))
+			} else if(equals_string(current->data, "continue"))
 			{
 				expression->type = CONTINUE;
-			} else {
+			} else
+			{
 				expression->type = NAME;
 				expression->data = current->data;
 			}
