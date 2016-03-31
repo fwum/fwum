@@ -168,6 +168,7 @@ static statement *get_expression(token_list *tokens)
 	statement *expression = new(expression);
 	expression->child = expression->next = expression->parent = NULL;
 	expression->data.data = NULL;
+	expression->data.len = 0;
 	switch(current->type)
 	{
 	case SYMBOL:
@@ -197,6 +198,7 @@ static statement *get_expression(token_list *tokens)
 			return NULL;
 		break;
 	case WORD:
+		printf("%s\n", evaluate(current->data));
 		if(tokens->head == tokens->tail)
 		{
 			if(equals_string(current->data, "break"))
