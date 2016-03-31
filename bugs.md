@@ -1,2 +1,2 @@
 - Blocks seem to consume all tokens in the list
-- Block bodies aren't parsed correctly
+- Block bodies have a closing brace at the end of the token list
