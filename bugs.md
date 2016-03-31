@@ -1,1 +1,4 @@
 - Blocks seem to consume all tokens in the list
+- There seems to be odd behavior with loop bodies
+- Break seems to be showing up everywhere for no reason
+- The AST has stopped printing values
