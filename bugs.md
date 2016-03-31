@@ -1,1 +1,3 @@
 - Blocks seem to consume all tokens in the list
+- Breaks don't seem to be parsed correctly
+- equals_string() with a slice of "c" and a string of "continue" returns true
