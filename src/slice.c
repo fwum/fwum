@@ -41,6 +41,9 @@ bool starts_with(slice s1, slice s2)
 
 bool equals_string(slice s1, char* data)
 {
+	int string_length = strlen(data);
+	if(s1.len != string_length)
+		return false;
 	for(int i = 0; i < s1.len; i++)
 		if(s1.data[i] != data[i])
 			return false;
