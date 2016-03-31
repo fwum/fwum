@@ -1,2 +1,2 @@
 - Blocks seem to consume all tokens in the list
-- The nested if in the example isn't setting a block child correctly
+- Block bodies aren't parsed correctly
