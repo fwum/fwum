@@ -1,2 +1,3 @@
 - Blocks seem to consume all tokens in the list
 - Breaks don't seem to be parsed correctly
+- Adding printfs causes segfaults, why
