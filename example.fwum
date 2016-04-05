@@ -14,7 +14,7 @@ func main(argc : int, argv : char) int
 	if a {
 		while a {
 			if c {
-				break
+				break;
 			}
 		}
 	}
