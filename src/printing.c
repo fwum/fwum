@@ -204,14 +204,16 @@ static void dump_node(statement *state, int indentation)
         case NUM:
         	printf("NUM");
         break;
+        case VALUE_TRUE:
+            printf("TRUE");
+        break;
+        case VALUE_FALSE:
+            printf("FALSE");
+        break;
 	}
 	printf(": %s\n", evaluate(state->data));
 	if(state->child != NULL)
 		dump_node(state->child, indentation + 1);
-	statement *current = state->next;
-	while(current != NULL)
-	{
-		dump_node(current, indentation);
-		current = current->next;
-	}
+	if(state->next != NULL)
+        dump_node(state->next, indentation);
 }
