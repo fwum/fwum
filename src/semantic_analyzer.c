@@ -241,8 +241,6 @@ static statement *get_expression(token_list *tokens)
 				expression->type = NAME;
 				expression->data = current->data;
 			}
-			//if(current->next->data.data[0] != ';')
-			//	semantic_error("break or continue statement must be followed by semicolon.", current->origin);
 		} else if(equals_string(current->data, "if") || equals_string(current->data, "while"))
 		{
 			if(equals_string(current->data, "if"))
