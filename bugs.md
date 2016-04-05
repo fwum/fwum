@@ -1,1 +1,1 @@
-There seems to be some duplication in loop bodies caused by the semantic analyzer
+There is some sort of odd looping error with printing
