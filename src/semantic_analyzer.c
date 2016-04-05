@@ -257,6 +257,45 @@ static statement *get_expression(token_list *tokens)
 			expression->child = get_expression(&header);
 			tokens->head = header.tail->next;
 			expression->child->next = get_expression(tokens);
+		} else if(current->next->data.data[0] == '(')
+		{
+			expression->type = FUNC_CALL;
+			expression->data = current->data;
+			int paren_level = 0;
+			token_list list = *tokens;
+			current = current->next;
+			list.head = current->next;
+			for(current = current->next; paren_level != -1; current = current->next)
+			{
+				char currentChar = current->data.data[0];
+				if((currentChar == ')' || currentChar == ',') && paren_level == 0)
+				{
+					token_list param = list;
+					param.tail = current;
+					list.head = param.tail->next;
+					if(expression->child == NULL)
+					{
+						expression->child = get_expression(&param);
+					} else
+					{
+						statement *currentExpression = expression->child;
+						while(currentExpression->next != NULL)
+						{
+							currentExpression = currentExpression->next;
+						}
+						currentExpression->next = get_expression(&param);
+					}
+				}
+				if(currentChar == '(')
+					paren_level += 1;
+				else if(currentChar == ')')
+				{
+					paren_level -= 1;
+					printf("%d\n", paren_level);
+				}
+			}
+			//expression->next = get_expression(&list);
+			tokens->head = list.tail->next;
 		}
 		break;
 	case NUMBER:

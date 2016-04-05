@@ -21,6 +21,6 @@ func main(argc : int, argv : char) int
 		'q';
 	}
 	if b {
-		5;
+		a(1);
 	}
 }
