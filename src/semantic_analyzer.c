@@ -1,6 +1,7 @@
 #include "semantic_analyzer.h"
 #include "slice.h"
 #include "util.h"
+#include "printing.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -188,16 +189,33 @@ static statement *get_expression(token_list *tokens)
 					indent--;
 			}
 			body.tail = current;
-			current = body.head;
-			while(current->next != body.tail)
-				current = current->next;
-			body.tail = current;
-			expression->child = get_expression(&body);
-			if(expression->child != NULL)
-				expression->child->parent = expression;
-			tokens->head = body.tail->next;
-			if(body.tail != tokens->tail)
-				expression->next = get_expression(tokens);
+			indent = 1;
+			for(current = body.head; current != body.tail; current = current->next)
+			{
+				char character = current->data.data[0];
+				if(character == '{')
+					indent++;
+				if(character == '}')
+					indent--;
+				if(indent == 1 && (character == '}' || character == ';'))
+				{
+					token_list item = body;
+					item.tail = current;
+					body.head = current->next;
+					if(expression->child == NULL)
+					{
+						expression->child = get_expression(&item);
+					} else
+					{
+						statement *currentExpression = expression->child;
+						while(currentExpression->next != NULL)
+						{
+							currentExpression = currentExpression->next;
+						}
+						currentExpression->next = get_expression(&item);
+					}
+				}
+			}
 		} else if(current->data.data[0] == '}')
 			return NULL;
 		break;
