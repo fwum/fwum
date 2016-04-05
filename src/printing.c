@@ -4,7 +4,7 @@
 /*
 Print an AST node to stdout (recursive)
 */
-static void dump_node(statement *state, int indentation);
+void dump_node(statement *state, int indentation);
 
 /*
 Print a list of tokens to stdout, mostly for debugging purposes
@@ -73,7 +73,7 @@ void dump(file_contents contents)
 /*
 Print an AST node to stdout (recursive)
 */
-static void dump_node(statement *state, int indentation)
+void dump_node(statement *state, int indentation)
 {
 	if(state == NULL)
 		return;
