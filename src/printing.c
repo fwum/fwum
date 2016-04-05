@@ -11,6 +11,8 @@ Print a list of tokens to stdout, mostly for debugging purposes
 */
 void print_tlist(token_list list)
 {
+    if(list.head == NULL)
+        return;
     parse_token *current = list.head;
     while(current != list.tail)
     {
