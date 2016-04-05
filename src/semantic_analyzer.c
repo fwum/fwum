@@ -289,10 +289,7 @@ static statement *get_expression(token_list *tokens)
 				if(currentChar == '(')
 					paren_level += 1;
 				else if(currentChar == ')')
-				{
 					paren_level -= 1;
-					printf("%d\n", paren_level);
-				}
 			}
 			//expression->next = get_expression(&list);
 			tokens->head = list.tail->next;
