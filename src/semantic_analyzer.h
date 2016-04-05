@@ -38,7 +38,8 @@ typedef enum statement_type {OP_ADD, OP_SUB, OP_MULT, OP_DIV, OP_MOD, OP_BIT_AND
 	IF, WHILE, FOR, FOREACH,
 	BLOCK, TYPE, NAME,
 	ROOT,
-	STRING, CHAR, NUM} statement_type;
+	STRING, CHAR, NUM,
+	VALUE_TRUE, VALUE_FALSE} statement_type;
 struct statement {
 	slice data;
 	statement_type type;
