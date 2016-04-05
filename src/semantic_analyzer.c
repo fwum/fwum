@@ -272,7 +272,12 @@ static statement *get_expression(token_list *tokens)
 				{
 					token_list param = list;
 					param.tail = current;
-					list.head = param.tail->next;
+					parse_token *goBack = param.head;
+					while(goBack->next != param.tail)
+						goBack = goBack->next;
+					param.tail = goBack;
+					list.head = param.tail->next->next;
+					printf("%s:%s\n", evaluate(param.head->data), evaluate(param.tail->data));
 					if(expression->child == NULL)
 					{
 						expression->child = get_expression(&param);
