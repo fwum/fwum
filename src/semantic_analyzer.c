@@ -267,8 +267,18 @@ static statement *get_expression(token_list *tokens)
 		}
 		break;
 	case STRING_LIT:
+		if(tokens->head == tokens->tail)
+		{
+			expression->type = STRING;
+			expression->data = tokens->head->data;
+		}
 		break;
 	case CHAR_LIT:
+		if(tokens->head == tokens->tail)
+		{
+			expression->type = CHAR;
+			expression->data = tokens->head->data;
+		}
 		break;
 	}
 	return expression;
