@@ -260,6 +260,11 @@ static statement *get_expression(token_list *tokens)
 		}
 		break;
 	case NUMBER:
+		if(tokens->head == tokens->tail)
+		{
+			expression->type = NUM;
+			expression->data = tokens->head->data;
+		}
 		break;
 	case STRING_LIT:
 		break;
