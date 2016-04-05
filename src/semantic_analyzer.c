@@ -151,12 +151,12 @@ static func_declaration *analyze_func(token_list *tokens)
 	current = current->next;
 	if(current->data.data[0] != '{')
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin);
-	statement *statement = new(statement);
-	statement->next = statement->child = statement->parent = NULL;
-	statement->type = ROOT;
+	statement *state = new(state);
+	state->next = state->child = state->parent = NULL;
+	state->type = ROOT;
 	tokens->head = current;
-	statement->child = get_expression(tokens);
-	func->root = statement;
+	state->child = get_expression(tokens);
+	func->root = state;
 	tokens->head = tokens->head->next;
 	return func;
 }
@@ -222,8 +222,8 @@ static statement *get_expression(token_list *tokens)
 						currentExpression->next = get_expression(&item);
 					}
 				}
-				tokens->head = body.tail;
 			}
+			tokens->head = body.tail;
 		} else if(current->data.data[0] == '}')
 			return NULL;
 		break;
