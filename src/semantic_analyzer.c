@@ -215,6 +215,7 @@ static statement *get_expression(token_list *tokens)
 						currentExpression->next = get_expression(&item);
 					}
 				}
+				tokens->head = body.tail;
 			}
 		} else if(current->data.data[0] == '}')
 			return NULL;
