@@ -12,7 +12,7 @@ Print a list of tokens to stdout, mostly for debugging purposes
 void print_tlist(token_list list)
 {
     parse_token *current = list.head;
-    while(current != NULL)
+    while(current != list.tail)
     {
         switch(current->type)
         {
