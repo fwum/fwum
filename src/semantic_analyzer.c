@@ -152,7 +152,7 @@ static func_declaration *analyze_func(token_list *tokens)
 	if(current->data.data[0] != '{')
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin);
 	statement *state = new(state);
-	state->next = state->child = state->parent = NULL;
+	state->next = state->child = NULL;
 	state->type = ROOT;
 	tokens->head = current;
 	state->child = get_expression(tokens);
@@ -167,7 +167,7 @@ static statement *get_expression(token_list *tokens)
 	if(current == NULL)
 		semantic_error("Unexpected End of File", current->origin);
 	statement *expression = new(expression);
-	expression->child = expression->next = expression->parent = NULL;
+	expression->child = expression->next = NULL;
 	expression->data.data = NULL;
 	expression->data.len = 0;
 	if(tokens->tail->data.data[0] == ';')
