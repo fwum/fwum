@@ -1,1 +1,2 @@
 - Operation parsing ignores parens
+- Operations that start with a function call are not parsed
