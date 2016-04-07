@@ -284,7 +284,6 @@ static statement *get_expression(token_list *tokens)
 						goBack = goBack->next;
 					param.tail = goBack;
 					list.head = param.tail->next->next;
-					printf("%s:%s\n", evaluate(param.head->data), evaluate(param.tail->data));
 					if(expression->child == NULL)
 					{
 						expression->child = get_expression(&param);
@@ -333,10 +332,7 @@ static statement *get_expression(token_list *tokens)
 		break;
 	}
 	if(!foundPattern)
-	{
-		statement *s = parse_operation(tokens);
-		dump_node(s, 0);
-	}
+		expression = parse_operation(tokens);
 	return expression;
 }
 
