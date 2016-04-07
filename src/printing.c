@@ -96,6 +96,9 @@ void dump_node(statement *state, int indentation)
         case OP_MOD:
         	printf("OP_MOD");
         break;
+        case OP_EXP:
+            printf("OP_EXP");
+        break;
         case OP_BIT_AND:
         	printf("OP_BIT_AND");
         break;
@@ -119,6 +122,15 @@ void dump_node(statement *state, int indentation)
         break;
         case OP_BOOL_NOT:
         	printf("OP_BOOL_NOT");
+        break;
+        case OP_SHIFT_LEFT:
+            printf("OP_SHIFT_LEFT");
+        break;
+        case OP_SHIFT_RIGHT:
+            printf("OP_SHIFT_RIGHT");
+        break;
+        case OP_BIT_SHIFT_RIGHT:
+            printf("OP_BIT_SHIFT_RIGHT");
         break;
         case OP_GREATER:
         	printf("OP_GREATER");
