@@ -41,7 +41,7 @@ operator_node* get_node()
 	add_next(current, ">");
 	current = set_child(current, ">>");
 	add_next(current, ">>>");
-	add_next(current, ">>");
+	add_next(current, "<<");
 	current = set_child(current, "+");
 	add_next(current, "-");
 	add_next(current, "%");
