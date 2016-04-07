@@ -32,7 +32,7 @@ static operator_node* set_child(operator_node *current, char *data, statement_ty
 
 operator_node* get_node()
 {
-	operator_node *root = new_operator_node("=", OP_ASSGIN);
+	operator_node *root = new_operator_node("=", OP_ASSIGN);
 	operator_node *current = set_child(root, "||", OP_BOOL_OR);
 	add_next(current, "|", OP_BIT_OR);
 	current = set_child(current, "^^", OP_BOOL_XOR);
