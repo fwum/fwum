@@ -1,13 +1,13 @@
 #TODO
 
-- Keep a list of multi-character symbols for the tokenizer
+- Have semantic analyzer deal with parentheses around expressions
+
+- Have tokenizer check for operators from the operator list
 
 - Handle End-Of-File while parsing structs
-
-- Implement operator parsing
-
-- Implement control flow parsing
 
 - Implement `break`, `continue`, and `return`
 
 - Implement type requirements and member requirements
+
+- Implement for loops
