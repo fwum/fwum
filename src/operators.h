@@ -13,4 +13,5 @@ struct operator_node {
 };
 
 operator_node* get_node();
+bool is_operator(slice op);
 #endif

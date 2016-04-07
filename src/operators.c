@@ -57,3 +57,24 @@ operator_node* get_node()
 	current = set_child(current, ".", OP_MEMBER);
 	return root;
 }
+
+bool is_operator(slice op)
+{
+	operator_node *node = get_node();
+	while(node != NULL)
+	{
+		operator_node *current = node;
+		while(current != NULL)
+		{
+			if(equals_string(op, current->data))
+			{
+				free(node);
+				return true;
+			}
+			current = current->next;
+		}
+		node = node->child;
+	}
+	free(node);
+	return false;
+}
