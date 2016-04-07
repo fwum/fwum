@@ -341,32 +341,41 @@ static statement *parse_operation(token_list *tokens)
 	operator_node *operator = get_node();
 	while(operator->child != NULL)
 	{
+		int paren_level = 0;
 		for(parse_token *current = tokens->head; current != tokens->tail; current = current->next)
 		{
 			operator_node *currentOperator = operator;
-			while(currentOperator != NULL)
+			char currentChar = current->data.data[0];
+			if(currentChar == '(')
+				paren_level += 1;
+			else if(currentChar == ')')
+				paren_level -= 1;
+			if(paren_level == 0)
 			{
-				if(equals_string(current->data, currentOperator->data))
+				while(currentOperator != NULL)
 				{
-					token_list op1 = *tokens;
-					op1.tail = current;
-					current = op1.head;
-					while(current->next != op1.tail)
+					if(equals_string(current->data, currentOperator->data))
 					{
-						current = current->next;
+						token_list op1 = *tokens;
+						op1.tail = current;
+						current = op1.head;
+						while(current->next != op1.tail)
+						{
+							current = current->next;
+						}
+						op1.tail = current;
+						token_list op2 = *tokens;
+						op2.head = current->next->next;
+						statement *expression = new(expression);
+						expression->data = new_slice("");
+						expression->next = NULL;
+						expression->type = currentOperator->operatorType;
+						expression->child = get_expression(&op1);
+						expression->child->next = get_expression(&op2);
+						return expression;
 					}
-					op1.tail = current;
-					token_list op2 = *tokens;
-					op2.head = current->next->next;
-					statement *expression = new(expression);
-					expression->data = new_slice("");
-					expression->next = NULL;
-					expression->type = currentOperator->operatorType;
-					expression->child = get_expression(&op1);
-					expression->child->next = get_expression(&op2);
-					return expression;
+					currentOperator = currentOperator->next;
 				}
-				currentOperator = currentOperator->next;
 			}
 		}
 		operator = operator->child;
