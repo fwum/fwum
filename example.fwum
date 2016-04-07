@@ -20,8 +20,8 @@ func main(argc : int, argv : char) int
 		"a";
 		'q';
 	}
-	returnVal = 1 + 2 * 3;
+	returnVal = (1) + 2;
 	if b {
-		a(1 + 1);
+		a(1);
 	}
 }
