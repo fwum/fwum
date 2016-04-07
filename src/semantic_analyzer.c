@@ -360,6 +360,7 @@ static statement *parse_operation(token_list *tokens)
 					op2.head = current->next->next;
 					statement *expression = new(expression);
 					expression->data = new_slice("");
+					expression->next = NULL;
 					expression->type = currentOperator->operatorType;
 					expression->child = get_expression(&op1);
 					expression->child->next = get_expression(&op2);
