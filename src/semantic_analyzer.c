@@ -357,12 +357,10 @@ static statement *parse_operation(token_list *tokens)
 					}
 					op1.tail = current;
 					token_list op2 = *tokens;
-					op2.head = current->next;
+					op2.head = current->next->next;
 					statement *expression = new(expression);
-					expression->data = current->data;
+					expression->data = new_slice("");
 					expression->type = currentOperator->operatorType;
-					//print_tlist(op1);
-					//print_tlist(op2);
 					expression->child = get_expression(&op1);
 					expression->child->next = get_expression(&op2);
 					return expression;
