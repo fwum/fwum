@@ -1,7 +1,10 @@
 #include "operators.h"
 #include <stdlib.h>
+static operator_node *new_operator_node(char *data);
+static void add_next(operator_node *current, char *data);
+static operator_node* set_child(operator_node *current, char *data);
 
-operator_node *new_operator_node(char *data)
+static operator_node *new_operator_node(char *data)
 {
 	operator_node *newNode = malloc(sizeof(*newNode));
 	newNode->data = data;
@@ -10,14 +13,14 @@ operator_node *new_operator_node(char *data)
 	return newNode;
 }
 
-void add_next(operator_node *current, char *data)
+static void add_next(operator_node *current, char *data)
 {
 	operator_node *newNode = new_operator_node(data);
 	newNode->next = current->next;
 	current->next = newNode;
 }
 
-operator_node* set_child(operator_node *current, char *data)
+static operator_node* set_child(operator_node *current, char *data)
 {
 	operator_node *newNode = new_operator_node(data);
 	current->child = newNode;
