@@ -1,7 +1,5 @@
 #TODO
 
-- Have semantic analyzer deal with parentheses around expressions
-
 - Have tokenizer check for operators from the operator list
 
 - Handle End-Of-File while parsing structs
