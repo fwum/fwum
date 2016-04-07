@@ -2,6 +2,7 @@
 #include "slice.h"
 #include "util.h"
 #include "printing.h"
+#include "operators.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -9,6 +10,7 @@
 static void semantic_error(char *error, source_origin origin);
 static func_declaration *analyze_func(token_list *tokens);
 static statement *get_expression(token_list *tokens);
+static statement *parse_operation(token_list *tokens);
 
 file_contents analyze(token_list *tokens)
 {
@@ -170,6 +172,7 @@ static statement *get_expression(token_list *tokens)
 	expression->child = expression->next = NULL;
 	expression->data.data = NULL;
 	expression->data.len = 0;
+	bool foundPattern = false;
 	if(tokens->tail->data.data[0] == ';')
 	{
 		parse_token *current = tokens->head;
@@ -182,6 +185,7 @@ static statement *get_expression(token_list *tokens)
 	case SYMBOL:
 		if(current->data.data[0] == '{')
 		{
+			foundPattern = true;
 			expression->type = BLOCK;
 			tokens->head = tokens->head->next;
 			token_list body = *tokens;
@@ -230,6 +234,7 @@ static statement *get_expression(token_list *tokens)
 	case WORD:
 		if(tokens->head == tokens->tail)
 		{
+			foundPattern = true;
 			if(equals_string(current->data, "break"))
 			{
 				expression->type = BREAK;
@@ -243,6 +248,7 @@ static statement *get_expression(token_list *tokens)
 			}
 		} else if(equals_string(current->data, "if") || equals_string(current->data, "while"))
 		{
+			foundPattern = true;
 			if(equals_string(current->data, "if"))
 				expression->type = IF;
 			else
@@ -259,6 +265,7 @@ static statement *get_expression(token_list *tokens)
 			expression->child->next = get_expression(tokens);
 		} else if(current->next->data.data[0] == '(')
 		{
+			foundPattern = true;
 			expression->type = FUNC_CALL;
 			expression->data = current->data;
 			int paren_level = 0;
@@ -303,6 +310,7 @@ static statement *get_expression(token_list *tokens)
 	case NUMBER:
 		if(tokens->head == tokens->tail)
 		{
+			foundPattern = true;
 			expression->type = NUM;
 			expression->data = tokens->head->data;
 		}
@@ -310,6 +318,7 @@ static statement *get_expression(token_list *tokens)
 	case STRING_LIT:
 		if(tokens->head == tokens->tail)
 		{
+			foundPattern = true;
 			expression->type = STRING;
 			expression->data = tokens->head->data;
 		}
@@ -317,12 +326,54 @@ static statement *get_expression(token_list *tokens)
 	case CHAR_LIT:
 		if(tokens->head == tokens->tail)
 		{
+			foundPattern = true;
 			expression->type = CHAR;
 			expression->data = tokens->head->data;
 		}
 		break;
 	}
+	if(!foundPattern)
+	{
+		statement *s = parse_operation(tokens);
+		dump_node(s, 0);
+	}
 	return expression;
+}
+
+static statement *parse_operation(token_list *tokens)
+{
+	operator_node *operator = get_node();
+	while(operator->child != NULL)
+	{
+		for(parse_token *current = tokens->head; current != tokens->tail; current = current->next)
+		{
+			operator_node *currentOperator = operator;
+			while(currentOperator != NULL)
+			{
+				if(equals_string(current->data, currentOperator->data))
+				{
+					token_list op1 = *tokens;
+					op1.tail = current;
+					current = op1.head;
+					while(current->next != op1.tail)
+					{
+						current = current->next;
+					}
+					op1.tail = current;
+					token_list op2 = *tokens;
+					op2.head = current->next;
+					statement *expression = new(expression);
+					expression->data = current->data;
+					expression->type = currentOperator->operatorType;
+					expression->child = get_expression(&op1);
+					expression->child->next = get_expression(&op2);
+					return expression;
+				}
+				currentOperator = currentOperator->next;
+			}
+		}
+	}
+	return NULL;
 }
 
 static void semantic_error(char *error, source_origin origin)
