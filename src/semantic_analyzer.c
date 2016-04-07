@@ -361,8 +361,8 @@ static statement *parse_operation(token_list *tokens)
 					statement *expression = new(expression);
 					expression->data = current->data;
 					expression->type = currentOperator->operatorType;
-					print_tlist(op1);
-					print_tlist(op2);
+					//print_tlist(op1);
+					//print_tlist(op2);
 					expression->child = get_expression(&op1);
 					expression->child->next = get_expression(&op2);
 					return expression;
