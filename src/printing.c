@@ -5,6 +5,7 @@
 Print an AST node to stdout (recursive)
 */
 void dump_node(statement *state, int indentation);
+static void print_token(parse_token *current);
 
 /*
 Print a list of tokens to stdout, mostly for debugging purposes
@@ -16,25 +17,31 @@ void print_tlist(token_list list)
     parse_token *current = list.head;
     while(current != list.tail)
     {
-        switch(current->type)
-        {
-        case SYMBOL:
-            printf("SYMBOL: %s\n", evaluate(current->data));
-            break;
-         case WORD:
-            printf("WORD: %s\n", evaluate(current->data));
-            break;
-        case NUMBER:
-            printf("NUMBER: %s\n", evaluate(current->data));
-            break;
-        case STRING_LIT:
-            printf("STRING: %s\n", evaluate(current->data));
-            break;
-        case CHAR_LIT:
-            printf("CHAR: %s\n", evaluate(current->data));
-            break;
-        }
+        print_token(current);
         current = current->next;
+    }
+    print_token(current);
+}
+
+static void print_token(parse_token *current)
+{
+    switch(current->type)
+    {
+    case SYMBOL:
+        printf("SYMBOL: %s\n", evaluate(current->data));
+        break;
+     case WORD:
+        printf("WORD: %s\n", evaluate(current->data));
+        break;
+    case NUMBER:
+        printf("NUMBER: %s\n", evaluate(current->data));
+        break;
+    case STRING_LIT:
+        printf("STRING: %s\n", evaluate(current->data));
+        break;
+    case CHAR_LIT:
+        printf("CHAR: %s\n", evaluate(current->data));
+        break;
     }
 }
 
