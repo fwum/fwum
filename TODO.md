@@ -13,3 +13,7 @@
 - Implement for loops
 
 - Basic C backend
+
+- Parse pointers correctly
+
+- Make sure the dot operator is converted into the pointer operator where necessary
