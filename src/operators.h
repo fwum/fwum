@@ -9,8 +9,5 @@ struct operator_node {
 	operator_node *child;
 };
 
-operator_node *new_operator_node(char *data);
-void add_next(operator_node *current, char *data);
-operator_node* set_child(operator_node *current, char *data);
 operator_node* get_node();
 #endif
