@@ -3,7 +3,7 @@ OBJ_FILES := $(addprefix obj/,$(notdir $(C_FILES:.c=.o)))
 LD_FLAGS :=
 CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized
 CC := gcc
-run: bin/out obj/ bin/
+run: obj/ bin/ bin/out
 	bin/./out example.fwum
 
 debug: bin/dbg
