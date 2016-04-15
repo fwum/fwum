@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 #ifdef DO_TESTS
 int tests()
 {
-
+	ASSERT(true, "Test framework works");
 	return 0;
 }
 #endif
