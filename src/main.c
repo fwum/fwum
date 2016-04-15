@@ -6,8 +6,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef DO_TESTS
+#include "test_utils.h"
+int tests();
+#endif
+
 int main(int argc, char **argv)
 {
+	#ifdef DO_TESTS
+	int test_results = tests();
+	if(test_results != 0)
+		return test_results;
+	#endif
 	if(argc <= 1)
 	{
 		printf("No input files.\n");
@@ -32,3 +42,11 @@ int main(int argc, char **argv)
 		return 0;
 	}
 }
+
+#ifdef DO_TESTS
+int tests()
+{
+
+	return 0;
+}
+#endif
