@@ -1,5 +1,17 @@
 #TODO
 
+- Create boxing and unboxing functions for the new data structures
+
+- Create a hashmap data structure
+
+- Create a growable array data structure
+
+- Implement tests for the data structures
+
+- Implement tests for the tokenizer
+
+- Create intermediate step between the tokenizer and the semantic analyzer that is syntax aware
+
 - Have tokenizer check for operators from the operator list
 
 - Implement index operator
