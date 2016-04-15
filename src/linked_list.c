@@ -1,3 +1,4 @@
+#include "linked_list.h"
 #include "util.h"
 #include "stdlib.h"
 
@@ -30,6 +31,7 @@ void ll_add_last(linked_list *list, void *value)
 
 void *ll_remove_last(linked_list *list)
 {
+	void *data = list->tail->data;
 	if(list->head == list->tail)
 	{
 		free(list->head);
@@ -42,10 +44,12 @@ void *ll_remove_last(linked_list *list)
 		list->tail->next = NULL;
 		free(tail);
 	}
+	return data;
 }
 
 void *ll_remove_first(linked_list *list)
 {
+	void *data = list->head->data;
 	if(list->head == list->tail)
 	{
 		free(list->head);
@@ -58,4 +62,5 @@ void *ll_remove_first(linked_list *list)
 		list->head->next = NULL;
 		free(head);
 	}
+	return data;
 }
