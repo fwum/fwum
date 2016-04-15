@@ -17,14 +17,7 @@ obj/:
 
 clean:
 	rm -r obj/
-<<<<<<< HEAD
-	mkdir obj/
-	./rmsafe.sh out*
-	./rmsafe.sh output*
-	./rmsafe.sh dbg*
-=======
 	rm -r bin/
->>>>>>> simple_parser
 
 bin/dbg: $(OBJ_FILES)
 	$(CC) $(LD_FLAGS) -g -o $@ $^
