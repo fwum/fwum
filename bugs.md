@@ -1,1 +1,2 @@
-- Declarations and typedefs should be hoisted to the top of the file
+- Operation parsing with parens segfaults for seemingly no reason
+- Operations that start with a function call are not parsed

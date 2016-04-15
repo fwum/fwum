@@ -1,7 +1,7 @@
-#include "parser.h"
-#include "ast.h"
-#include "cbackend.h"
+#include "tokenizer.h"
+#include "semantic_analyzer.h"
 #include "io.h"
+#include "printing.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,11 +18,17 @@ int main(int argc, char **argv)
 		FILE* input = fopen(argv[1], "r");
 		char* data = read_file(input);
 		fclose(input);
-		ast_node *root = parse(data, argv[1);
-		free(data);
-		if(argc >= 3 && strcmp(argv[2], "devel") == 0)
-			printf("%s\n", to_string(root));
-		compile(root, stdout);
+		token_list tokens = parse(data, argv[1]);
+		token_list backup = tokens;
+		file_contents contents = analyze(&tokens);
+		parse_token *current = backup.head;
+		while(current != NULL)
+		{
+			free(current);
+			current = current->next;
+		}
+		dump(contents);
+		print_tlist(tokens);
 		return 0;
 	}
 }

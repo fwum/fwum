@@ -1,20 +1,44 @@
 #ifndef SLICE_H_
 #define SLICE_H_
-typedef struct slice
+#include <stdbool.h>
+#include "util.h"
+DEFSTRUCT(slice);
+/*
+Create a slice of a string for much faster string manipulation
+Use pointer math to offset the beginning
+*/
+struct slice
 {
 	char* data;
-	int begin, end;
-} slice;
+	int len;
+};
+/*
+Create a new slice that is identical to the parameter string
+*/
 slice new_slice(char* string);
-slice make_slice(char* string, int start, int end);
-slice clone_slice(slice s, int newStart, int newEnd);
+/*
+Create a new slice that starts with the provided pointer with the given length
+*/
+slice make_slice(char* string, int length);
+/*
+Checks if every character in each slice matches to the same character in the same position
+*/
 bool equals(slice s1, slice s2);
+/*
+Checks if every character in the slice matches every character in the string
+*/
 bool equals_string(slice s1, char* data);
+/*
+Checks if s1 starts with s2
+*/
 bool starts_with(slice s1, slice s2);
+/*
+Checks to see if the slice contains the character
+*/
 bool slice_contains(slice s1, char c);
+/*
+Convert the slice to a string separate from the source
+Useful if the string will be destroyed or the slice must be printed to stdout
+*/
 char* evaluate(slice s1);
-bool is_whitespace(char c);
-bool is_identifier(char c);
-char get(slice s, int position);
-char get_last(slice s);
 #endif

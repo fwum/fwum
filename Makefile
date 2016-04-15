@@ -3,32 +3,34 @@ OBJ_FILES := $(addprefix obj/,$(notdir $(C_FILES:.c=.o)))
 LD_FLAGS :=
 CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized
 CC := gcc
-run: out
-	./out example.fwum
+run: obj/ bin/ bin/out
+	bin/./out example.fwum
 
-devel: out
-	./out example.fwum devel
+debug: bin/dbg
+	gdb bin/dbg
 
-exec:
-	./out example.fwum | gcc -xc - -o output
-	./output
+bin/:
+	mkdir bin
 
-debug: dbg
-	gdb dbg
+obj/:
+	mkdir obj
 
 clean:
 	rm -r obj/
+<<<<<<< HEAD
 	mkdir obj/
 	./rmsafe.sh out*
 	./rmsafe.sh output*
 	./rmsafe.sh dbg*
+=======
+	rm -r bin/
+>>>>>>> simple_parser
 
-dbg: $(OBJ_FILES)
+bin/dbg: $(OBJ_FILES)
 	$(CC) $(LD_FLAGS) -g -o $@ $^
 
-out: $(OBJ_FILES)
+bin/out: $(OBJ_FILES)
 	$(CC) $(LD_FLAGS) -o $@ $^
 
 obj/%.o: src/%.c
-	mkdir -p obj
 	$(CC) $(CC_FLAGS) -c -o $@ $<

@@ -1,56 +1,21 @@
 #TODO
 
-##Parser
+- Have tokenizer check for operators from the operator list
 
-- Parse ~~basic control flow such as `if`, `while`, and~~ `for`
+- Implement index operator
 
-- Parse export top-level blocks
+- Parse variable initialization correctly
 
-- Better parser errors
+- Handle End-Of-File while parsing structs
 
-- Better documentation for the parser
+- Implement `break`, `continue`, and `return`
 
-- Fix widespread memory leaks
+- Implement type requirements and member requirements
 
+- Implement for loops
 
-##Semantic Analyzer
+- Basic C backend
 
-- Check for undeclared variables or functions
+- Parse pointers correctly
 
-- Retrieve type of a given expression
-
-- Type inference for bindings
-
-- Generate errors for mismatched types
-
-##Standard Library
-
-- Basic wrappers around C standard library functions currently used in the compiler
-
-##General Backend
-
-- Parse AST back from a string
-
-- Create object files with manifests of the contents
-
-- Retrieve object files on compiler search path
-
-##Optimizer / Analyzer
-
-- Remove unnecessary statements
-
-- Provide types to type-inference binds
-
-##C Backend
-
-- Conversion of AST to C code
-
-##JS Backend
-
-- Conversion of AST to Javascript code
-
-##Tests
-
-- Basic unit tests for the parser
-
-- Basic unit tests for the symbol table
+- Make sure the dot operator is converted into the pointer operator where necessary

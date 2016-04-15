@@ -2,22 +2,28 @@
 /*
 MULTI LINE COMMENT
 */
-/* /*
-NESTED COMMENT
-*/ */
-cimport stdio.h;
+//cimport stdio.h;
 
 struct point {
 	x : int;
 	y : int;
 }
 
-int main()
+func main(argc : int, argv : char) int
 {
-	let a : point;
-	a.x = 5;
-	a.y = 10;
-	let b : int = 5;
-	printf("%d", 2);
-	return 0;
+	if a {
+		while a {
+			if c {
+				break;
+			}
+		}
+		"a";
+		'q';
+	}
+	returnVal = ((1) + 2);
+	returnVal = 1 + 2 * 3;
+	returnVal = (1 + 2) * 3;
+	if b {
+		(a(1));
+	}
 }

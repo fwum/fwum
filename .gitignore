@@ -1,10 +1,6 @@
 /obj/
-out.*
-out
+/bin/
 /.vs/
 /FwumDeLang/Debug/
 /Debug/
-output.*
-output
-dbg.*
-dbg
+out.exe.stackdump
