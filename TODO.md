@@ -1,7 +1,5 @@
 #TODO
 
-- Create boxing and unboxing functions for the new data structures
-
 - Create a hashmap data structure
 
 - Create a growable array data structure
