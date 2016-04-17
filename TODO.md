@@ -1,5 +1,7 @@
 #TODO
 
+- Create an iterator for linked lists
+
 - Create a hashmap data structure
 
 - Create a growable array data structure
