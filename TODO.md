@@ -2,7 +2,7 @@
 
 - Create an iterator for linked lists
 
-- Create a hashmap data structure
+	- Change iterator implementation to allow for reversable iteration
 
 - Create a growable array data structure
 
