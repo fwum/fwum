@@ -13,7 +13,7 @@ struct hash_entry {
 	void *value;
 };
 struct hash_map {
-	linked_list entries[HAHSMAP_ENTRY_LENGTH];
+	linked_list entries[HASHMAP_ENTRY_LENGTH];
 };
 
 hash_map *hm_new();
