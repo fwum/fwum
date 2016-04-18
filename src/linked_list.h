@@ -1,6 +1,8 @@
 #ifndef LL_H_
 #define LL_H_
 #include "util.h"
+#include <stdbool.h>
+
 DEFSTRUCT(linked_list);
 DEFSTRUCT(linked_node);
 DEFSTRUCT(linked_iter);
