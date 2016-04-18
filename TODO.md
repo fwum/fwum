@@ -33,3 +33,5 @@
 - Parse pointers correctly
 
 - Make sure the dot operator is converted into the pointer operator where necessary
+
+- Implement preprocessor that runs between the tokenizer and semantic analyzer that evaluates directives and imports external sources
