@@ -84,7 +84,7 @@ void *ll_iter_next(linked_iter *iter)
 	if(iter->current == NULL)
 	{
 		return NULL;
-	} 
+	}
 	else
 	{
 		void *value = iter->current->data;
@@ -94,7 +94,12 @@ void *ll_iter_next(linked_iter *iter)
 }
 
 void *ll_iter_prev(linked_iter *iter);
-bool ll_iter_has_next(linked_iter *iter);
+
+bool ll_iter_has_next(linked_iter *iter)
+{
+	return iter->current != NULL;
+}
+
 bool ll_iter_has_prev(linked_iter *iter);
 void ll_iter_add_after(linked_iter *iter, void *data);
 void ll_iter_add_before(linked_iter *iter, void *data);
