@@ -180,7 +180,6 @@ static statement *get_expression(token_list *tokens)
 			current = current->next;
 		tokens->tail = current;
 	}
-	printf("*************\n");
 	while(tokens->head->data.data[0] == '(' && tokens->tail->data.data[0] == ')')
 	{
 		tokens->head = tokens->head->next;
