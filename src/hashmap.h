@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 DEFSTRUCT(hash_entry);
-DEFSTRUCT(hashmap);
+DEFSTRUCT(hash_map);
 
 #define HASHMAP_ENTRY_LENGTH 1024
 
