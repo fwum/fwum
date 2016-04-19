@@ -52,13 +52,14 @@ struct test_set {
 };
 
 #define DO_TEST_SET(input_name) do {char *name = (input_name); printf("Test set: %s\n", name); current_test.name = name; current_test.passed = 0; current_test.failed = 0; } while(0);
-#define END_TEST_SET() printf("%s finished, with %d tests passing and %d tests failing.\n**********************\n", current_test.name, current_test.passed, current_test.failed);
+#define END_TEST_SET() do { all_tests.passed += current_test.passed; all_tests.failed += current_test.failed; printf("%s finished, with %d tests passing and %d tests failing.\n**********************\n", current_test.name, current_test.passed, current_test.failed); } while (0);
 
 #define ASSERT(value, test_name) do { if(!(value)) { printf("FAILED"); current_test.failed += 1; } else { printf("PASSED"); current_test.passed += 1;} \
 	printf(":\t%s\n", test_name);} \
 	while(0);
 
 static test_set current_test;
+static test_set all_tests;
 
 static int *box_int(int value)
 {
@@ -82,6 +83,7 @@ static int tests()
 	ll_clear(&list);
 	ASSERT(ll_empty(&list), "Linked list clear function");
 	END_TEST_SET();
-	return 0;
+	printf("Total test results: %d passed, %d failed\n", all_tests.passed, all_tests.failed);
+	return all_tests.failed != 0; //return an error code
 }
 #endif
