@@ -100,6 +100,22 @@ bool ll_iter_has_next(linked_iter *iter)
 	return iter->current != NULL;
 }
 
+bool ll_empty(linked_list *list)
+{
+	return list->head == NULL;
+}
+
+void ll_clear(linked_list *list)
+{
+	list->tail = NULL;
+	while(list->head != NULL)
+	{
+		linked_node *next = list->head->next;
+		free(list->head);
+		list->head = next;
+	}
+}
+
 bool ll_iter_has_prev(linked_iter *iter);
 void ll_iter_add_after(linked_iter *iter, void *data);
 void ll_iter_add_before(linked_iter *iter, void *data);
