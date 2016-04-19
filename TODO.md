@@ -4,8 +4,6 @@
 
 	- Change iterator implementation to allow for reversable iteration
 
-- Create a growable array data structure
-
 - Implement tests for the data structures
 
 - Implement tests for the tokenizer
