@@ -7,7 +7,6 @@
 #include <string.h>
 
 #ifdef DO_TESTS
-#include "test_utils.h"
 static int tests();
 #endif
 
@@ -46,6 +45,10 @@ int main(int argc, char **argv)
 #ifdef DO_TESTS
 #include "linked_list.h"
 #include "stdio.h"
+#define ASSERT(value, test_name) do { printf("Test:\t%s\t", (test_name)); \
+	if(!(value)) { printf("FAILED\n"); exit(-1); } else { printf("PASSED\n"); } } \
+	while(0);
+
 static int *box_int(int value)
 {
 	int *ptr = new(ptr);
