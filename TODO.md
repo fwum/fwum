@@ -2,8 +2,6 @@
 
 - Change iterator implementation to allow for reversable iteration
 
-- Implement tests for the data structures
-
 - Implement tests for the tokenizer
 
 - Document data structures
