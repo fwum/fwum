@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 
 #ifdef DO_TESTS
 #include "linked_list.h"
+#include "hashmap.h"
 #include "stdio.h"
 DEFSTRUCT(test_set);
 struct test_set {
@@ -108,6 +109,15 @@ static int tests()
 		test_assert(*((int*)ll_iter_next(&iterator)) == 6, "Linked list iterator");
 		ll_clear(&list);
 		test_assert(ll_empty(&list), "Linked list clear function");
+		end_test_set();
+	}
+	{
+		start_test_set("Hash map");
+		hash_map *map = hm_new();
+		for(int i = 0; i < 10; i++)
+			hm_put(map, i, box_int(i * i));
+		test_assert(*((int*)hm_get(map, 5)) == 25, "Hash map put and get");
+		test_assert(!hm_has(map, 11), "Hash map contains");
 		end_test_set();
 	}
 	printf("Total test results: %d passed, %d failed\n", all_tests.passed, all_tests.failed);
