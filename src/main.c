@@ -8,7 +8,7 @@
 
 #ifdef DO_TESTS
 #include "test_utils.h"
-int tests();
+static int tests();
 #endif
 
 int main(int argc, char **argv)
@@ -44,9 +44,24 @@ int main(int argc, char **argv)
 }
 
 #ifdef DO_TESTS
-int tests()
+#include "linked_list.h"
+#include "stdio.h"
+static int *box_int(int value)
+{
+	int *ptr = new(ptr);
+	*ptr = value;
+	return ptr;
+}
+
+static int tests()
 {
 	ASSERT(true, "Test framework works");
+	linked_list list = {NULL, NULL};
+	ll_add_first(&list, box_int(5));
+	ll_add_first(&list, box_int(6));
+	linked_iter iterator = ll_iter_head(&list);
+	ASSERT(*((int*)ll_iter_next(&iterator)) == 6, "Linked list iterator");
+	
 	return 0;
 }
 #endif
