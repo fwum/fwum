@@ -101,7 +101,7 @@ static int tests()
 	}
 	{
 		start_test_set("Linked List");
-		linked_list list = {NULL, NULL};
+		linked_list list = ll_new();
 		test_assert(ll_empty(&list), "Linked list empty function");
 		ll_add_first(&list, box_int(5));
 		ll_add_first(&list, box_int(6));

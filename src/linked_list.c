@@ -2,6 +2,13 @@
 #include "util.h"
 #include "stdlib.h"
 
+linked_list ll_new()
+{
+	linked_list list;
+	list.head = list.tail = NULL;
+	return list;
+}
+
 void ll_add_first(linked_list *list, void *value)
 {
 	linked_node *node = new(node);

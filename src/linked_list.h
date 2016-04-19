@@ -18,6 +18,7 @@ struct linked_iter {
 	linked_node *current;
 };
 
+linked_list ll_new();
 void ll_add_first(linked_list *list, void *value);
 void ll_add_last(linked_list *list, void *value);
 void *ll_remove_last(linked_list *list);
