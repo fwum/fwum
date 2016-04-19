@@ -1,8 +1,6 @@
 #TODO
 
-- Create an iterator for linked lists
-
-	- Change iterator implementation to allow for reversable iteration
+- Change iterator implementation to allow for reversable iteration
 
 - Implement tests for the data structures
 
