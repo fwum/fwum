@@ -51,13 +51,6 @@ struct test_set {
 	int passed, failed;
 };
 
-#define DO_TEST_SET(input_name) do {char *name = (input_name); printf("Test set: %s\n", name); current_test.name = name; current_test.passed = 0; current_test.failed = 0; } while(0);
-#define END_TEST_SET() do { all_tests.passed += current_test.passed; all_tests.failed += current_test.failed; printf("%s finished, with %d tests passing and %d tests failing.\n**********************\n", current_test.name, current_test.passed, current_test.failed); } while (0);
-
-#define ASSERT(value, test_name) do { if(!(value)) { printf("FAILED"); current_test.failed += 1; } else { printf("PASSED"); current_test.passed += 1;} \
-	printf(":\t%s\n", test_name);} \
-	while(0);
-
 static test_set current_test;
 static test_set all_tests;
 
@@ -68,21 +61,55 @@ static int *box_int(int value)
 	return ptr;
 }
 
+static void start_test_set(char *name) 
+{
+	printf("Test set: %s\n", name);
+	current_test.name = name;
+	current_test.passed = 0;
+	current_test.failed = 0;
+}
+
+static void end_test_set() 
+{
+	all_tests.passed += current_test.passed;
+	all_tests.failed += current_test.failed;
+	printf("%s finished, with %d tests passing and %d tests failing.\n**********************\n", current_test.name, current_test.passed, current_test.failed);
+}
+
+static void test_assert(bool condition, char *test_name)
+{
+	if(!condition) 
+	{ 
+		printf("FAILED"); 
+		current_test.failed += 1; 
+	} 
+	else 
+	{ 
+		printf("PASSED"); 
+		current_test.passed += 1;
+	}
+	printf(":\t%s\n", test_name);
+}
+
 static int tests()
 {
-	DO_TEST_SET("Test Framework");
-	ASSERT(true, "Test framework works");
-	END_TEST_SET()
-	DO_TEST_SET("Linked List");
-	linked_list list = {NULL, NULL};
-	ASSERT(ll_empty(&list), "Linked list empty function");
-	ll_add_first(&list, box_int(5));
-	ll_add_first(&list, box_int(6));
-	linked_iter iterator = ll_iter_head(&list);
-	ASSERT(*((int*)ll_iter_next(&iterator)) == 6, "Linked list iterator");
-	ll_clear(&list);
-	ASSERT(ll_empty(&list), "Linked list clear function");
-	END_TEST_SET();
+	{
+		start_test_set("Test Framework");
+		test_assert(true, "Test framework works");
+		end_test_set();
+	}
+	{
+		start_test_set("Linked List");
+		linked_list list = {NULL, NULL};
+		test_assert(ll_empty(&list), "Linked list empty function");
+		ll_add_first(&list, box_int(5));
+		ll_add_first(&list, box_int(6));
+		linked_iter iterator = ll_iter_head(&list);
+		test_assert(*((int*)ll_iter_next(&iterator)) == 6, "Linked list iterator");
+		ll_clear(&list);
+		test_assert(ll_empty(&list), "Linked list clear function");
+		end_test_set();
+	}
 	printf("Total test results: %d passed, %d failed\n", all_tests.passed, all_tests.failed);
 	return all_tests.failed != 0; //return an error code
 }
