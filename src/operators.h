@@ -1,9 +1,9 @@
 #ifndef OPERATOR_H_
 #define OPERATOR_H_
 #include "semantic_analyzer.h"
+#include "util.h"
 
-struct operator_node;
-typedef struct operator_node operator_node;
+DEFSTRUCT(operator_node);
 
 struct operator_node {
 	char *data;
