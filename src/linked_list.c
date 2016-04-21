@@ -4,8 +4,8 @@
 
 linked_list ll_new()
 {
-	linked_list list;
-	list.head = list.tail = NULL;
+	linked_list *list = new(list);
+	list->head = list->tail = NULL;
 	return list;
 }
 
@@ -121,6 +121,12 @@ void ll_clear(linked_list *list)
 		free(list->head);
 		list->head = next;
 	}
+}
+
+void ll_destroy(linked_list *list)
+{
+	ll_clear(list);
+	free(list);
 }
 
 bool ll_iter_has_prev(linked_iter *iter);
