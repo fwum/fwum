@@ -101,14 +101,15 @@ static int tests()
 	}
 	{
 		start_test_set("Linked List");
-		linked_list list = ll_new();
-		test_assert(ll_empty(&list), "Linked list empty function");
-		ll_add_first(&list, box_int(5));
-		ll_add_first(&list, box_int(6));
-		linked_iter iterator = ll_iter_head(&list);
+		linked_list *list = ll_new();
+		test_assert(ll_empty(list), "Linked list empty function");
+		ll_add_first(list, box_int(5));
+		ll_add_first(list, box_int(6));
+		linked_iter iterator = ll_iter_head(list);
 		test_assert(*((int*)ll_iter_next(&iterator)) == 6, "Linked list iterator");
-		ll_clear(&list);
+		ll_clear(list);
 		test_assert(ll_empty(&list), "Linked list clear function");
+		ll_destroy(list);
 		end_test_set();
 	}
 	{
