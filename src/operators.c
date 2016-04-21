@@ -1,80 +1,71 @@
 #include "operators.h"
 #include "semantic_analyzer.h"
 #include "util.h"
+#include "linked_list.h"
 #include <stdlib.h>
-static operator_node *new_operator_node(char *data, statement_type type);
-static void add_next(operator_node *current, char *data, statement_type type);
-static operator_node* set_child(operator_node *current, char *data, statement_type type);
+#include <stdarg.h>
 
+static operator_node *new_operator_node(char *data, statement_type type);
+static void add_level(linked_list *list, int number_ops, ...);
+	
 static operator_node *new_operator_node(char *data, statement_type type)
 {
 	operator_node *newNode = new(newNode);
 	newNode->data = data;
-	newNode->next = NULL;
-	newNode->child = NULL;
 	newNode->operatorType = type;
 	return newNode;
 }
 
-static void add_next(operator_node *current, char *data, statement_type type)
+linked_list* get_node()
 {
-	operator_node *newNode = new_operator_node(data, type);
-	newNode->next = current->next;
-	current->next = newNode;
+	linked_list *list = ll_new();
+	add_level(list, 2, "=", OP_ASSIGN);
+	add_level(list, 4, "||", OP_BOOL_OR, "|", OP_BIT_OR);
+	add_level(list, 4, "^^", OP_BOOL_XOR, "^", OP_BIT_XOR);
+	add_level(list, 4, "&&", OP_BOOL_AND, "&", OP_BIT_AND);
+	add_level(list, 12, "!=", OP_NOT_EQUAL, "==", OP_EQUAL, "<=", OP_LESS_EQUAL, ">=", OP_GREATER_EQUAL, "<", OP_LESS, ">", OP_GREATER);
+	add_level(list, 6, ">>", OP_SHIFT_RIGHT, ">>>", OP_BIT_SHIFT_RIGHT, "<<", OP_SHIFT_LEFT);
+	add_level(list, 6, "+", OP_ADD, "-", OP_SUB, "%", OP_MOD);
+	add_level(list, 4, "*", OP_MULT, "/", OP_DIV);
+	add_level(list, 2, "**", OP_EXP);
+	add_level(list, 2, ".", OP_MEMBER);
+	return list;
 }
 
-static operator_node* set_child(operator_node *current, char *data, statement_type type)
+static void add_level(linked_list *list, int number_args, ...)
 {
-	operator_node *newNode = new_operator_node(data, type);
-	current->child = newNode;
-	return newNode;
-}
-
-operator_node* get_node()
-{
-	operator_node *root = new_operator_node("=", OP_ASSIGN);
-	operator_node *current = set_child(root, "||", OP_BOOL_OR);
-	add_next(current, "|", OP_BIT_OR);
-	current = set_child(current, "^^", OP_BOOL_XOR);
-	add_next(current, "^", OP_BIT_XOR);
-	current = set_child(current, "&&", OP_BOOL_AND);
-	add_next(current, "&", OP_BIT_AND);
-	current = set_child(current, "!=", OP_NOT_EQUAL);
-	add_next(current, "==", OP_EQUAL);
-	add_next(current, "<=", OP_LESS_EQUAL);
-	add_next(current, ">=", OP_GREATER_EQUAL);
-	add_next(current, "<", OP_LESS);
-	add_next(current, ">", OP_GREATER);
-	current = set_child(current, ">>", OP_SHIFT_RIGHT);
-	add_next(current, ">>>", OP_BIT_SHIFT_RIGHT);
-	add_next(current, "<<", OP_SHIFT_LEFT);
-	current = set_child(current, "+", OP_ADD);
-	add_next(current, "-", OP_SUB);
-	add_next(current, "%", OP_MOD);
-	current = set_child(current, "*", OP_MULT);
-	add_next(current, "/", OP_DIV);
-	current = set_child(current, "**", OP_EXP);
-	current = set_child(current, ".", OP_MEMBER);
-	return root;
+	linked_list *current = ll_new();
+	va_list args;
+	va_start(args, number_args);
+	for(int i = 0; i < number_args; i++)
+	{
+		char *operator = va_arg(args, char*);
+		statement_type type = va_arg(args, statement_type);
+		ll_add_last(current, new_operator_node(operator, type));
+	}
+	va_end(args);
+	ll_add_last(list, current);
 }
 
 bool is_operator(slice op)
 {
-	operator_node *node = get_node();
-	while(node != NULL)
+	linked_list *outer = get_node();
+	linked_iter iterator = ll_iter_head(outer);
+	while(ll_iter_has_next(&iterator))
 	{
-		operator_node *current = node;
-		while(current != NULL)
+		linked_list *inner = ll_iter_next(ll_iter_next(&iterator));
+		linked_iter inner_iterator = ll_iter_head(inner);
+		while(ll_iter_has_next(&inner_iterator))
 		{
+			operator_node *current = ll_iter_next(&inner_iterator);
 			if(equals_string(op, current->data))
 			{
-				free(node);
+				free(current);
 				return true;
 			}
-			current = current->next;
 		}
-		node = node->child;
+		free(inner);
 	}
-	free(node);
+	free(outer);
 	return false;
 }

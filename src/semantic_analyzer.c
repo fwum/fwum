@@ -347,13 +347,13 @@ static statement *get_expression(token_list *tokens)
 
 static statement *parse_operation(token_list *tokens)
 {
-	operator_node *operator = get_node();
-	while(operator->child != NULL)
+	linked_list *operator = get_node();
+	linked_iter level = ll_iter_head(operator);
+	while(ll_iter_has_next(&level))
 	{
 		int paren_level = 0;
 		for(parse_token *current = tokens->head; current != tokens->tail; current = current->next)
 		{
-			operator_node *currentOperator = operator;
 			char currentChar = current->data.data[0];
 			if(currentChar == '(')
 				paren_level += 1;
@@ -361,8 +361,10 @@ static statement *parse_operation(token_list *tokens)
 				paren_level -= 1;
 			if(paren_level == 0)
 			{
-				while(currentOperator != NULL)
+				linked_iter level = ll_iter_head(ll_iter_next(&level));
+				while(ll_iter_has_next(&level))
 				{
+					operator_node *currentOperator = ll_iter_next(&level);
 					if(equals_string(current->data, currentOperator->data))
 					{
 						token_list op1 = *tokens;
@@ -383,11 +385,9 @@ static statement *parse_operation(token_list *tokens)
 						expression->child->next = get_expression(&op2);
 						return expression;
 					}
-					currentOperator = currentOperator->next;
 				}
 			}
 		}
-		operator = operator->child;
 	}
 	return NULL;
 }

@@ -1,2 +1,1 @@
-- Operation parsing with parens segfaults for seemingly no reason
-- Operations that start with a function call are not parsed
+- Program aggressively segfaults

@@ -2,7 +2,7 @@
 #include "util.h"
 #include "stdlib.h"
 
-linked_list ll_new()
+linked_list *ll_new()
 {
 	linked_list *list = new(list);
 	list->head = list->tail = NULL;
