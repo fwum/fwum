@@ -26,11 +26,6 @@ int main(int argc, char **argv) {
 		fclose(input);
 		linked_list *tokens = parse(data, argv[1]);
 		file_contents contents = analyze(tokens);
-		parse_token *current = backup.head;
-		while(current != NULL) {
-			free(current);
-			current = current->next;
-		}
 		dump(contents);
 		print_tlist(tokens);
 		return 0;
