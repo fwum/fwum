@@ -7,8 +7,7 @@ DEFSTRUCT(slice);
 Create a slice of a string for much faster string manipulation
 Use pointer math to offset the beginning
 */
-struct slice
-{
+struct slice {
 	char* data;
 	int len;
 };
