@@ -352,6 +352,7 @@ static statement *parse_operation(token_list *tokens)
 	while(ll_iter_has_next(&level))
 	{
 		int paren_level = 0;
+		linked_list *currentLevel = ll_iter_next(&level);
 		for(parse_token *current = tokens->head; current != tokens->tail; current = current->next)
 		{
 			char currentChar = current->data.data[0];
@@ -361,7 +362,7 @@ static statement *parse_operation(token_list *tokens)
 				paren_level -= 1;
 			if(paren_level == 0)
 			{
-				linked_iter innerMost = ll_iter_head(ll_iter_next(&level));
+				linked_iter innerMost = ll_iter_head(currentLevel);
 				while(ll_iter_has_next(&innerMost))
 				{
 					operator_node *currentOperator = ll_iter_next(&innerMost);
