@@ -10,20 +10,17 @@
 static int tests();
 #endif
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	#ifdef DO_TESTS
 	int test_results = tests();
-	if(test_results != 0)
+	if(test_results != 0) {
 		return test_results;
+	}
 	#endif
-	if(argc <= 1)
-	{
+	if(argc <= 1) {
 		printf("No input files.\n");
 		return -1;
-	}
-	else
-	{
+	} else {
 		FILE* input = fopen(argv[1], "r");
 		char* data = read_file(input);
 		fclose(input);
@@ -31,8 +28,7 @@ int main(int argc, char **argv)
 		token_list backup = tokens;
 		file_contents contents = analyze(&tokens);
 		parse_token *current = backup.head;
-		while(current != NULL)
-		{
+		while(current != NULL) {
 			free(current);
 			current = current->next;
 		}
@@ -55,45 +51,37 @@ struct test_set {
 static test_set current_test;
 static test_set all_tests;
 
-static int *box_int(int value)
-{
+static int *box_int(int value) {
 	int *ptr = new(ptr);
 	*ptr = value;
 	return ptr;
 }
 
-static void start_test_set(char *name) 
-{
+static void start_test_set(char *name) {
 	printf("Test set: %s\n", name);
 	current_test.name = name;
 	current_test.passed = 0;
 	current_test.failed = 0;
 }
 
-static void end_test_set() 
-{
+static void end_test_set() {
 	all_tests.passed += current_test.passed;
 	all_tests.failed += current_test.failed;
 	printf("%s finished, with %d tests passing and %d tests failing.\n**********************\n", current_test.name, current_test.passed, current_test.failed);
 }
 
-static void test_assert(bool condition, char *test_name)
-{
-	if(!condition) 
-	{ 
-		printf("FAILED"); 
-		current_test.failed += 1; 
-	} 
-	else 
-	{ 
-		printf("PASSED"); 
+static void test_assert(bool condition, char *test_name) {
+	if(!condition) {
+		printf("FAILED");
+		current_test.failed += 1;
+	} else {
+		printf("PASSED");
 		current_test.passed += 1;
 	}
 	printf(":\t%s\n", test_name);
 }
 
-static int tests()
-{
+static int tests() {
 	{
 		start_test_set("Test Framework");
 		test_assert(true, "Test framework works");
