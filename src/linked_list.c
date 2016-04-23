@@ -89,6 +89,7 @@ linked_iter ll_iter_head(linked_list *list) {
 	linked_iter iterator;
 	iterator.current = list->head;
 	iterator.goesForward = true;
+	iterator.origin = list;
 	return iterator;
 }
 
@@ -96,6 +97,7 @@ linked_iter ll_iter_tail(linked_list *list) {
 	linked_iter iterator;
 	iterator.current = list->tail;
 	iterator.goesForward = false;
+	iterator.origin = list;
 	return iterator;
 }
 
@@ -115,4 +117,15 @@ void *ll_iter_next(linked_iter *iter) {
 
 bool ll_iter_has_next(linked_iter *iter) {
 	return iter->current != NULL;
+}
+
+void ll_iter_clear_to_current(linked_iter *iter) {
+	if(iter->current == NULL) {
+		ll_clear(iter->origin);
+	}
+	if(iter->goesForward) {
+		iter->origin->head = iter->current;
+	} else {
+		iter->origin->tail = iter->current;
+	}
 }

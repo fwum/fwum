@@ -96,6 +96,12 @@ static int tests() {
 		test_assert(*((int*)ll_iter_next(&iterator)) == 6, "Linked list iterator");
 		ll_clear(list);
 		test_assert(ll_empty(list), "Linked list clear function");
+		iterator = ll_iter_head(list);
+		while(ll_iter_has_next(&iterator)) {
+			ll_iter_next(&iterator);
+		}
+		ll_iter_clear_to_current(&iterator);
+		test_assert(ll_empty(list), "Iterator clear to position");
 		ll_destroy(list);
 		end_test_set();
 	}
