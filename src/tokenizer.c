@@ -1,5 +1,6 @@
 #include "tokenizer.h"
 #include "slice.h"
+#include "linked_list.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -155,7 +156,6 @@ static parse_token *new_token(slice data, token_type type, char *filename, int l
     token->type = type;
     source_origin origin = {filename, line};
     token->origin = origin;
-    token->next = NULL;
     return token;
 }
 

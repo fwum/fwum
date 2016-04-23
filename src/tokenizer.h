@@ -2,6 +2,8 @@
 #define PARSER_H_
 #include "slice.h"
 #include "util.h"
+#include "linked_list.h"
+
 DEFSTRUCT(parse_token);
 DEFSTRUCT(token_list);
 DEFSTRUCT(source_origin);
