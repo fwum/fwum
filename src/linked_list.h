@@ -37,4 +37,5 @@ linked_iter ll_iter_tail(linked_list *list);
 void *ll_iter_next(linked_iter *iter);
 bool ll_iter_has_next(linked_iter *iter);
 void ll_iter_clear_to_current(linked_iter *iter);
+void ll_iter_clear_remaining(linked_iter *iter);
 #endif

@@ -160,3 +160,28 @@ void ll_iter_clear_to_current(linked_iter *iter) {
 		iter->origin->tail->next = NULL;
 	}
 }
+
+void ll_iter_clear_remaining(linked_iter *iter) {
+	if(iter->current == NULL) {
+		return;
+	}
+	if(!iter->goesForward) {
+		linked_node *current = iter->origin->head;
+		while(current->next != iter->current) {
+			linked_node *next = current->next;
+			free(current);
+			current = next;
+		}
+		iter->origin->head = iter->current;
+		iter->origin->head->prev = NULL;
+	} else {
+		linked_node *current = iter->origin->tail;
+		while(current->prev != iter->current) {
+			linked_node *prev = current->prev;
+			free(current);
+			current = prev;
+		}
+		iter->origin->tail = iter->current;
+		iter->origin->tail->next = NULL;
+	}
+}
