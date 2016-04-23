@@ -7,17 +7,15 @@
 
 static operator_node *new_operator_node(char *data, statement_type type);
 static void add_level(linked_list *list, int number_ops, ...);
-	
-static operator_node *new_operator_node(char *data, statement_type type)
-{
+
+static operator_node *new_operator_node(char *data, statement_type type) {
 	operator_node *newNode = new(newNode);
 	newNode->data = data;
 	newNode->operatorType = type;
 	return newNode;
 }
 
-linked_list* get_node()
-{
+linked_list* get_node() {
 	linked_list *list = ll_new();
 	add_level(list, 2, "=", OP_ASSIGN);
 	add_level(list, 4, "||", OP_BOOL_OR, "|", OP_BIT_OR);
@@ -32,13 +30,11 @@ linked_list* get_node()
 	return list;
 }
 
-static void add_level(linked_list *list, int number_args, ...)
-{
+static void add_level(linked_list *list, int number_args, ...) {
 	linked_list *current = ll_new();
 	va_list args;
 	va_start(args, number_args);
-	for(int i = 0; i < number_args; i++)
-	{
+	for(int i = 0; i < number_args; i++) {
 		char *operator = va_arg(args, char*);
 		statement_type type = va_arg(args, statement_type);
 		ll_add_last(current, new_operator_node(operator, type));
@@ -47,19 +43,15 @@ static void add_level(linked_list *list, int number_args, ...)
 	ll_add_last(list, current);
 }
 
-bool is_operator(slice op)
-{
+bool is_operator(slice op) {
 	linked_list *outer = get_node();
 	linked_iter iterator = ll_iter_head(outer);
-	while(ll_iter_has_next(&iterator))
-	{
+	while(ll_iter_has_next(&iterator)) {
 		linked_list *inner = ll_iter_next(ll_iter_next(&iterator));
 		linked_iter inner_iterator = ll_iter_head(inner);
-		while(ll_iter_has_next(&inner_iterator))
-		{
+		while(ll_iter_has_next(&inner_iterator)) {
 			operator_node *current = ll_iter_next(&inner_iterator);
-			if(equals_string(op, current->data))
-			{
+			if(equals_string(op, current->data)) {
 				free(current);
 				return true;
 			}
