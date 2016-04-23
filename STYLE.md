@@ -8,3 +8,5 @@ All code in Fwum should be formatted according to this style
 - Pointers should be declared as `type *name`
 
 - Null checks should be `if(name == NULL)` to keep clarity
+
+- All loop or conditional bodies should be enclosed in brackets
