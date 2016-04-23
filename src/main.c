@@ -24,9 +24,8 @@ int main(int argc, char **argv) {
 		FILE* input = fopen(argv[1], "r");
 		char* data = read_file(input);
 		fclose(input);
-		token_list tokens = parse(data, argv[1]);
-		token_list backup = tokens;
-		file_contents contents = analyze(&tokens);
+		linked_list *tokens = parse(data, argv[1]);
+		file_contents contents = analyze(tokens);
 		parse_token *current = backup.head;
 		while(current != NULL) {
 			free(current);
