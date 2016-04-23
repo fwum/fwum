@@ -361,10 +361,10 @@ static statement *parse_operation(token_list *tokens)
 				paren_level -= 1;
 			if(paren_level == 0)
 			{
-				linked_iter level = ll_iter_head(ll_iter_next(&level));
-				while(ll_iter_has_next(&level))
+				linked_iter innerMost = ll_iter_head(ll_iter_next(&level));
+				while(ll_iter_has_next(&innerMost))
 				{
-					operator_node *currentOperator = ll_iter_next(&level);
+					operator_node *currentOperator = ll_iter_next(&innerMost);
 					if(equals_string(current->data, currentOperator->data))
 					{
 						token_list op1 = *tokens;
