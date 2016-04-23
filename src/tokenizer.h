@@ -20,14 +20,10 @@ struct parse_token {
     slice data;
     token_type type;
     source_origin origin;
-    parse_token *next;
-};
-struct token_list {
-    parse_token *head, *tail;
 };
 
 /*
 Convert the text data from the file filename into a list of tokens
 */
-token_list parse(char *data, char *filename);
+linked_list *parse(char *data, char *filename);
 #endif

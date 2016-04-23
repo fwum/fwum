@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 static parse_token *new_token(slice data, token_type type, char *filename, int line);
-static void token_add(token_list *list, parse_token *token);
+static void token_add(linked_list *list, parse_token *token);
 static bool is_whitespace(char c);
 static bool is_alpha(char c);
 static bool is_num(char c);
@@ -14,8 +14,8 @@ static void tokenizer_error(char *error, char *file, int line);
 /*
 SYMBOL, WORD, NUMBER, START, END, STRING_LIT, CHAR_LIT
 */
-token_list parse(char *data, char *filename) {
-    token_list list = {NULL, NULL}; //Initialize the token list
+linked_list *parse(char *data, char *filename) {
+    linked_list *list = ll_new();
     int length = strlen(data);
     int token_begin = 0;
     int source_line = 1; //keep track of the source line for error messages later
@@ -67,19 +67,19 @@ token_list parse(char *data, char *filename) {
                 parse_mode = M_CHAR;
                 token_begin = i + 1;
             } else {
-                token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
+                token_add(list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
             }
             break;
         //Continue until the end of the word is reached, then add it as a token
         case M_WORD:
             if(is_whitespace(data[i])) {
                 int length = i - token_begin;
-                token_add(&list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
+                token_add(list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
                 parse_mode = M_NONE;
             } else if(!(is_alpha(data[i]) || is_num(data[i]) || data[i] == '_')) {
                 int length = i - token_begin;
-                token_add(&list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
-                token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
+                token_add(list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
+                token_add(list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
                 parse_mode = M_NONE;
             } else if(data[i] == '\"') {
                 parse_mode = M_STRING;
@@ -88,7 +88,7 @@ token_list parse(char *data, char *filename) {
                 parse_mode = M_CHAR;
                 token_begin = i + 1;
             } else if(i == length - 1) {
-                token_add(&list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
+                token_add(list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
                 parse_mode = M_NONE;
             }
             break;
@@ -97,12 +97,12 @@ token_list parse(char *data, char *filename) {
             if(is_whitespace(data[i]))
             {
                 int length = i - token_begin;
-                token_add(&list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
+                token_add(list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
                 parse_mode = M_NONE;
             } else if(!(is_num(data[i]) || data[i] == '.')) {
                 int length = i - token_begin;
-                token_add(&list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
-                token_add(&list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
+                token_add(list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
+                token_add(list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
                 parse_mode = M_NONE;
             } else if(data[i] == '\"') {
                 parse_mode = M_STRING;
@@ -111,7 +111,7 @@ token_list parse(char *data, char *filename) {
                 parse_mode = M_CHAR;
                 token_begin = i + 1;
             } else if(i == length - 1) {
-                token_add(&list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
+                token_add(list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
                 parse_mode = M_NONE;
             }
             break;
@@ -121,7 +121,7 @@ token_list parse(char *data, char *filename) {
                 tokenizer_error("Encountered newline while parsing string literal.", filename, source_line);
             } else if(data[i] == '\"' && data[i - 1] != '\\') {
                 int length = i - token_begin;
-                token_add(&list, new_token(make_slice(&data[token_begin], length), STRING_LIT, filename, source_line));
+                token_add(list, new_token(make_slice(&data[token_begin], length), STRING_LIT, filename, source_line));
                 parse_mode = M_NONE;
             } else if(i == length - 1) {
                 tokenizer_error("Unexpected end of file while parsing string literal", filename, source_line);
@@ -131,7 +131,7 @@ token_list parse(char *data, char *filename) {
         case M_CHAR:
             if(data[i] == '\'') {
                 int length = i - token_begin;
-                token_add(&list, new_token(make_slice(&data[token_begin], length), CHAR_LIT, filename, source_line));
+                token_add(list, new_token(make_slice(&data[token_begin], length), CHAR_LIT, filename, source_line));
                 parse_mode = M_NONE;
             } else if(i == length - 1) {
                 tokenizer_error("Unexpected end of file while parsing character literal", filename, source_line);
@@ -159,16 +159,8 @@ static parse_token *new_token(slice data, token_type type, char *filename, int l
     return token;
 }
 
-static void token_add(token_list *list, parse_token *token) {
-    if(list->head == NULL) {
-        list->head = token;
-    } else if(list->tail == NULL) {
-        list->head->next = token;
-        list->tail = token;
-    } else {
-        list->tail->next = token;
-        list->tail = token;
-    }
+static void token_add(linked_list *list, parse_token *token) {
+    ll_add_last(list, token);
 }
 
 static bool is_whitespace(char c) {
