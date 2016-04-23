@@ -16,6 +16,7 @@ struct linked_list {
 };
 struct linked_iter {
 	linked_node *current;
+	bool goesForward;
 };
 
 linked_list *ll_new();
@@ -30,10 +31,5 @@ void ll_destroy(linked_list *list);
 linked_iter ll_iter_head(linked_list *list);
 linked_iter ll_iter_tail(linked_list *list);
 void *ll_iter_next(linked_iter *iter);
-void *ll_iter_prev(linked_iter *iter);
 bool ll_iter_has_next(linked_iter *iter);
-bool ll_iter_has_prev(linked_iter *iter);
-void ll_iter_add_after(linked_iter *iter, void *data);
-void ll_iter_add_before(linked_iter *iter, void *data);
-void ll_iter_remove(linked_iter *iter);
 #endif
