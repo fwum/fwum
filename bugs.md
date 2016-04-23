@@ -1,1 +1,1 @@
-- Program segfaults at some point
+- Program segfaults in the semantic analyzer
