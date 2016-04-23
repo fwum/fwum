@@ -136,17 +136,23 @@ bool ll_iter_has_next(linked_iter *iter) {
 	return iter->current != NULL;
 }
 
+#include "stdio.h"
 void ll_iter_clear_to_current(linked_iter *iter) {
 	if(iter->current == NULL) {
 		ll_clear(iter->origin);
 	}
+	if(ll_empty(iter->origin)) {
+		return;
+	}
 	if(iter->goesForward) {
 		linked_node *current = iter->origin->head;
 		while(current->next != iter->current) {
+			printf("!!\n");
 			linked_node *next = current->next;
 			free(current);
 			current = next;
 		}
+		printf("!!\n");
 		iter->origin->head = iter->current;
 		iter->origin->head->prev = NULL;
 	} else {
