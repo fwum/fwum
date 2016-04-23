@@ -12,6 +12,15 @@ linked_list *ll_new() {
 	return list;
 }
 
+linked_list *ll_duplicate(linked_list *list) {
+	linked_iter iterator = ll_iter_head(list);
+	linked_list *newList = ll_new();
+	while(ll_iter_has_next(&iterator)) {
+		ll_add_first(newList, ll_iter_next(&iterator));
+	}
+	return newList;
+}
+
 void ll_add_first(linked_list *list, void *value) {
 	linked_node *node = new(node);
 	node->data = value;
