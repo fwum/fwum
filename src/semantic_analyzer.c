@@ -3,23 +3,25 @@
 #include "util.h"
 #include "printing.h"
 #include "operators.h"
+#include "linked_list.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 static void semantic_error(char *error, source_origin origin);
-static func_declaration *analyze_func(token_list *tokens);
-static statement *get_expression(token_list *tokens);
-static statement *parse_operation(token_list *tokens);
+static func_declaration *analyze_func(linked_list *tokens);
+static statement *get_expression(linked_list *tokens);
+static statement *parse_operation(linked_list *tokens);
 
-file_contents analyze(token_list *tokens) {
+file_contents analyze(linked_list *tokens) {
 	file_contents contents = {NULL, NULL, NULL, NULL};
-	parse_token *current = tokens->head;
-	while(current != NULL) {
+	linked_iter iterator = ll_iter_head(tokens);
+	while(ll_iter_has_next(&iterator)) {
+		parse_token *current = ll_iter_next(&iterator);
 		if(equals(current->data, new_slice("struct"))) {
-			tokens->head = current->next;
+			current = ll_iter_next(&iterator);
+			ll_iter_clear_to_current(&iterator);
 			struct_declaration *dec = analyze_struct(tokens);
-			current = tokens->head;
 			if(contents.head == NULL)
 				contents.head = dec;
 			else if(contents.tail == NULL) {
@@ -30,9 +32,9 @@ file_contents analyze(token_list *tokens) {
 				contents.tail = dec;
 			}
 		} else if(equals(current->data, new_slice("func"))) {
-			tokens->head = current->next;
+			current = ll_iter_next(&iterator);
+			ll_iter_clear_to_current(&iterator);
 			func_declaration *func = analyze_func(tokens);
-			current = tokens->head;
 			if(contents.funcHead == NULL) {
 				contents.funcHead = func;
 			} else if(contents.funcTail == NULL) {
@@ -43,36 +45,34 @@ file_contents analyze(token_list *tokens) {
 				contents.funcTail = func;
 			}
 		}
-		if(current != NULL) {
-			current = current->next;
-		}
 	}
 	return contents;
 }
 
-struct_declaration *analyze_struct(token_list *tokens) {
-	parse_token *current = tokens->head;
+struct_declaration *analyze_struct(linked_list *tokens) {
+	linked_iter iterator = ll_iter_head(tokens);
+	parse_token *current = ll_iter_next(&iterator);
 	struct_declaration *dec = new(dec);
 	dec->name = current->data;
 	dec->head = dec->tail = NULL;
 	dec->next = NULL;
-	current = current->next;
+	current = ll_iter_next(&iterator);
 	if(current->data.data[0] != '{') {
 		semantic_error("Expected opening brace after name in struct declaration.", current->origin);
 	}
-	current = current->next;
+	current = ll_iter_next(&iterator);
 	while(current->data.data[0] != '}')	{
 		struct_member *member = new(member);
 		if(current->type != WORD) {
 			semantic_error("Struct members must be declared as <value> : <type>;", current->origin);
 		}
 		member->name = current->data;
-		current = current->next;
-		if(current->type != SYMBOL || current->data.data[0] != ':' || (current = current->next)->type != WORD) {
+		current = ll_iter_next(&iterator);
+		if(current->type != SYMBOL || current->data.data[0] != ':' || (current = ll_iter_next(&iterator))->type != WORD) {
 			semantic_error("Struct members must be declared as <value> : <type>;",current->origin);
 		}
 		member->type = current->data;
-		current = current->next;
+		current = ll_iter_next(&iterator);
 		if(current->data.data[0] != ';') {
 			semantic_error("Struct members must be declared as <value> : <type>;", current->origin);
 		}
@@ -84,25 +84,26 @@ struct_declaration *analyze_struct(token_list *tokens) {
 		} else {
 			dec->tail->next = member;
 		}
-		current = current->next;
+		current = ll_iter_next(&iterator);
 	}
-	tokens->head = current;
+	ll_iter_clear_to_current(&iterator);
 	dec->next = NULL;
 	return dec;
 }
 
-static func_declaration *analyze_func(token_list *tokens) {
-	parse_token *current = tokens->head;
+static func_declaration *analyze_func(linked_list *tokens) {
+	linked_iter iterator = ll_iter_head(tokens);
+	parse_token *current = ll_iter_next(&iterator);
 	func_declaration *func = new(func);
 	if(current == NULL || current->type != WORD) {
 		semantic_error("Function declaration must be in the form func <name>(<parameters>) : <returntype> {<block>}", current->origin);
 	}
 	func->name = current->data;
-	current = current->next;
+	current = ll_iter_next(&iterator);
 	if(current == NULL || current->data.data[0] != '(') {
 		semantic_error("Function name must be followed by an open parenthesis", current->origin);
 	}
-	current = current->next;
+	current = ll_iter_next(&iterator);
 	while(current->data.data[0] != ')') {
 		if(current == NULL) {
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin);
@@ -114,11 +115,11 @@ static func_declaration *analyze_func(token_list *tokens) {
 			semantic_error("Parameter names must be a valid identifier", current->origin);
 		}
 		name->data = current->data;
-		current = current->next;
+		current = ll_iter_next(&iterator);
 		if(current->type != SYMBOL || current->data.data[0] != ':') {
 			semantic_error("Parameters to functions must separate names and types with colons", current->origin);
 		}
-		current = current->next;
+		current = ll_iter_next(&iterator);
 		statement *param_type = new(param_type);
 		if(current == NULL) {
 			semantic_error("Unexpected EOF encountered in function declaration", current->origin);
@@ -139,29 +140,31 @@ static func_declaration *analyze_func(token_list *tokens) {
 			func->paramTail->next = name;
 			func->paramTail = func->paramTail->next;
 		}
-		current = current->next;
+		current = ll_iter_next(&iterator);
 		if(current->data.data[0] == ',') {
-			current = current->next;
+			current = ll_iter_next(&iterator);
 		}
 	}
-	current = current->next;
+	current = ll_iter_next(&iterator);
 	func->type = current->data;
-	current = current->next;
+	current = ll_iter_next(&iterator);
 	if(current->data.data[0] != '{') {
 		semantic_error("Function bodies must start with an open brace ('{')", current->origin);
 	}
 	statement *state = new(state);
 	state->next = state->child = NULL;
 	state->type = ROOT;
-	tokens->head = current;
+	ll_iter_clear_to_current(&iterator);
 	state->child = get_expression(tokens);
 	func->root = state;
-	tokens->head = tokens->head->next;
+	ll_iter_next(&iterator);
+	ll_iter_clear_to_current(&iterator);
 	return func;
 }
 
-static statement *get_expression(token_list *tokens) {
-	parse_token *current = tokens->head;
+static statement *get_expression(linked_list *tokens) {
+	linked_iter iterator = ll_iter_head(tokens);
+	parse_token *current = ll_iter_next(&iterator);
 	if(current == NULL) {
 		semantic_error("Unexpected End of File", current->origin);
 	}
@@ -170,42 +173,41 @@ static statement *get_expression(token_list *tokens) {
 	expression->data.data = NULL;
 	expression->data.len = 0;
 	bool foundPattern = false;
-	if(tokens->tail->data.data[0] == ';') {
-		parse_token *current = tokens->head;
-		while(current->next != tokens->tail) {
-			current = current->next;
-		}
-		tokens->tail = current;
+	parse_token *last = ll_get_last(tokens);
+	if(last->data.data[0] == ';') {
+		ll_remove_last(tokens);
 	}
-	while(tokens->head->data.data[0] == '(' && tokens->tail->data.data[0] == ')') {
-		tokens->head = tokens->head->next;
-		parse_token *current = tokens->head;
-		while(current->next != tokens->tail) {
-			current = current->next;
-		}
-		tokens->tail = current;
+	parse_token *first = ll_get_last(tokens);
+	last = ll_get_last(tokens);
+	while(first->data.data[0] == '(' && last->data.data[0] == ')') {
+		ll_remove_first(tokens);
+		ll_remove_last(tokens);
 	}
-	current = tokens->head;
+	iterator = ll_iter_head(tokens);
+	current = ll_iter_next(&iterator);
+	parse_token *next = NULL;
 	switch(current->type) {
 	case SYMBOL:
 		if(current->data.data[0] == '{') {
 			foundPattern = true;
 			expression->type = BLOCK;
-			tokens->head = tokens->head->next;
-			token_list body = *tokens;
+			ll_remove_first(tokens);
+			linked_list *body = ll_duplicate(tokens);
 			int indent = 1;
-			parse_token *current = body.head;
+			linked_iter iterator = ll_iter_head(body);
+			parse_token *current = ll_iter_next(&iterator);
 			while(indent > 0) {
-				current = current->next;
+				current = ll_iter_next(&iterator);
 				if(current->data.data[0] == '{') {
 					indent++;
 				} else if(current->data.data[0] == '}') {
 					indent--;
 				}
 			}
-			body.tail = current;
+			ll_iter_clear_remaining(&iterator);
 			indent = 1;
-			for(current = body.head; current != body.tail; current = current->next) {
+			iterator = ll_iter_head(body);
+			for(current = ll_iter_next(&iterator); ll_iter_has_next(&iterator); current = ll_iter_next(&iterator)) {
 				char character = current->data.data[0];
 				if(character == '{') {
 					indent++;
@@ -213,27 +215,31 @@ static statement *get_expression(token_list *tokens) {
 					indent--;
 				}
 				if(indent == 1 && (character == '}' || character == ';')) {
-					token_list item = body;
-					item.tail = current;
-					body.head = current->next;
+					linked_list *item = ll_duplicate(body);
+					while(ll_get_last(item) != current)
+						ll_remove_last(item);
+					ll_iter_clear_to_current(&iterator);
 					if(expression->child == NULL) {
-						expression->child = get_expression(&item);
+						expression->child = get_expression(item);
 					} else {
 						statement *currentExpression = expression->child;
 						while(currentExpression->next != NULL) {
 							currentExpression = currentExpression->next;
 						}
-						currentExpression->next = get_expression(&item);
+						currentExpression->next = get_expression(item);
 					}
+					ll_destroy(item);
 				}
 			}
-			tokens->head = body.tail;
+			while(ll_get_first(tokens) != ll_get_last(body))
+				ll_remove_first(tokens);
+			ll_destroy(body);
 		} else if(current->data.data[0] == '}') {
 			return NULL;
 		}
 		break;
 	case WORD:
-		if(tokens->head == tokens->tail) {
+		if(ll_get_first(tokens) == ll_get_last(tokens)) {
 			foundPattern = true;
 			if(equals_string(current->data, "break")) {
 				expression->type = BREAK;
@@ -251,42 +257,44 @@ static statement *get_expression(token_list *tokens) {
 				expression->type = WHILE;
 			}
 			expression->data = new_slice("");
-			tokens->head = tokens->head->next;
-			token_list header = *tokens;
-			parse_token *end_of_header = header.head;
-			while(end_of_header->next->data.data[0] != '{') {
-				end_of_header = end_of_header->next;
-			}
-			header.tail = end_of_header;
-			expression->child = get_expression(&header);
-			tokens->head = header.tail->next;
+			ll_remove_first(tokens);
+			linked_list *header = ll_duplicate(tokens);
+			linked_iter end_of_header_iter = ll_iter_head(header);
+			while(((parse_token*)ll_iter_next(&end_of_header_iter))->data.data[0] != '{') {}
+			ll_iter_clear_remaining(&end_of_header_iter);
+			expression->child = get_expression(header);
+			while(ll_get_first(tokens) != ll_get_last(header))
+				ll_remove_first(tokens);
+			ll_remove_first(tokens);
 			expression->child->next = get_expression(tokens);
-		} else if(current->next->data.data[0] == '(') {
+		} else if((next = ll_iter_next(&iterator))->data.data[0] == '(') {
 			foundPattern = true;
 			expression->type = FUNC_CALL;
 			expression->data = current->data;
 			int paren_level = 0;
-			token_list list = *tokens;
-			current = current->next;
-			list.head = current->next;
-			for(current = current->next; paren_level != -1; current = current->next) {
+			linked_list *list = tokens;
+			current = next;
+			while(ll_get_first(list) != current)
+				ll_remove_first(list);
+			for(current = ll_iter_next(&iterator); paren_level != -1; current = ll_iter_next(&iterator)) {
 				char currentChar = current->data.data[0];
 				if((currentChar == ')' || currentChar == ',') && paren_level == 0) {
-					token_list param = list;
-					param.tail = current;
-					parse_token *goBack = param.head;
-					while(goBack->next != param.tail)
-						goBack = goBack->next;
-					param.tail = goBack;
-					list.head = param.tail->next->next;
+					linked_list *param = ll_duplicate(list);
+					while(ll_get_last(param) != current)
+						ll_remove_last(param);
+					ll_remove_last(param);
+					while(ll_get_first(list) != ll_get_last(param))
+						ll_remove_first(list);
+					ll_remove_first(list);
+					ll_remove_first(list);
 					if(expression->child == NULL) {
-						expression->child = get_expression(&param);
+						expression->child = get_expression(param);
 					} else {
 						statement *currentExpression = expression->child;
 						while(currentExpression->next != NULL) {
 							currentExpression = currentExpression->next;
 						}
-						currentExpression->next = get_expression(&param);
+						currentExpression->next = get_expression(param);
 					}
 				}
 				if(currentChar == '(') {
@@ -295,29 +303,35 @@ static statement *get_expression(token_list *tokens) {
 					paren_level -= 1;
 				}
 			}
+			//TODO: UNCOMMENT AND FIGURE OUT ISSUE
 			//expression->next = get_expression(&list);
-			tokens->head = list.tail->next;
+			while(ll_get_first(tokens) != ll_get_last(list))
+				ll_remove_first(tokens);
+			ll_remove_first(tokens);
 		}
 		break;
 	case NUMBER:
-		if(tokens->head == tokens->tail) {
+		if(ll_get_first(tokens) == ll_get_last(tokens)) {
 			foundPattern = true;
 			expression->type = NUM;
-			expression->data = tokens->head->data;
+			parse_token *first = ll_get_first(tokens);
+			expression->data = first->data;
 		}
 		break;
 	case STRING_LIT:
-		if(tokens->head == tokens->tail) {
+		if(ll_get_first(tokens) == ll_get_last(tokens)) {
 			foundPattern = true;
 			expression->type = STRING;
-			expression->data = tokens->head->data;
+			parse_token *first = ll_get_first(tokens);
+			expression->data = first->data;
 		}
 		break;
 	case CHAR_LIT:
-		if(tokens->head == tokens->tail) {
+		if(ll_get_first(tokens) == ll_get_last(tokens)) {
 			foundPattern = true;
 			expression->type = CHAR;
-			expression->data = tokens->head->data;
+			parse_token *first = ll_get_first(tokens);
+			expression->data = first->data;
 		}
 		break;
 	}
@@ -327,13 +341,14 @@ static statement *get_expression(token_list *tokens) {
 	return expression;
 }
 
-static statement *parse_operation(token_list *tokens) {
+static statement *parse_operation(linked_list *tokens) {
+	linked_iter iterator = ll_iter_head(tokens);
 	linked_list *operator = get_node();
 	linked_iter level = ll_iter_head(operator);
 	while(ll_iter_has_next(&level)) {
 		int paren_level = 0;
 		linked_list *currentLevel = ll_iter_next(&level);
-		for(parse_token *current = tokens->head; current != tokens->tail; current = current->next) {
+		for(parse_token *current = ll_iter_next(&iterator); ll_iter_has_next(&iterator); current = ll_iter_next(&iterator)) {
 			char currentChar = current->data.data[0];
 			if(currentChar == '(') {
 				paren_level += 1;
@@ -345,21 +360,21 @@ static statement *parse_operation(token_list *tokens) {
 				while(ll_iter_has_next(&innerMost)) {
 					operator_node *currentOperator = ll_iter_next(&innerMost);
 					if(equals_string(current->data, currentOperator->data)) {
-						token_list op1 = *tokens;
-						op1.tail = current;
-						current = op1.head;
-						while(current->next != op1.tail) {
-							current = current->next;
-						}
-						op1.tail = current;
-						token_list op2 = *tokens;
-						op2.head = current->next->next;
+						linked_list *op1 = ll_duplicate(tokens);
+						while(ll_get_last(op1) != current)
+							ll_remove_last(op1);
+						ll_remove_last(op1);
+						linked_list *op2 = tokens;
+						while(ll_get_first(op2) != current)
+							ll_remove_first(op2);
+						ll_remove_first(op2);
+						ll_remove_first(op2);
 						statement *expression = new(expression);
 						expression->data = new_slice("");
 						expression->next = NULL;
 						expression->type = currentOperator->operatorType;
-						expression->child = get_expression(&op1);
-						expression->child->next = get_expression(&op2);
+						expression->child = get_expression(op1);
+						expression->child->next = get_expression(op2);
 						return expression;
 					}
 				}

@@ -2,6 +2,8 @@
 #define LEXICAL_ANALYZER_H_
 #include "util.h"
 #include "tokenizer.h"
+#include "linked_list.h"
+
 DEFSTRUCT(file_contents);
 DEFSTRUCT(struct_declaration);
 DEFSTRUCT(struct_member);
@@ -46,6 +48,6 @@ struct statement {
 	statement_type type;
 	statement *next, *child;
 };
-file_contents analyze(token_list *tokens);
-struct_declaration *analyze_struct(token_list *token);
+file_contents analyze(linked_list *tokens);
+struct_declaration *analyze_struct(linked_list *token);
 #endif
