@@ -35,6 +35,14 @@ void ll_add_last(linked_list *list, void *value) {
 	}
 }
 
+void *ll_get_first(linked_list *list) {
+	return list->head->data;
+}
+
+void *ll_get_last(linked_list *list) {
+	return list->tail->data;
+}
+
 void *ll_remove_last(linked_list *list) {
 	void *data = list->tail->data;
 	if(list->head == list->tail) {

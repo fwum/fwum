@@ -23,6 +23,8 @@ struct linked_iter {
 linked_list *ll_new();
 void ll_add_first(linked_list *list, void *value);
 void ll_add_last(linked_list *list, void *value);
+void *ll_get_first(linked_list *list);
+void *ll_get_last(linked_list *list);
 void *ll_remove_last(linked_list *list);
 void *ll_remove_first(linked_list *list);
 bool ll_empty(linked_list *list);
