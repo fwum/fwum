@@ -13,5 +13,5 @@ void dump_node(statement *state, int indentation);
 /*
 Print a list of tokens to stdout, mostly for debugging purposes
 */
-void print_tlist(token_list list);
+void print_tlist(linked_list *list);
 #endif

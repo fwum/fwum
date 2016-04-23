@@ -11,14 +11,15 @@ static void print_token(parse_token *current);
 /*
 Print a list of tokens to stdout, mostly for debugging purposes
 */
-void print_tlist(token_list list) {
-    if(list.head == NULL) {
+void print_tlist(linked_list *list) {
+    if(ll_empty(list)) {
         return;
     }
-    parse_token *current = list.head;
-    while(current != list.tail) {
+    linked_iter iterator = ll_iter_head(list);
+    parse_token *current = ll_iter_next(&iterator);
+    while(ll_iter_has_next(&iterator)) {
         print_token(current);
-        current = current->next;
+        current = ll_iter_next(&iterator);
     }
     print_token(current);
 }
