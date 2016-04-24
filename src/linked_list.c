@@ -80,7 +80,7 @@ void *ll_remove_first(linked_list *list) {
 	} else {
 		linked_node *head = list->head;
 		list->head = list->head->next;
-		list->head->next = NULL;
+		list->head->prev = NULL;
 		free(head);
 	}
 	return data;
