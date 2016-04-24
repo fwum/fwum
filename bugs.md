@@ -1,1 +1,1 @@
-- analyze_struct is passed a null linked list
+- The semantic analyzer is not parsing structs correctly
