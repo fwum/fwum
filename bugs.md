@@ -1,1 +1,1 @@
-- Linked list remove first appears to not work
+- The list is reversed by something, at some point
