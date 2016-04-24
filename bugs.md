@@ -1,1 +1,1 @@
-- The semantic analyzer is not parsing structs correctly
+- Back to segfaulting

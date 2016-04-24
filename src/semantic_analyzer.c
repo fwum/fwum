@@ -19,7 +19,6 @@ file_contents analyze(linked_list *tokens) {
 	while(ll_iter_has_next(&iterator)) {
 		parse_token *current = ll_iter_next(&iterator);
 		if(equals(current->data, new_slice("struct"))) {
-			current = ll_iter_next(&iterator);
 			ll_iter_clear_to_current(&iterator);
 			struct_declaration *dec = analyze_struct(tokens);
 			if(contents.head == NULL)
