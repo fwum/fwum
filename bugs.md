@@ -1,1 +1,1 @@
-- Program segfaults in the semantic analyzer
+- analyze_struct is passed a null linked list
