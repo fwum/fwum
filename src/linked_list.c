@@ -153,12 +153,10 @@ void ll_iter_clear_to_current(linked_iter *iter) {
 	if(iter->goesForward) {
 		linked_node *current = iter->origin->head;
 		while(current->next != iter->current) {
-			printf("!!\n");
 			linked_node *next = current->next;
 			free(current);
 			current = next;
 		}
-		printf("!!\n");
 		iter->origin->head = iter->current;
 		iter->origin->head->prev = NULL;
 	} else {
