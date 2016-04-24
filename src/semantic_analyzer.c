@@ -77,6 +77,7 @@ static func_declaration *analyze_func(linked_list *tokens) {
 	linked_iter iterator = ll_iter_head(tokens);
 	parse_token *current = ll_iter_next(&iterator);
 	func_declaration *func = new(func);
+	func->root = func->paramHead = func->paramTail = NULL;
 	if(current == NULL || current->type != WORD) {
 		semantic_error("Function declaration must be in the form func <name>(<parameters>) : <returntype> {<block>}", current->origin);
 	}
@@ -242,7 +243,7 @@ static statement *get_expression(linked_list *tokens) {
 			ll_remove_first(tokens);
 			linked_list *header = ll_duplicate(tokens);
 			linked_iter end_of_header_iter = ll_iter_head(header);
-			while(((parse_token*)ll_iter_next(&end_of_header_iter))->data.data[0] != '{') {}
+			while(((parse_token*)ll_iter_next(&end_of_header_iter))->data.data[0] != '{') {} //TODO: Solve segfaults
 			ll_iter_clear_remaining(&end_of_header_iter);
 			expression->child = get_expression(header);
 			while(ll_get_first(tokens) != ll_get_last(header))
