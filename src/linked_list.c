@@ -25,6 +25,9 @@ void ll_add_first(linked_list *list, void *value) {
 	linked_node *node = new(node);
 	node->data = value;
 	node->next = list->head;
+	if(list->head != NULL) {
+		list->head->prev = node;
+	}
 	node->prev = NULL;
 	list->head = node;
 	if(list->tail == NULL) {
@@ -39,6 +42,9 @@ void ll_add_last(linked_list *list, void *value) {
 		linked_node *node = new(node);
 		node->data = value;
 		node->prev = list->tail;
+		if(list->tail != NULL) {
+			list->tail->next = node;
+		}
 		node->next = NULL;
 		list->tail = node;
 	}
