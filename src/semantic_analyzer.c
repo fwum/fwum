@@ -31,7 +31,6 @@ file_contents analyze(linked_list *tokens) {
 				contents.tail = dec;
 			}
 		} else if(equals(current->data, new_slice("func"))) {
-			current = ll_iter_next(&iterator);
 			ll_iter_clear_to_current(&iterator);
 			func_declaration *func = analyze_func(tokens);
 			if(contents.funcHead == NULL) {
