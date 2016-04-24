@@ -15,8 +15,8 @@ static statement *parse_operation(linked_list *tokens);
 
 file_contents analyze(linked_list *tokens) {
 	file_contents contents = {NULL, NULL, NULL, NULL};
-	linked_iter iterator = ll_iter_head(tokens);
-	while(ll_iter_has_next(&iterator)) {
+	while(!ll_empty(tokens)) {
+		linked_iter iterator = ll_iter_head(tokens);
 		parse_token *current = ll_iter_next(&iterator);
 		if(equals(current->data, new_slice("struct"))) {
 			ll_iter_clear_to_current(&iterator);
