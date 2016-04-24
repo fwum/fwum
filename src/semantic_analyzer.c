@@ -242,8 +242,8 @@ static statement *get_expression(linked_list *tokens) {
 			expression->data = new_slice("");
 			ll_remove_first(tokens);
 			linked_list *header = ll_duplicate(tokens);
-			linked_iter end_of_header_iter = ll_iter_head(header); //FIXME: header only contains the token 'a'
-			while(((parse_token*)ll_iter_next(&end_of_header_iter))->data.data[0] != '{') {} 
+			linked_iter end_of_header_iter = ll_iter_head(header);
+			while(((parse_token*)ll_iter_next(&end_of_header_iter))->data.data[0] != '{') {}
 			ll_iter_clear_remaining(&end_of_header_iter);
 			expression->child = get_expression(header);
 			while(ll_get_first(tokens) != ll_get_last(header))

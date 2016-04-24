@@ -1,1 +1,1 @@
-- Back to segfaulting
+- Linked list remove first appears to not work
