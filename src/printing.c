@@ -49,24 +49,24 @@ Print the created AST to stdout, mostly for debugging purposes
 */
 void dump(file_contents contents) {
 	{
-		struct_declaration *current = contents.head;
-		while(current != NULL) {
+		linked_iter iterator = ll_iter_head(contents.structs);
+		while(ll_iter_has_next(&iterator)) {
+            struct_declaration *current = ll_iter_next(&iterator);
 			printf("STRUCT: %s\n", evaluate(current->name));
 			struct_member *member = current->head;
 			while(member != NULL) {
 				printf("\tMEMBER: NAME: %s | TYPE: %s\n", evaluate(member->name), evaluate(member->type));
 				member = member->next;
 			}
-			current = current->next;
 		}
 	}
 	{
-		func_declaration *current = contents.funcHead;
-		while(current != NULL) {
+        linked_iter iterator = ll_iter_head(contents.functions);
+        while(ll_iter_has_next(&iterator)) {
+            func_declaration *current = ll_iter_next(&iterator);
 			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
 			dump_node(current->paramHead, 0);
 			dump_node(current->root, 0);
-			current = current->next;
 		}
 	}
 

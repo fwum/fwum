@@ -14,34 +14,20 @@ static statement *get_expression(linked_list *tokens);
 static statement *parse_operation(linked_list *tokens);
 
 file_contents analyze(linked_list *tokens) {
-	file_contents contents = {NULL, NULL, NULL, NULL};
+	file_contents contents;
+	contents.structs = ll_new();
+	contents.functions = ll_new();
 	while(!ll_empty(tokens)) {
 		linked_iter iterator = ll_iter_head(tokens);
 		parse_token *current = ll_iter_next(&iterator);
 		if(equals(current->data, new_slice("struct"))) {
 			ll_iter_clear_to_current(&iterator);
 			struct_declaration *dec = analyze_struct(tokens);
-			if(contents.head == NULL)
-				contents.head = dec;
-			else if(contents.tail == NULL) {
-				contents.head->next = dec;
-				contents.tail = dec;
-			} else {
-				contents.tail->next = dec;
-				contents.tail = dec;
-			}
+			ll_add_last(contents.structs, dec);
 		} else if(equals(current->data, new_slice("func"))) {
 			ll_iter_clear_to_current(&iterator);
 			func_declaration *func = analyze_func(tokens);
-			if(contents.funcHead == NULL) {
-				contents.funcHead = func;
-			} else if(contents.funcTail == NULL) {
-				contents.funcHead->next = func;
-				contents.funcTail = func;
-			} else {
-				contents.funcTail->next = func;
-				contents.funcTail = func;
-			}
+			ll_add_last(contents.functions, func);
 		}
 	}
 	return contents;
@@ -53,7 +39,6 @@ struct_declaration *analyze_struct(linked_list *tokens) {
 	struct_declaration *dec = new(dec);
 	dec->name = current->data;
 	dec->head = dec->tail = NULL;
-	dec->next = NULL;
 	current = ll_iter_next(&iterator);
 	if(current->data.data[0] != '{') {
 		semantic_error("Expected opening brace after name in struct declaration.", current->origin);
@@ -85,7 +70,6 @@ struct_declaration *analyze_struct(linked_list *tokens) {
 		current = ll_iter_next(&iterator);
 	}
 	ll_iter_clear_to_current(&iterator);
-	dec->next = NULL;
 	return dec;
 }
 
