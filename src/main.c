@@ -110,7 +110,7 @@ static int tests() {
 	}
 	{
 		start_test_set("Tokenizer");
-		char *data = "word 1.2 \"string\" \n'c' word1 word! !";
+		char *data = "word 1.2 \"string\" \n'c' word1 word! ! ";
 		parse_source source = start_parse(data, "filename");
 		parse_token token = get_token(&source);
 		test_assert(token.type == WORD, "Word parse type");
