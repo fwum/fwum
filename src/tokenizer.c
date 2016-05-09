@@ -104,7 +104,7 @@ parse_token get_token(parse_source *source) {
                 tokenizer_error("Encountered newline while parsing string literal.", source->filename, source->line);
             } else if(source->data[i] == '\"' && source->data[i - 1] != '\\') {
                 int length = i - token_begin;
-                source->pos = i;
+                source->pos = i + 1;
                 return new_token(make_slice(&(source->data[token_begin]), length), STRING_LIT, source->filename, source->line);
             } else if(i == source->length - 1) {
                 tokenizer_error("Unexpected end of file while parsing string literal", source->filename, source->line);
