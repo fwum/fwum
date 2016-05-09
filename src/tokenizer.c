@@ -23,7 +23,7 @@ parse_source start_parse(char *data, char *filename) {
 }
 
 bool has_token(parse_source source) {
-    return source.pos >= source.length;
+    return source.pos < source.length;
 }
 
 parse_token get_token(parse_source *source) {
