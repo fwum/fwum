@@ -115,7 +115,6 @@ parse_token get_token(parse_source *source) {
             if(source->data[i] == '\'') {
                 int length = i - token_begin;
                 return new_token(make_slice(&(source->data[token_begin]), length), CHAR_LIT, source->filename, source->line);
-                parse_mode = M_NONE;
             } else if(i == source->length - 1) {
                 tokenizer_error("Unexpected end of file while parsing character literal", source->filename, source->line);
             } else if(source->data[i + 1] != '\'' && source->data[i] != '\\') {
