@@ -6,32 +6,40 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-static parse_token *new_token(slice data, token_type type, char *filename, int line);
-static void token_add(linked_list *list, parse_token *token);
+static parse_token new_token(slice data, token_type type, char *filename, int line);
 static bool is_whitespace(char c);
 static bool is_alpha(char c);
 static bool is_num(char c);
 static void tokenizer_error(char *error, char *file, int line);
-/*
-SYMBOL, WORD, NUMBER, START, END, STRING_LIT, CHAR_LIT
-*/
-linked_list *parse(char *data, char *filename) {
-    linked_list *list = ll_new();
-    int length = strlen(data);
-    int token_begin = 0;
-    int source_line = 1; //keep track of the source line for error messages later
+
+parse_source start_parse(char *data, char *filename) {
+    parse_source source;
+    source.data = data;
+    source.filename = filename;
+    source.line = 1;
+    source.pos = 0;
+    source.length = strlen(data);
+    return source;
+}
+
+bool has_token(parse_source source) {
+    return source.pos >= source.length;
+}
+
+parse_token get_token(parse_source *source) {
     enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR, M_COMMENT_LINE, M_COMMENT_MULTI} parse_mode;
     parse_mode = M_NONE;
-    for(int i = 0; i < length; i++) {
-        //Ingore carriage return characters so that windows newlines are identical to UNIX newlines
-        if(data[i] == '\r') continue;
-        if(data[i] == '\n') source_line += 1;
-        //Handle comment parsing- comments are currently discarded
-        if(data[i] == '/' && parse_mode != M_STRING && parse_mode != M_CHAR) {
-            if(data[i + 1] == '*') {
+    int token_begin = source->pos;
+    for(int i = source->pos; i < source->length; i++) {
+        if(source->data[i] == '\r') {
+            continue;
+        } else if(source->data[i] == '\n') {
+            source->line += 1;
+        } else if(source->data[i] && parse_mode != M_STRING && parse_mode != M_CHAR) {
+            if(source->data[i + 1] == '*') {
                 parse_mode = M_COMMENT_MULTI;
                 continue;
-            } else if(data[i + 1] == '/') {
+            } else if(source->data[i + 1] == '/') {
                 parse_mode = M_COMMENT_LINE;
                 continue;
             }
@@ -40,109 +48,84 @@ linked_list *parse(char *data, char *filename) {
         switch(parse_mode) {
         //Ignore all characters until a newline is reached
         case M_COMMENT_LINE:
-            if(data[i] == '\n')
+            if(source->data[i] == '\n')
                 parse_mode = M_NONE;
             break;
         //Ignore all characters until the end of the comment block is reached
         case M_COMMENT_MULTI:
-            if(data[i] == '/' && data[i - 1] == '*')
+            if(source->data[i] == '/' && source->data[i - 1] == '*')
                 parse_mode = M_NONE;
-            else if(i == length - 1)
-                tokenizer_error("Unexpected end of file reached during multi-line comment", filename, source_line);
+            else if(i == source->length - 1)
+                tokenizer_error("Unexpected end of file reached during multi-line comment", source->filename, source->line);
             break;
         //Continue until we begin to encounter useful character
         case M_NONE:
             //Ignore extra whitespace
-            if(is_whitespace(data[i])) continue;
+            if(is_whitespace(source->data[i])) {
+                continue;
+            }
             //Beginning of a valid identifier
-            if(is_alpha(data[i]) || data[i] == '_') {
+            if(is_alpha(source->data[i]) || source->data[i] == '_') {
                 parse_mode = M_WORD;
                 token_begin = i;
-            } else if(is_num(data[i])) {
+            } else if(is_num(source->data[i])) {
                 parse_mode = M_NUM;
                 token_begin = i;
-            } else if(data[i] == '\"') {
+            } else if(source->data[i] == '\"') {
                 parse_mode = M_STRING;
                 token_begin = i + 1;
-            } else if(data[i] == '\'') {
+            } else if(source->data[i] == '\'') {
                 parse_mode = M_CHAR;
                 token_begin = i + 1;
             } else {
-                token_add(list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
+                source->pos = i + 1;
+                return new_token(make_slice(&(source->data[i]), 1), SYMBOL, source->filename, source->line);
             }
             break;
         //Continue until the end of the word is reached, then add it as a token
         case M_WORD:
-            if(is_whitespace(data[i])) {
+            if(is_whitespace(source->data[i]) || i == source->length - 1 || !(is_alpha(source->data[i]) || is_num(source->data[i]) || source->data[i] == '_')) {
                 int length = i - token_begin;
-                token_add(list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
-                parse_mode = M_NONE;
-            } else if(!(is_alpha(data[i]) || is_num(data[i]) || data[i] == '_')) {
-                int length = i - token_begin;
-                token_add(list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
-                token_add(list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
-                parse_mode = M_NONE;
-            } else if(data[i] == '\"') {
-                parse_mode = M_STRING;
-                token_begin = i + 1;
-            } else if(data[i] == '\'') {
-                parse_mode = M_CHAR;
-                token_begin = i + 1;
-            } else if(i == length - 1) {
-                token_add(list, new_token(make_slice(&data[token_begin], length), WORD, filename, source_line));
-                parse_mode = M_NONE;
+                source->pos = i;
+                return new_token(make_slice(&(source->data[token_begin]), length), WORD, source->filename, source->line);
             }
             break;
         //Continue until the end of the number is reached, then add it as a token
         case M_NUM:
-            if(is_whitespace(data[i]))
-            {
+            if(is_whitespace(source->data[i]) || !(is_num(source->data[i]) || source->data[i] == '.') || i == source->length - 1) {
                 int length = i - token_begin;
-                token_add(list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
-                parse_mode = M_NONE;
-            } else if(!(is_num(data[i]) || data[i] == '.')) {
-                int length = i - token_begin;
-                token_add(list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
-                token_add(list, new_token(make_slice(&data[i], 1), SYMBOL, filename, source_line));
-                parse_mode = M_NONE;
-            } else if(data[i] == '\"') {
-                parse_mode = M_STRING;
-                token_begin = i + 1;
-            } else if(data[i] == '\'') {
-                parse_mode = M_CHAR;
-                token_begin = i + 1;
-            } else if(i == length - 1) {
-                token_add(list, new_token(make_slice(&data[token_begin], length), NUMBER, filename, source_line));
-                parse_mode = M_NONE;
+                source->pos = i;
+                return new_token(make_slice(&(source->data[token_begin]), length), NUMBER, source->filename, source->line);                parse_mode = M_NONE;
             }
             break;
         //Continue until the end of the string literal is reached, then add it as a token
         case M_STRING:
-            if(data[i] == '\n') {
-                tokenizer_error("Encountered newline while parsing string literal.", filename, source_line);
-            } else if(data[i] == '\"' && data[i - 1] != '\\') {
+            if(source->data[i] == '\n') {
+                tokenizer_error("Encountered newline while parsing string literal.", source->filename, source->line);
+            } else if(source->data[i] == '\"' && source->data[i - 1] != '\\') {
                 int length = i - token_begin;
-                token_add(list, new_token(make_slice(&data[token_begin], length), STRING_LIT, filename, source_line));
-                parse_mode = M_NONE;
-            } else if(i == length - 1) {
-                tokenizer_error("Unexpected end of file while parsing string literal", filename, source_line);
+                source->pos = i;
+                return new_token(make_slice(&(source->data[token_begin]), length), STRING_LIT, source->filename, source->line);
+            } else if(i == source->length - 1) {
+                tokenizer_error("Unexpected end of file while parsing string literal", source->filename, source->line);
             }
             break;
         //Parse a character literal
         case M_CHAR:
-            if(data[i] == '\'') {
+            if(source->data[i] == '\'') {
                 int length = i - token_begin;
-                token_add(list, new_token(make_slice(&data[token_begin], length), CHAR_LIT, filename, source_line));
+                return new_token(make_slice(&(source->data[token_begin]), length), CHAR_LIT, source->filename, source->line);
                 parse_mode = M_NONE;
-            } else if(i == length - 1) {
-                tokenizer_error("Unexpected end of file while parsing character literal", filename, source_line);
-            } else if(data[i + 1] != '\'' && data[i] != '\\') {
-                tokenizer_error("Too many characters in a character literal", filename, source_line);
+            } else if(i == source->length - 1) {
+                tokenizer_error("Unexpected end of file while parsing character literal", source->filename, source->line);
+            } else if(source->data[i + 1] != '\'' && source->data[i] != '\\') {
+                tokenizer_error("Too many characters in a character literal", source->filename, source->line);
             }
             break;
         }
     }
-    return list;
+    fprintf(stderr, "Call for token when context is empty");
+    exit(-1);
 }
 
 static void tokenizer_error(char *error, char *file, int line) {
@@ -150,17 +133,13 @@ static void tokenizer_error(char *error, char *file, int line) {
     exit(-1);
 }
 
-static parse_token *new_token(slice data, token_type type, char *filename, int line) {
-    parse_token *token = new(token);
-    token->data = data;
-    token->type = type;
+static parse_token new_token(slice data, token_type type, char *filename, int line) {
+    parse_token token;
+    token.data = data;
+    token.type = type;
     source_origin origin = {filename, line};
-    token->origin = origin;
+    token.origin = origin;
     return token;
-}
-
-static void token_add(linked_list *list, parse_token *token) {
-    ll_add_last(list, token);
 }
 
 static bool is_whitespace(char c) {

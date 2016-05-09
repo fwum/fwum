@@ -25,13 +25,8 @@ int main(int argc, char **argv) {
 		printf("No input files.\n");
 		return -1;
 	} else {
-		FILE* input = fopen(argv[1], "r");
-		char* data = read_file(input);
-		fclose(input);
-		linked_list *tokens = parse(data, argv[1]);
-		file_contents contents = analyze(tokens);
-		dump(contents);
-		print_tlist(tokens);
+		printf("%s\n", argv[1]); //Make the compiler stop complaning about the definition of main
+		//TODO: Build back up the main
 		return 0;
 	}
 }
@@ -111,6 +106,41 @@ static int tests() {
 			hm_put(map, i, box_int(i * i));
 		test_assert(*((int*)hm_get(map, 5)) == 25, "Hash map put and get");
 		test_assert(!hm_has(map, 11), "Hash map contains");
+		end_test_set();
+	}
+	{
+		start_test_set("Tokenizer");
+		char *data = "word 1.2 \"string\" \n'c' word1 word! !";
+		parse_source source = start_parse(data, "filename");
+		parse_token token = get_token(&source);
+		test_assert(token.type == WORD, "Word parse type");
+		test_assert(equals_string(token.data, "word"), "Word parse value");
+		test_assert(token.origin.line == 1, "Token line number #1");
+		test_assert(strcmp(token.origin.filename, "filename") == 0, "Token file name");
+		test_assert(has_token(source), "Has next with next");
+		token = get_token(&source);
+		test_assert(token.type == NUMBER, "Number parse type");
+		test_assert(equals_string(token.data, "1.2"), "Number parse value");
+		token = get_token(&source);
+		test_assert(token.type == STRING_LIT, "String parse type");
+		test_assert(equals_string(token.data, "string"), "String parse value");
+		token = get_token(&source);
+		test_assert(token.origin.line == 2, "Token line number #2");
+		test_assert(token.type == CHAR_LIT, "Character parse type");
+		test_assert(equals_string(token.data, "c"), "Character parse value");
+		token = get_token(&source);
+		test_assert(token.type == WORD, "Word parse type with number");
+		test_assert(equals_string(token.data, "word1"), "Word parse value with number");
+		token = get_token(&source);
+		test_assert(token.type == WORD, "Word parse type with symbol");
+		test_assert(equals_string(token.data, "word"), "Word parse value with symbol");
+		token = get_token(&source);
+		test_assert(token.type == SYMBOL, "Symbol parse type #1");
+		test_assert(equals_string(token.data, "!"), "Symbol parse contents #1");
+		token = get_token(&source);
+		test_assert(token.type == SYMBOL, "Symbol parse type #2");
+		test_assert(equals_string(token.data, "!"), "Symbol parse contents #2");
+		test_assert(!has_token(source), "Has next without next");
 		end_test_set();
 	}
 	printf("Total test results: %d passed, %d failed\n", all_tests.passed, all_tests.failed);
