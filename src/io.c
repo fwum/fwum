@@ -9,6 +9,7 @@ Reads a file in its entirety
 Intended to be immune to buffer overflows
 Will hang forever if given stdin, for example, so don't do that
 */
+//TODO: Identify issue with reading from files
 char* read_file(FILE* stream) {
 	char* contents = new(contents);
 	int spot = 0, length = 0;
