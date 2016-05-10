@@ -13,6 +13,7 @@ static func_declaration *analyze_func(parse_source *source);
 static statement *get_expression(parse_source *source);
 static statement *parse_operation(parse_source *source);
 static struct_declaration *analyze_struct(parse_source *source);
+static void check_eof(parse_source source, parse_token current);
 
 file_contents analyze(parse_source source) {
 	file_contents contents;
@@ -88,9 +89,7 @@ static func_declaration *analyze_func(parse_source *source) {
 		if(current.type != SYMBOL || current.data.data[0] != ':') {
 			semantic_error("Parameters to functions must separate names and types with colons", current.origin);
 		}
-		if(!has_token(*source)) {
-			semantic_error("Unexpected EOF encountered in function declaration", current.origin);
-		}
+		check_eof(*source, current);
 		current = get_token(source);
 		statement *param_type = new(param_type);
 		if(current.type != WORD) {
@@ -101,9 +100,7 @@ static func_declaration *analyze_func(parse_source *source) {
 		ll_add_first(name->children, param_type);
 		param_type->children = NULL;
 		ll_add_last(func->parameters, name);
-		if(!has_token(*source)) {
-			semantic_error("Unexpected EOF encountered in function declaration", current.origin);
-		}
+		check_eof(*source, current);
 		current = get_token(source);
 		if(current.data.data[0] == ',') {
 			current = get_token(source);
@@ -343,6 +340,12 @@ static statement *parse_operation(parse_source *source) {
 		}
 	}
 	return NULL;
+}
+
+static void check_eof(parse_source source, parse_token current) {
+	if(!has_token(source)) {
+		semantic_error("Unexpected End of File encountered", current.origin);
+	}
 }
 
 static void semantic_error(char *error, source_origin origin) {
