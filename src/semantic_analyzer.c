@@ -124,15 +124,15 @@ static func_declaration *analyze_func(parse_source *source) {
 }
 
 static statement *get_expression(parse_source *source) {
-	linked_iter iterator = ll_iter_head(tokens);
-	parse_token *current = ll_iter_next(&iterator);
-	if(current == NULL) {
+	if(!has_token(*source)) {
 		semantic_error("Unexpected End of File", current->origin);
 	}
+	parse_token current = get_token(source);
 	statement *expression = new(expression);
-	expression->child = expression->next = NULL;
-	expression->data.data = NULL;
-	expression->data.len = 0;
+	expression->children = NULL;
+	expression.data.data = NULL;
+	expression.data.len = 0;
+	//TODO: Consider removal
 	bool foundPattern = false;
 	parse_token *last = ll_get_last(tokens);
 	if(last->data.data[0] == ';') {
