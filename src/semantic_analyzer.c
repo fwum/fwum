@@ -34,7 +34,7 @@ file_contents analyze(parse_source source) {
 	return contents;
 }
 
-struct struct_declaration *analyze_struct(parse_source source) {
+static struct_declaration *analyze_struct(parse_source source) {
 	linked_iter iterator = ll_iter_head(tokens);
 	parse_token *current = ll_iter_next(&iterator);
 	struct_declaration *dec = new(dec);
