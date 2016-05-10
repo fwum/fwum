@@ -5,12 +5,13 @@ MULTI LINE COMMENT
 //cimport stdio.h;
 
 struct point {
-	x : int;
-	y : int;
+	x int;
+	y int;
 }
 
-func main(argc : int, argv : char) int
-{
+
+
+func main(argc int, argv char) int {
 	if a {
 		while a {
 			if c {
