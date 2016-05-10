@@ -86,7 +86,8 @@ parse_token get_token(parse_source *source) {
             break;
         //Continue until the end of the word is reached, then add it as a token
         case M_WORD:
-            if(is_whitespace(source->data[i]) || i == source->length - 1 || !(is_alpha(source->data[i]) || is_num(source->data[i]) || source->data[i] == '_')) {
+            if(is_whitespace(source->data[i]) || i == source->length - 1 ||
+            !(is_alpha(source->data[i]) || is_num(source->data[i]) || source->data[i] == '_')) {
                 int length = i - token_begin;
                 source->pos = i;
                 return new_token(make_slice(&(source->data[token_begin]), length), WORD, source->filename, source->line);
