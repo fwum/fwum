@@ -97,7 +97,7 @@ parse_token get_token(parse_source *source) {
             if(is_whitespace(source->data[i]) || !(is_num(source->data[i]) || source->data[i] == '.') || i == source->length - 1) {
                 int length = i - token_begin;
                 source->pos = i;
-                return new_token(make_slice(&(source->data[token_begin]), length), NUMBER, source->filename, source->line);                parse_mode = M_NONE;
+                return new_token(make_slice(&(source->data[token_begin]), length), NUMBER, source->filename, source->line);
             }
             break;
         //Continue until the end of the string literal is reached, then add it as a token
