@@ -104,6 +104,14 @@ void ll_destroy(linked_list *list) {
 	free(list);
 }
 
+void ll_delete_all(linked_list *list) {
+	linked_iter iterator = ll_iter_head(list);
+	while(ll_iter_has_next(&iterator)) {
+		free(ll_iter_next(&iterator));
+	}
+	ll_destroy(list);
+}
+
 /************************
 ITERATOR
 ************************/

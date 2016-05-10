@@ -31,6 +31,7 @@ void *ll_remove_first(linked_list *list);
 bool ll_empty(linked_list *list);
 void ll_clear(linked_list *list);
 void ll_destroy(linked_list *list);
+void ll_delete_all(linked_list *list);
 
 linked_iter ll_iter_head(linked_list *list);
 linked_iter ll_iter_tail(linked_list *list);
