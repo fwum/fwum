@@ -19,7 +19,7 @@ file_contents analyze(parse_source source) {
 	contents.structs = ll_new();
 	contents.functions = ll_new();
 	while(has_token(source)) {
-		parse_token token = get_token(&source);
+		parse_token current = get_token(&source);
 		if(equals(current.data, new_slice("struct"))) {
 			struct_declaration *dec = analyze_struct(&source);
 			ll_add_last(contents.structs, dec);
