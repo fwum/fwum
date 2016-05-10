@@ -11,6 +11,7 @@ static bool is_whitespace(char c);
 static bool is_alpha(char c);
 static bool is_num(char c);
 static void tokenizer_error(char *error, char *file, int line);
+static int next_significant_char(parse_source source, int *newlineAccumulator);
 
 parse_source start_parse(char *data, char *filename) {
     parse_source source;
@@ -23,7 +24,8 @@ parse_source start_parse(char *data, char *filename) {
 }
 
 bool has_token(parse_source source) {
-    return source.pos < source.length;
+    int newlineThrowaway = 0; //Pass to the function to just throw away the newlines it finds
+    return next_significant_char(source, &newlineThrowaway) != -1;
 }
 
 parse_token get_token(parse_source *source) {
@@ -126,6 +128,35 @@ parse_token get_token(parse_source *source) {
     }
     fprintf(stderr, "Call for token when context is empty");
     exit(-1);
+}
+
+static int next_significant_char(parse_source source, int *newlines) {
+    enum {SINGLE_LINE_COMMENT, MULTI_LINE_COMMENT, REGULAR_TEXT} mode;
+    mode = REGULAR_TEXT;
+    for(int i = source.pos; i < source.length; i++) {
+        if(source.data[i] == '\n')
+            *newlines += 1;
+        switch(mode) {
+        case REGULAR_TEXT:
+            if(source.data[i] == '/' && i < source.length - 1) {
+                if(source.data[i + 1] == '/') {
+                    mode = SINGLE_LINE_COMMENT;
+                } else if(source.data[i + 1] == '*') {
+                    mode = MULTI_LINE_COMMENT;
+                }
+            } else if(source.data[i] != ' ' && source.data[i] != '\r')
+                return i;
+        case SINGLE_LINE_COMMENT:
+            if(source.data[i] == '\n')
+                mode = REGULAR_TEXT;
+            break;
+        case MULTI_LINE_COMMENT:
+            if(source.data[i] == '/' && source.data[i - 1] == '*')
+                mode = REGULAR_TEXT;
+            break;
+        }
+    }
+    return -1;
 }
 
 static void tokenizer_error(char *error, char *file, int line) {
