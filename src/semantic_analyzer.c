@@ -18,16 +18,13 @@ file_contents analyze(parse_source source) {
 	file_contents contents;
 	contents.structs = ll_new();
 	contents.functions = ll_new();
-	while(!ll_empty(tokens)) {
-		linked_iter iterator = ll_iter_head(tokens);
-		parse_token *current = ll_iter_next(&iterator);
-		if(equals(current->data, new_slice("struct"))) {
-			ll_iter_clear_to_current(&iterator);
-			struct_declaration *dec = analyze_struct(tokens);
+	while(has_token(source)) {
+		parse_token token = get_token(&source);
+		if(equals(current.data, new_slice("struct"))) {
+			struct_declaration *dec = analyze_struct(&source);
 			ll_add_last(contents.structs, dec);
-		} else if(equals(current->data, new_slice("func"))) {
-			ll_iter_clear_to_current(&iterator);
-			func_declaration *func = analyze_func(tokens);
+		} else if(equals(current.data, new_slice("func"))) {
+			func_declaration *func = analyze_func(&source);
 			ll_add_last(contents.functions, func);
 		}
 	}
