@@ -32,42 +32,33 @@ file_contents analyze(parse_source source) {
 }
 
 static struct_declaration *analyze_struct(parse_source *source) {
-	linked_iter iterator = ll_iter_head(tokens);
-	parse_token *current = ll_iter_next(&iterator);
+	parse_token current = get_token(source);
 	struct_declaration *dec = new(dec);
-	dec->name = current->data;
-	dec->head = dec->tail = NULL;
-	current = ll_iter_next(&iterator);
-	if(current->data.data[0] != '{') {
+	dec->name = current.data;
+	dec->members = ll_new();
+	current = get_token(source);
+	if(current.data.data[0] != '{') {
 		semantic_error("Expected opening brace after name in struct declaration.", current->origin);
 	}
-	current = ll_iter_next(&iterator);
-	while(current->data.data[0] != '}')	{
+	current = get_token(source);
+	while(current.data.data[0] != '}')	{
 		struct_member *member = new(member);
-		if(current->type != WORD) {
-			semantic_error("Struct members must be declared as <value> : <type>;", current->origin);
+		if(current.type != WORD) {
+			semantic_error("Struct members must be declared as <value> <type>;", current->origin);
 		}
-		member->name = current->data;
-		current = ll_iter_next(&iterator);
-		if(current->type != SYMBOL || current->data.data[0] != ':' || (current = ll_iter_next(&iterator))->type != WORD) {
-			semantic_error("Struct members must be declared as <value> : <type>;",current->origin);
+		member->name = current.data;
+		current = get_token(source);
+		if(current.type != WORD) {
+			semantic_error("Struct members must be declared as <value> <type>;",current->origin);
 		}
-		member->type = current->data;
-		current = ll_iter_next(&iterator);
-		if(current->data.data[0] != ';') {
-			semantic_error("Struct members must be declared as <value> : <type>;", current->origin);
+		member->type = current.data;
+		current = get_token(source);
+		if(current.data.data[0] != ';') {
+			semantic_error("Struct members must be declared as <value> <type>;", current->origin);
 		}
-		member->next = NULL;
-		if(dec->head == NULL) {
-			dec->head = member;
-		} else if(dec->tail == NULL){
-			dec->head->next = dec->tail = member;
-		} else {
-			dec->tail->next = member;
-		}
-		current = ll_iter_next(&iterator);
+		ll_add_last(dec->members, member);
+		current = get_token(source);
 	}
-	ll_iter_clear_to_current(&iterator);
 	return dec;
 }
 
