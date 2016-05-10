@@ -16,17 +16,16 @@ struct file_contents {
 };
 struct struct_declaration {
 	slice name;
-	struct_member *head, *tail;
+	linked_list *members;
 	source_origin origin;
 };
 struct struct_member {
 	slice type, name;
-	struct_member *next;
 };
 struct func_declaration {
 	slice type, name;
-	statement *paramHead, *paramTail;
-	statement *root;
+	linked_list *parameters;
+	linked_list *body;
 };
 typedef enum statement_type {OP_ADD, OP_SUB, OP_MULT, OP_DIV, OP_MOD, OP_EXP,
 	OP_BIT_AND,	OP_BOOL_AND, OP_BIT_OR, OP_BOOL_OR, OP_BIT_XOR, OP_BOOL_XOR, OP_BIT_NOT, OP_BOOL_NOT,
@@ -44,8 +43,7 @@ typedef enum statement_type {OP_ADD, OP_SUB, OP_MULT, OP_DIV, OP_MOD, OP_EXP,
 struct statement {
 	slice data;
 	statement_type type;
-	statement *next, *child;
+	linked_list *children;
 };
-file_contents analyze(linked_list *tokens);
-struct_declaration *analyze_struct(linked_list *token);
+file_contents analyze(parse_source tokens);
 #endif
