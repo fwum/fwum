@@ -63,74 +63,63 @@ static struct_declaration *analyze_struct(parse_source *source) {
 }
 
 static func_declaration *analyze_func(parse_source *source) {
-	linked_iter iterator = ll_iter_head(tokens);
-	parse_token *current = ll_iter_next(&iterator);
+	parse_token current = get_token(source);
 	func_declaration *func = new(func);
-	func->root = func->paramHead = func->paramTail = NULL;
-	if(current == NULL || current->type != WORD) {
-		semantic_error("Function declaration must be in the form func <name>(<parameters>) : <returntype> {<block>}", current->origin);
+	func->parameters = ll_new();
+	func->body = ll_new();
+	if(current.type != WORD) {
+		semantic_error("Function declaration must be in the form func <name>(<parameters>) <returntype> {<block>}", current.origin);
 	}
-	func->name = current->data;
-	current = ll_iter_next(&iterator);
-	if(current == NULL || current->data.data[0] != '(') {
-		semantic_error("Function name must be followed by an open parenthesis", current->origin);
+	func->name = current.data;
+	current = get_token(source);
+	if(current.data.data[0] != '(') {
+		semantic_error("Function name must be followed by an open parenthesis", current.origin);
 	}
-	current = ll_iter_next(&iterator);
-	while(current->data.data[0] != ')') {
-		if(current == NULL) {
-			semantic_error("Unexpected EOF encountered in function declaration", current->origin);
-		}
+	current = get_token(source);
+	while(current.data.data[0] != ')') {
 		statement *name = new(name);
 		name->type = NAME;
-		name->next = name->child = NULL;
-		if(current->type != WORD) {
-			semantic_error("Parameter names must be a valid identifier", current->origin);
+		name->children = ll_new();
+		if(current.type != WORD) {
+			semantic_error("Parameter names must be a valid identifier", current.origin);
 		}
-		name->data = current->data;
-		current = ll_iter_next(&iterator);
-		if(current->type != SYMBOL || current->data.data[0] != ':') {
-			semantic_error("Parameters to functions must separate names and types with colons", current->origin);
+		name->data = current.data;
+		current = get_token(source);
+		if(current.type != SYMBOL || current.data.data[0] != ':') {
+			semantic_error("Parameters to functions must separate names and types with colons", current.origin);
 		}
-		current = ll_iter_next(&iterator);
+		if(!has_token(*source)) {
+			semantic_error("Unexpected EOF encountered in function declaration", current.origin);
+		}
+		current = get_token(source);
 		statement *param_type = new(param_type);
-		if(current == NULL) {
-			semantic_error("Unexpected EOF encountered in function declaration", current->origin);
+		if(current.type != WORD) {
+			semantic_error("Parameter types must be valid identifiers.", current.origin);
 		}
-		if(current->type != WORD) {
-			semantic_error("Parameter types must be valid identifiers.", current->origin);
-		}
-		param_type->data = current->data;
+		param_type->data = current.data;
 		param_type->type = TYPE;
-		name->child = param_type;
-		param_type->next = param_type->child = NULL;
-		if(func->paramHead == NULL) {
-			func->paramHead = name;
-		} else if(func->paramTail == NULL) {
-			func->paramTail = name;
-			func->paramHead->next = name;
-		} else {
-			func->paramTail->next = name;
-			func->paramTail = func->paramTail->next;
+		ll_add_first(name->children, param_type);
+		param_type->children = NULL;
+		ll_add_last(func->parameters, name);
+		if(!has_token(*source)) {
+			semantic_error("Unexpected EOF encountered in function declaration", current.origin);
 		}
-		current = ll_iter_next(&iterator);
-		if(current->data.data[0] == ',') {
-			current = ll_iter_next(&iterator);
+		current = get_token(source);
+		if(current.data.data[0] == ',') {
+			current = get_token(source);
 		}
 	}
-	current = ll_iter_next(&iterator);
-	func->type = current->data;
-	current = ll_iter_next(&iterator);
-	if(current->data.data[0] != '{') {
-		semantic_error("Function bodies must start with an open brace ('{')", current->origin);
+	current = get_token(source);
+	func->type = current.data;
+	current = get_token(source);
+	if(current.data.data[0] != '{') {
+		semantic_error("Function bodies must start with an open brace ('{')", current.origin);
 	}
 	statement *state = new(state);
-	state->next = state->child = NULL;
 	state->type = ROOT;
-	ll_iter_clear_to_current(&iterator);
-	state->child = get_expression(tokens);
-	func->root = state;
-	ll_iter_next(&iterator);
-	ll_iter_clear_to_current(&iterator);
+	ll_add_first(state->children, get_expression(source));
+	ll_add_first(func->body, state);
+	get_token(source);
 	return func;
 }
 
