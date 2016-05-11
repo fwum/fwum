@@ -38,32 +38,32 @@ file_contents analyze(parse_source source) {
 }
 
 static struct_declaration *analyze_struct(parse_source *source) {
-	parse_token current = get_token(source);
+	parse_token current = mandatory_token(source);
 	struct_declaration *dec = new(dec);
 	dec->name = current.data;
 	dec->members = ll_new();
-	current = get_token(source);
+	current = mandatory_token(source);
 	if(current.data.data[0] != '{') {
 		semantic_error("Expected opening brace after name in struct declaration.", current.origin);
 	}
-	current = get_token(source);
+	current = mandatory_token(source);
 	while(current.data.data[0] != '}')	{
 		struct_member *member = new(member);
 		if(current.type != WORD) {
 			semantic_error("Struct members must be declared as <value> <type>;", current.origin);
 		}
 		member->name = current.data;
-		current = get_token(source);
+		current = mandatory_token(source);
 		if(current.type != WORD) {
 			semantic_error("Struct members must be declared as <value> <type>;",current.origin);
 		}
 		member->type = current.data;
-		current = get_token(source);
+		current = mandatory_token(source);
 		if(current.data.data[0] != ';') {
 			semantic_error("Struct members must be declared as <value> <type>;", current.origin);
 		}
 		ll_add_last(dec->members, member);
-		current = get_token(source);
+		current = mandatory_token(source);
 	}
 	return dec;
 }
