@@ -29,7 +29,8 @@ int main(int argc, char **argv) {
 		FILE* file = fopen(argv[1], "r");
 		char *contents = read_file(file);
 		parse_source source = start_parse(contents, argv[1]);
-		print_tokens(source);
+		file_contents parsed = analyze(source);
+		dump(parsed);
 		return 0;
 	}
 }
