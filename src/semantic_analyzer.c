@@ -267,7 +267,7 @@ static statement *get_expression(linked_list *tokens) {
 						ll_remove_first(list);
 					ll_remove_first(list);
 					ll_remove_first(list);
-					if(expression->children == NULL) {
+					if(expression->children == NULL)
 						expression->children = ll_new();
 					ll_add_last(expression->children, get_expression(param));
 				}
