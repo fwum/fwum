@@ -6,6 +6,7 @@
 #include "semantic_analyzer.h"
 #include "io.h"
 #include "printing.h"
+#include "optional.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -143,6 +144,19 @@ static int tests() {
 		test_assert(token.type == SYMBOL, "Symbol parse type #2");
 		test_assert(equals_string(token.data, "!"), "Symbol parse contents #2");
 		test_assert(!has_token(source), "Has next without next");
+		end_test_set();
+	}
+	{
+		start_test_set("Optionals");
+		optional op = op_wrap(NULL);
+		test_assert(!op_has(op), "Null optional has check");
+		int *five = box_int(5);
+		test_assert(*((int*)op_if_else(op, five)) == 5, "Null optional if-else");
+		int *six = box_int(6);
+		op = op_wrap(six);
+		test_assert(op_has(op), "Non-null optional has check");
+		test_assert(*((int*)op_get(op)) == 6, "Non-null optional get");
+		test_assert(*((int*)op_if_else(op, five)) == 6, "Non-null optional if-else");
 		end_test_set();
 	}
 	printf("Total test results: %d passed, %d failed\n", all_tests.passed, all_tests.failed);
