@@ -25,7 +25,9 @@ parse_source start_parse(char *data, char *filename) {
 
 bool has_token(parse_source source) {
     int newlineThrowaway = 0; //Pass to the function to just throw away the newlines it finds
-    return next_significant_char(source, &newlineThrowaway) != -1;
+    int next = next_significant_char(source, &newlineThrowaway);
+    printf("%d:%c\n", next, source.data[next]);
+    return next != -1;
 }
 
 parse_token get_token(parse_source *source) {
@@ -135,8 +137,10 @@ static int next_significant_char(parse_source source, int *newlines) {
     enum {SINGLE_LINE_COMMENT, MULTI_LINE_COMMENT, REGULAR_TEXT} mode;
     mode = REGULAR_TEXT;
     for(int i = source.pos; i < source.length; i++) {
-        if(source.data[i] == '\n')
+        if(source.data[i] == '\n') {
             *newlines += 1;
+            continue;
+        }
         switch(mode) {
         case REGULAR_TEXT:
             if(source.data[i] == '/' && i < source.length - 1) {
