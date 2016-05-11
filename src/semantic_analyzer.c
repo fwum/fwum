@@ -90,10 +90,6 @@ static func_declaration *analyze_func(parse_source *source) {
 		}
 		name->data = current.data;
 		current = get_mandatory_token(source);
-		if(current.type != SYMBOL || current.data.data[0] != ':') {
-			semantic_error("Parameters to functions must separate names and types with colons", current.origin);
-		}
-		current = get_mandatory_token(source);
 		statement *param_type = new(param_type);
 		if(current.type != WORD) {
 			semantic_error("Parameter types must be valid identifiers.", current.origin);
