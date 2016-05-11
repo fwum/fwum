@@ -153,8 +153,8 @@ static statement *get_expression(linked_list *tokens) {
 	parse_token *current = ll_iter_next(&iterator);
 	statement *expression = new(expression);
 	expression->children = NULL;
-	expression.data.data = NULL;
-	expression.data.len = 0;
+	expression->data.data = NULL;
+	expression->data.len = 0;
 	//TODO: Consider removal
 	bool foundPattern = false;
 	parse_token *last = ll_get_last(tokens);
