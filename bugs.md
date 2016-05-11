@@ -1,1 +1,1 @@
-- The main over-runs the amount of available tokens
+- The semantic analyzer still wants to separate names and types with colons
