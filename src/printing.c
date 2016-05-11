@@ -87,8 +87,10 @@ void dump_node(linked_list *list, int indentation) {
 }
 
 void print_tokens(parse_source source) {
-    while(has_token(source)) {
-        parse_token token = get_token(&source);
-        print_token(&token);
+    optional op = get_token(&source);
+    while(op_has(op)) {
+        parse_token *token = op_get(op);
+        print_token(token);
+        op = get_token(&source);
     }
 }
