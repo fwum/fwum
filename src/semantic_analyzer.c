@@ -116,7 +116,7 @@ static func_declaration *analyze_func(parse_source *source) {
 	}
 	statement *state = new(state);
 	state->type = ROOT;
-	ll_add_first(state->children, get_expression(source));
+	ll_add_first(state->children, parse_body(source));
 	ll_add_first(func->body, state);
 	get_token(source);
 	return func;
