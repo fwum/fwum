@@ -10,11 +10,12 @@
 
 static void semantic_error(char *error, source_origin origin);
 static func_declaration *analyze_func(parse_source *source);
-static statement *get_expression(parse_source *source);
-static statement *parse_operation(parse_source *source);
+static statement *get_expression(linked_list *tokens);
+static statement *parse_operation(linked_list *tokens);
 static struct_declaration *analyze_struct(parse_source *source);
 static void check_eof(parse_source source, parse_token current);
 static linked_list *create_list(parse_source *source);
+static statement *parse_body(parse_source *source);
 
 file_contents analyze(parse_source source) {
 	file_contents contents;
@@ -143,11 +144,13 @@ static linked_list *create_list(parse_source *source) {
 	return list;
 }
 
-static statement *get_expression(parse_source *source) {
-	if(!has_token(*source)) {
-		semantic_error("Unexpected End of File", current->origin);
-	}
-	parse_token current = get_token(source);
+static statement *parse_body(parse_source *source) {
+	return get_expression(create_list(source));
+}
+
+static statement *get_expression(linked_list *tokens) {
+	linked_iter iterator = ll_iter_head(tokens);
+	parse_token *current = ll_iter_next(&iterator);
 	statement *expression = new(expression);
 	expression->children = NULL;
 	expression.data.data = NULL;
@@ -322,7 +325,7 @@ static statement *get_expression(parse_source *source) {
 	return expression;
 }
 
-static statement *parse_operation(parse_source *source) {
+static statement *parse_operation(linked_list *tokens) {
 	linked_iter iterator = ll_iter_head(tokens);
 	linked_list *operator = get_node();
 	linked_iter level = ll_iter_head(operator);
