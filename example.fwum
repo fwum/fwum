@@ -12,7 +12,7 @@ struct point {
 
 
 func main(argc int, argv char) int {
-	if a {
+/*	if a {
 		while a {
 			if c {
 				break;
@@ -26,5 +26,5 @@ func main(argc int, argv char) int {
 	returnVal = (1 + 2) * 3;
 	if b {
 		(a(1));
-	}
+	}*/
 }
