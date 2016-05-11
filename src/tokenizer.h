@@ -3,6 +3,7 @@
 #include "slice.h"
 #include "util.h"
 #include "linked_list.h"
+#include "optional.h"
 
 DEFSTRUCT(parse_token);
 DEFSTRUCT(token_list);
@@ -40,10 +41,7 @@ Get a struct that holds the state of a parse on a file
 parse_source start_parse(char *data, char *filename);
 /*
 Get a token from a file
+optional of a parse_token
 */
-parse_token get_token(parse_source *source);
-/*
-Tells if there is another token left in the source
-*/
-bool has_token(parse_source source);
+optional get_token(parse_source *source);
 #endif

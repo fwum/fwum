@@ -1,17 +1,17 @@
 #include "tokenizer.h"
 #include "slice.h"
 #include "linked_list.h"
+#include "optional.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-static parse_token new_token(slice data, token_type type, char *filename, int line);
+static optional new_token(slice data, token_type type, char *filename, int line);
 static bool is_whitespace(char c);
 static bool is_alpha(char c);
 static bool is_num(char c);
 static void tokenizer_error(char *error, char *file, int line);
-static int next_significant_char(parse_source source, int *newlineAccumulator);
 
 parse_source start_parse(char *data, char *filename) {
     parse_source source;
@@ -23,14 +23,7 @@ parse_source start_parse(char *data, char *filename) {
     return source;
 }
 
-bool has_token(parse_source source) {
-    int newlineThrowaway = 0; //Pass to the function to just throw away the newlines it finds
-    int next = next_significant_char(source, &newlineThrowaway);
-    printf("%d:%c\n", next, source.data[next]);
-    return next != -1;
-}
-
-parse_token get_token(parse_source *source) {
+optional get_token(parse_source *source) {
     enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR, M_COMMENT_LINE, M_COMMENT_MULTI} parse_mode;
     parse_mode = M_NONE;
     int token_begin = source->pos;
@@ -129,53 +122,23 @@ parse_token get_token(parse_source *source) {
             break;
         }
     }
-    fprintf(stderr, "Call for token when context is empty");
-    exit(-1);
+    return op_wrap(NULL);
 }
 
-static int next_significant_char(parse_source source, int *newlines) {
-    enum {SINGLE_LINE_COMMENT, MULTI_LINE_COMMENT, REGULAR_TEXT} mode;
-    mode = REGULAR_TEXT;
-    for(int i = source.pos; i < source.length; i++) {
-        if(source.data[i] == '\n') {
-            *newlines += 1;
-            continue;
-        }
-        switch(mode) {
-        case REGULAR_TEXT:
-            if(source.data[i] == '/' && i < source.length - 1) {
-                if(source.data[i + 1] == '/') {
-                    mode = SINGLE_LINE_COMMENT;
-                } else if(source.data[i + 1] == '*') {
-                    mode = MULTI_LINE_COMMENT;
-                }
-            } else if(source.data[i] != ' ' && source.data[i] != '\r')
-                return i;
-        case SINGLE_LINE_COMMENT:
-            if(source.data[i] == '\n')
-                mode = REGULAR_TEXT;
-            break;
-        case MULTI_LINE_COMMENT:
-            if(source.data[i] == '/' && source.data[i - 1] == '*')
-                mode = REGULAR_TEXT;
-            break;
-        }
-    }
-    return -1;
-}
 
 static void tokenizer_error(char *error, char *file, int line) {
     fprintf(stderr, "Error encountered while parsing %s at line %d:\n%s\n", file, line, error);
     exit(-1);
 }
 
-static parse_token new_token(slice data, token_type type, char *filename, int line) {
-    parse_token token;
-    token.data = data;
-    token.type = type;
+static optional new_token(slice data, token_type type, char *filename, int line) {
+    parse_token *token = new(token);
+    token->data = data;
+    token->type = type;
     source_origin origin = {filename, line};
-    token.origin = origin;
-    return token;
+    token->origin = origin;
+	optional token_wrap = op_wrap(token);
+    return token_wrap;
 }
 
 static bool is_whitespace(char c) {
