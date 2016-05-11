@@ -156,10 +156,7 @@ static bool is_num(char c) {
 parse_token get_mandatory_token(parse_source *source) {
     optional next = get_token(source);
 	if(!op_has(next)) {
-		source_origin origin;
-		origin.filename = source->filename;
-		origin.line = source->line;
-		semantic_error("Unexpected End of File encountered", origin);
+		tokenizer_error("Unexpected End of File encountered", source->filename, source->line);
 		exit(-1);
 	} else {
 		parse_token *token = op_get(next);
