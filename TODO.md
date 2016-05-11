@@ -1,14 +1,5 @@
 #TODO
 
-- Change iterator implementation to allow for reversable iteration
-
-- Implement tests for the tokenizer
-
-- Document data structures
-
-- Create intermediate step between the tokenizer and the semantic analyzer that is syntax aware
-
-- Have tokenizer check for operators from the operator list
 
 - Implement index operator
 
