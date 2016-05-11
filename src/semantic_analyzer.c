@@ -3,6 +3,7 @@
 #include "util.h"
 #include "printing.h"
 #include "operators.h"
+#include "optional.h"
 #include "linked_list.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,8 +22,9 @@ file_contents analyze(parse_source source) {
 	file_contents contents;
 	contents.structs = ll_new();
 	contents.functions = ll_new();
-	while(has_token(source)) {
-		parse_token current = get_token(&source);
+	optional op = get_token(&source);
+	while(op_has(op)) {
+		parse_token current = *((parse_token*)op_get(op));
 		if(equals(current.data, new_slice("struct"))) {
 			struct_declaration *dec = analyze_struct(&source);
 			ll_add_last(contents.structs, dec);
@@ -30,6 +32,7 @@ file_contents analyze(parse_source source) {
 			func_declaration *func = analyze_func(&source);
 			ll_add_last(contents.functions, func);
 		}
+		op = get_token(&source);
 	}
 	return contents;
 }
