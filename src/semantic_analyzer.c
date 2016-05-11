@@ -203,15 +203,9 @@ static statement *get_expression(linked_list *tokens) {
 					while(ll_get_last(item) != current)
 						ll_remove_last(item);
 					ll_iter_clear_to_current(&iterator);
-					if(expression->child == NULL) {
-						expression->child = get_expression(item);
-					} else {
-						statement *currentExpression = expression->child;
-						while(currentExpression->next != NULL) {
-							currentExpression = currentExpression->next;
-						}
-						currentExpression->next = get_expression(item);
-					}
+					if(expression->children == NULL)
+						expression->children = ll_new();
+					ll_add_last(expression->children, item);
 					ll_destroy(item);
 				}
 			}
@@ -246,11 +240,13 @@ static statement *get_expression(linked_list *tokens) {
 			linked_iter end_of_header_iter = ll_iter_head(header);
 			while(((parse_token*)ll_iter_next(&end_of_header_iter))->data.data[0] != '{') {}
 			ll_iter_clear_remaining(&end_of_header_iter);
-			expression->child = get_expression(header);
+			if(expression->children == NULL)
+				expression->children = ll_new();
+			ll_add_first(expression->children, get_expression(header));
 			while(ll_get_first(tokens) != ll_get_last(header))
 				ll_remove_first(tokens);
 			ll_remove_first(tokens);
-			expression->child->next = get_expression(tokens);
+			ll_add_last(expression->children, get_expression(tokens));
 		} else if((next = ll_iter_next(&iterator))->data.data[0] == '(') {
 			foundPattern = true;
 			expression->type = FUNC_CALL;
@@ -271,15 +267,9 @@ static statement *get_expression(linked_list *tokens) {
 						ll_remove_first(list);
 					ll_remove_first(list);
 					ll_remove_first(list);
-					if(expression->child == NULL) {
-						expression->child = get_expression(param);
-					} else {
-						statement *currentExpression = expression->child;
-						while(currentExpression->next != NULL) {
-							currentExpression = currentExpression->next;
-						}
-						currentExpression->next = get_expression(param);
-					}
+					if(expression->children == NULL) {
+						expression->children = ll_new();
+					ll_add_last(expression->children, get_expression(param));
 				}
 				if(currentChar == '(') {
 					paren_level += 1;
