@@ -14,6 +14,7 @@ static statement *get_expression(parse_source *source);
 static statement *parse_operation(parse_source *source);
 static struct_declaration *analyze_struct(parse_source *source);
 static void check_eof(parse_source source, parse_token current);
+static linked_list *create_list(parse_source *source);
 
 file_contents analyze(parse_source source) {
 	file_contents contents;
@@ -118,6 +119,28 @@ static func_declaration *analyze_func(parse_source *source) {
 	ll_add_first(func->body, state);
 	get_token(source);
 	return func;
+}
+
+static linked_list *create_list(parse_source *source) {
+	parse_token *heap = new(heap);
+	linked_list *list = ll_new();
+	parse_token token = get_token(source);
+	int bracket_level = 0;
+	while(true) {
+		if(equals_string(token.data, "{")) {
+			bracket_level += 1;
+		} else if(equals_string(token.data, "}")) {
+			bracket_level -= 1;
+		}
+		if(bracket_level == 0 && (equals_string(token.data, "}") || equals_string(token.data, ";")))
+			break;
+		check_eof(*source, token);
+		*heap = token;
+		ll_add_last(list, heap);
+		heap = new(heap);
+		parse_token token = get_token(source);
+	}
+	return list;
 }
 
 static statement *get_expression(parse_source *source) {
