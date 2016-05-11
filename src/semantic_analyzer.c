@@ -139,7 +139,7 @@ static linked_list *create_list(parse_source *source) {
 		*heap = token;
 		ll_add_last(list, heap);
 		heap = new(heap);
-		parse_token token = get_token(source);
+		token = get_token(source);
 	}
 	return list;
 }
