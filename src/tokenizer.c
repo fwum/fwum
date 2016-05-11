@@ -152,3 +152,19 @@ static bool is_alpha(char c) {
 static bool is_num(char c) {
     return c >= '0' && c <= '9';
 }
+
+parse_token get_mandatory_token(parse_source *source) {
+    optional next = get_token(source);
+	if(!op_has(next)) {
+		source_origin origin;
+		origin.filename = source->filename;
+		origin.line = source->line;
+		semantic_error("Unexpected End of File encountered", origin);
+		exit(-1);
+	} else {
+		parse_token *token = op_get(next);
+		parse_token value = *token;
+		free(token);
+		return value;
+	}
+}

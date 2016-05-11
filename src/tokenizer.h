@@ -44,4 +44,9 @@ Get a token from a file
 optional of a parse_token
 */
 optional get_token(parse_source *source);
+/*
+Guaranteed to return a token
+Will exit the compiler with an error message if one is not found
+*/
+parse_token get_mandatory_token(parse_source *source);
 #endif
