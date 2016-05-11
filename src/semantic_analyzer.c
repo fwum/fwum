@@ -69,7 +69,7 @@ static struct_declaration *analyze_struct(parse_source *source) {
 }
 
 static func_declaration *analyze_func(parse_source *source) {
-	parse_token current = get_token(source);
+	parse_token current = mandatory_token(source);
 	func_declaration *func = new(func);
 	func->parameters = ll_new();
 	func->body = ll_new();
@@ -77,11 +77,11 @@ static func_declaration *analyze_func(parse_source *source) {
 		semantic_error("Function declaration must be in the form func <name>(<parameters>) <returntype> {<block>}", current.origin);
 	}
 	func->name = current.data;
-	current = get_token(source);
+	current = mandatory_token(source);
 	if(current.data.data[0] != '(') {
 		semantic_error("Function name must be followed by an open parenthesis", current.origin);
 	}
-	current = get_token(source);
+	current = mandatory_token(source);
 	while(current.data.data[0] != ')') {
 		statement *name = new(name);
 		name->type = NAME;
@@ -90,12 +90,11 @@ static func_declaration *analyze_func(parse_source *source) {
 			semantic_error("Parameter names must be a valid identifier", current.origin);
 		}
 		name->data = current.data;
-		current = get_token(source);
+		current = mandatory_token(source);
 		if(current.type != SYMBOL || current.data.data[0] != ':') {
 			semantic_error("Parameters to functions must separate names and types with colons", current.origin);
 		}
-		check_eof(*source, current);
-		current = get_token(source);
+		current = mandatory_token(source);
 		statement *param_type = new(param_type);
 		if(current.type != WORD) {
 			semantic_error("Parameter types must be valid identifiers.", current.origin);
@@ -105,15 +104,14 @@ static func_declaration *analyze_func(parse_source *source) {
 		ll_add_first(name->children, param_type);
 		param_type->children = NULL;
 		ll_add_last(func->parameters, name);
-		check_eof(*source, current);
-		current = get_token(source);
+		current = mandatory_token(source);
 		if(current.data.data[0] == ',') {
-			current = get_token(source);
+			current = mandatory_token(source);
 		}
 	}
-	current = get_token(source);
+	current = mandatory_token(source);
 	func->type = current.data;
-	current = get_token(source);
+	current = mandatory_token(source);
 	if(current.data.data[0] != '{') {
 		semantic_error("Function bodies must start with an open brace ('{')", current.origin);
 	}
@@ -121,14 +119,14 @@ static func_declaration *analyze_func(parse_source *source) {
 	state->type = ROOT;
 	ll_add_first(state->children, parse_body(source));
 	ll_add_first(func->body, state);
-	get_token(source);
+	mandatory_token(source);
 	return func;
 }
 
 static linked_list *create_list(parse_source *source) {
 	parse_token *heap = new(heap);
 	linked_list *list = ll_new();
-	parse_token token = get_token(source);
+	parse_token token = mandatory_token(source);
 	int bracket_level = 0;
 	while(true) {
 		if(equals_string(token.data, "{")) {
@@ -138,11 +136,10 @@ static linked_list *create_list(parse_source *source) {
 		}
 		if(bracket_level == 0 && (equals_string(token.data, "}") || equals_string(token.data, ";")))
 			break;
-		check_eof(*source, token);
 		*heap = token;
 		ll_add_last(list, heap);
 		heap = new(heap);
-		token = get_token(source);
+		token = mandatory_token(source);
 	}
 	return list;
 }
@@ -369,7 +366,10 @@ static void semantic_error(char *error, source_origin origin) {
 static parse_token mandatory_token(parse_source *source) {
 	optional next = get_token(source);
 	if(!op_has(next)) {
-		semantic_error("Unexpected End of File encountered", current.origin);
+		source_origin origin;
+		origin.filename = source->filename;
+		origin.line = source->line;
+		semantic_error("Unexpected End of File encountered", origin);
 		exit(-1);
 	} else {
 		parse_token *token = op_get(next);
