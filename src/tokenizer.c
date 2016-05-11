@@ -37,7 +37,7 @@ parse_token get_token(parse_source *source) {
             continue;
         } else if(source->data[i] == '\n') {
             source->line += 1;
-        } else if(source->data[i] && parse_mode != M_STRING && parse_mode != M_CHAR) {
+        } else if(source->data[i] == '/' && parse_mode != M_STRING && parse_mode != M_CHAR) {
             if(source->data[i + 1] == '*') {
                 parse_mode = M_COMMENT_MULTI;
                 continue;
