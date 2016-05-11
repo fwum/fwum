@@ -2,10 +2,6 @@
 #include "printing.h"
 #include "ast_strings.h"
 
-/*
-Print an AST node to stdout (recursive)
-*/
-void dump_node(statement *state, int indentation);
 static void print_token(parse_token *current);
 
 /*
@@ -53,10 +49,10 @@ void dump(file_contents contents) {
 		while(ll_iter_has_next(&iterator)) {
             struct_declaration *current = ll_iter_next(&iterator);
 			printf("STRUCT: %s\n", evaluate(current->name));
-			struct_member *member = current->head;
-			while(member != NULL) {
+            linked_iter iterator = ll_iter_head(current->members);
+			while(ll_iter_has_next(&iterator)) {
+                struct_member *member = ll_iter_next(&iterator);
 				printf("\tMEMBER: NAME: %s | TYPE: %s\n", evaluate(member->name), evaluate(member->type));
-				member = member->next;
 			}
 		}
 	}
@@ -65,8 +61,8 @@ void dump(file_contents contents) {
         while(ll_iter_has_next(&iterator)) {
             func_declaration *current = ll_iter_next(&iterator);
 			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
-			dump_node(current->paramHead, 0);
-			dump_node(current->root, 0);
+			dump_node(current->parameters, 0);
+			dump_node(current->body, 0);
 		}
 	}
 
@@ -75,19 +71,17 @@ void dump(file_contents contents) {
 /*
 Print an AST node to stdout (recursive)
 */
-void dump_node(statement *state, int indentation) {
-	if(state == NULL) {
-		return;
-    }
+void dump_node(linked_list *list, int indentation) {
 	for(int i = 0; i < indentation; i++) {
 		printf("\t");
     }
-    printf("%s", statement_to_string(state->type));
-	printf(": %s\n", evaluate(state->data));
-	if(state->child != NULL) {
-		dump_node(state->child, indentation + 1);
-    }
-	if(state->next != NULL) {
-        dump_node(state->next, indentation);
+    linked_iter iterator = ll_iter_head(list);
+    while(ll_iter_has_next(&iterator)) {
+        statement *state = ll_iter_next(&iterator);
+        printf("%s", statement_to_string(state->type));
+    	printf(": %s\n", evaluate(state->data));
+    	if(state->children != NULL) {
+    		dump_node(state->children, indentation + 1);
+        }
     }
 }

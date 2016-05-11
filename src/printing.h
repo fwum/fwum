@@ -9,7 +9,7 @@ void dump(file_contents contents);
 /*
 Print an AST node to stdout (recursive)
 */
-void dump_node(statement *state, int indentation);
+void dump_node(linked_list *list, int indentation);
 /*
 Print a list of tokens to stdout, mostly for debugging purposes
 */
