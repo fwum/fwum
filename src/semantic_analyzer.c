@@ -345,10 +345,10 @@ static statement *parse_operation(linked_list *tokens) {
 						ll_remove_first(op2);
 						statement *expression = new(expression);
 						expression->data = new_slice("");
-						expression->next = NULL;
 						expression->type = currentOperator->operatorType;
-						expression->child = get_expression(op1);
-						expression->child->next = get_expression(op2);
+						expression->children = ll_new();
+						ll_add_last(expression->children, get_expression(op1));
+						ll_add_last(expression->children, get_expression(op2));
 						return expression;
 					}
 				}
