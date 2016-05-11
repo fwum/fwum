@@ -14,4 +14,8 @@ void dump_node(linked_list *list, int indentation);
 Print a list of tokens to stdout, mostly for debugging purposes
 */
 void print_tlist(linked_list *list);
+/*
+Print all the tokens
+*/
+void print_tokens(parse_source source);
 #endif

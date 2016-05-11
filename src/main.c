@@ -25,8 +25,10 @@ int main(int argc, char **argv) {
 		printf("No input files.\n");
 		return -1;
 	} else {
-		printf("%s\n", argv[1]); //Make the compiler stop complaning about the definition of main
-		//TODO: Build back up the main
+		FILE* file = fopen(argv[1], "r");
+		char *contents = read_file(file);
+		parse_source source = start_parse(contents, argv[1]);
+		print_tokens(source);
 		return 0;
 	}
 }

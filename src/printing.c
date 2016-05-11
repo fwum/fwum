@@ -85,3 +85,10 @@ void dump_node(linked_list *list, int indentation) {
         }
     }
 }
+
+void print_tokens(parse_source source) {
+    while(has_token(source)) {
+        parse_token token = get_token(&source);
+        print_token(&token);
+    }
+}
