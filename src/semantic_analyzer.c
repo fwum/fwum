@@ -14,9 +14,9 @@ static func_declaration *analyze_func(parse_source *source);
 static statement *get_expression(linked_list *tokens);
 static statement *parse_operation(linked_list *tokens);
 static struct_declaration *analyze_struct(parse_source *source);
-static void check_eof(parse_source source, parse_token current);
 static linked_list *create_list(parse_source *source);
 static statement *parse_body(parse_source *source);
+static parse_token mandatory_token(parse_source *source);
 
 file_contents analyze(parse_source source) {
 	file_contents contents;
@@ -361,13 +361,20 @@ static statement *parse_operation(linked_list *tokens) {
 	return NULL;
 }
 
-static void check_eof(parse_source source, parse_token current) {
-	if(!has_token(source)) {
-		semantic_error("Unexpected End of File encountered", current.origin);
-	}
-}
-
 static void semantic_error(char *error, source_origin origin) {
 	fprintf(stderr, "Error encountered while analyzing %s at line %d:\n%s\n", origin.filename, origin.line, error);
 	exit(-1);
+}
+
+static parse_token mandatory_token(parse_source *source) {
+	optional next = get_token(source);
+	if(!op_has(next)) {
+		semantic_error("Unexpected End of File encountered", current.origin);
+		exit(-1);
+	} else {
+		parse_token *token = op_get(next);
+		parse_token value = *token;
+		free(token);
+		return value;
+	}
 }
