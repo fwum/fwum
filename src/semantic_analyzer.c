@@ -106,7 +106,7 @@ static func_declaration *analyze_func(parse_source *source) {
 	}
 	current = get_mandatory_token(source);
 	func->type = current.data;
-	current = get_mandatory_token(source);
+	current = peek_mandatory_token(source);
 	if(current.data.data[0] != '{') {
 		semantic_error("Function bodies must start with an open brace ('{')", current.origin);
 	}
@@ -124,6 +124,7 @@ static linked_list *create_list(parse_source *source) {
 	parse_token token = get_mandatory_token(source);
 	int bracket_level = 0;
 	while(true) {
+		printf("%s\n", evaluate(token.data));
 		if(equals_string(token.data, "{")) {
 			bracket_level += 1;
 		} else if(equals_string(token.data, "}")) {
