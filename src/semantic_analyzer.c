@@ -124,7 +124,6 @@ static linked_list *create_list(parse_source *source) {
 	parse_token token = get_mandatory_token(source);
 	int bracket_level = 0;
 	while(true) {
-		printf("%s\n", evaluate(token.data));
 		if(equals_string(token.data, "{")) {
 			bracket_level += 1;
 		} else if(equals_string(token.data, "}")) {
