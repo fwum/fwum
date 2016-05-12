@@ -1,6 +1,6 @@
 #include "linked_list.h"
 #include "util.h"
-#include "stdlib.h"
+#include <stdlib.h>
 
 /************************
 LIST
