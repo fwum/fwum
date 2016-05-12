@@ -45,6 +45,11 @@ optional of a parse_token
 */
 optional get_token(parse_source *source);
 /*
+Peek the next token without removing it from the source
+optional of a parse_token
+*/
+optional peek_token(parse_source *source);
+/*
 Guaranteed to return a token
 Will exit the compiler with an error message if one is not found
 */

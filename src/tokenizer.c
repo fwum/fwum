@@ -23,6 +23,15 @@ parse_source start_parse(char *data, char *filename) {
     return source;
 }
 
+optional peek_token(parse_source *source) {
+	int pos = source->pos;
+	int line = source->line;
+	optional op = get_token(source);
+	source->pos = pos;
+	source->line = line;
+	return op;
+}
+
 optional get_token(parse_source *source) {
     enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR, M_COMMENT_LINE, M_COMMENT_MULTI} parse_mode;
     parse_mode = M_NONE;
