@@ -114,7 +114,7 @@ static func_declaration *analyze_func(parse_source *source) {
 	state->children = NULL;
 	state->type = ROOT;
 	state->data = new_slice("");
-	if(false) ll_add_first(state->children, parse_body(source));
+	ll_add_first(state->children, parse_body(source));
 	ll_add_first(func->body, state);
 	get_mandatory_token(source);
 	return func;
@@ -142,7 +142,8 @@ static linked_list *create_list(parse_source *source) {
 }
 
 static statement *parse_body(parse_source *source) {
-	return get_expression(create_list(source));
+	linked_list *list = create_list(source);
+	return get_expression(list);
 }
 
 static statement *get_expression(linked_list *tokens) {
@@ -179,6 +180,11 @@ static statement *get_expression(linked_list *tokens) {
 			parse_token *current = ll_iter_next(&iterator);
 			while(indent > 0) {
 				current = ll_iter_next(&iterator);
+				if(current == NULL) {
+					if(indent == 0) {
+						return expression;
+					}
+				}
 				if(current->data.data[0] == '{') {
 					indent++;
 				} else if(current->data.data[0] == '}') {
