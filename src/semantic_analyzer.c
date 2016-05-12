@@ -131,10 +131,10 @@ static linked_list *create_list(parse_source *source) {
 		} else if(equals_string(token.data, "}")) {
 			bracket_level -= 1;
 		}
-		if(bracket_level == 0 && (equals_string(token.data, "}") || equals_string(token.data, ";")))
-			break;
 		*heap = token;
 		ll_add_last(list, heap);
+		if(bracket_level == 0 && (equals_string(token.data, "}") || equals_string(token.data, ";")))
+			break;
 		heap = new(heap);
 		token = get_mandatory_token(source);
 	}
@@ -179,18 +179,23 @@ static statement *get_expression(linked_list *tokens) {
 			linked_iter iterator = ll_iter_head(body);
 			parse_token *current = ll_iter_next(&iterator);
 			while(indent > 0) {
-				current = ll_iter_next(&iterator);
 				if(current == NULL) {
+					printf("%d\n", indent);
 					if(indent == 0) {
 						return expression;
 					}
-				}
+				} else
+					printf("%s:%d\n", evaluate(current->data), indent);
 				if(current->data.data[0] == '{') {
 					indent++;
 				} else if(current->data.data[0] == '}') {
 					indent--;
 				}
+				current = ll_iter_next(&iterator);
+				printf("%p\n", (void*)current);
 			}
+			if(current == NULL)
+				return expression;
 			ll_iter_clear_remaining(&iterator);
 			indent = 1;
 			iterator = ll_iter_head(body);
