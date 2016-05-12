@@ -1,2 +1,1 @@
 - Back to segfaulting
-- Empty main makes the compiler complain about EOFs
