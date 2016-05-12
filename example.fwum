@@ -10,7 +10,6 @@ struct point {
 }
 
 
-/*
 func main(argc int, argv char) int {
 /*	if a {
 		while a {
@@ -28,4 +27,3 @@ func main(argc int, argv char) int {
 		(a(1));
 	}*/
 }
-*/
