@@ -23,6 +23,28 @@ parse_source start_parse(char *data, char *filename) {
     return source;
 }
 
+optional peek_token(parse_source *source) {
+	int pos = source->pos;
+	int line = source->line;
+	optional op = get_token(source);
+	source->pos = pos;
+	source->line = line;
+	return op;
+}
+
+parse_token peek_mandatory_token(parse_source *source) {
+	 optional next = peek_token(source);
+	if(!op_has(next)) {
+		tokenizer_error("Unexpected End of File encountered", source->filename, source->line);
+		exit(-1);
+	} else {
+		parse_token *token = op_get(next);
+		parse_token value = *token;
+		free(token);
+		return value;
+	}
+}
+
 optional get_token(parse_source *source) {
     enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR, M_COMMENT_LINE, M_COMMENT_MULTI} parse_mode;
     parse_mode = M_NONE;

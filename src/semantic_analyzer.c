@@ -106,7 +106,7 @@ static func_declaration *analyze_func(parse_source *source) {
 	}
 	current = get_mandatory_token(source);
 	func->type = current.data;
-	current = get_mandatory_token(source);
+	current = peek_mandatory_token(source);
 	if(current.data.data[0] != '{') {
 		semantic_error("Function bodies must start with an open brace ('{')", current.origin);
 	}

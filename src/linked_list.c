@@ -1,6 +1,6 @@
 #include "linked_list.h"
 #include "util.h"
-#include "stdlib.h"
+#include <stdlib.h>
 
 /************************
 LIST
@@ -150,7 +150,6 @@ bool ll_iter_has_next(linked_iter *iter) {
 	return iter->current != NULL;
 }
 
-#include "stdio.h"
 void ll_iter_clear_to_current(linked_iter *iter) {
 	if(iter->current == NULL) {
 		ll_clear(iter->origin);
