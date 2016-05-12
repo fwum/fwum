@@ -111,12 +111,12 @@ static func_declaration *analyze_func(parse_source *source) {
 		semantic_error("Function bodies must start with an open brace ('{')", current.origin);
 	}
 	statement *state = new(state);
-	state->children = NULL;
+	state->children = ll_new();
 	state->type = ROOT;
 	state->data = new_slice("");
 	ll_add_first(state->children, parse_body(source));
 	ll_add_first(func->body, state);
-	get_mandatory_token(source);
+	get_token(source);
 	return func;
 }
 
