@@ -179,20 +179,15 @@ static statement *get_expression(linked_list *tokens) {
 			linked_iter iterator = ll_iter_head(body);
 			parse_token *current = ll_iter_next(&iterator);
 			while(indent > 0) {
-				if(current == NULL) {
-					printf("%d\n", indent);
-					if(indent == 0) {
-						return expression;
-					}
-				} else
-					printf("%s:%d\n", evaluate(current->data), indent);
+				if(current == NULL && indent == 0) {
+					return expression;
+				}
 				if(current->data.data[0] == '{') {
 					indent++;
 				} else if(current->data.data[0] == '}') {
 					indent--;
 				}
 				current = ll_iter_next(&iterator);
-				printf("%p\n", (void*)current);
 			}
 			if(current == NULL)
 				return expression;
