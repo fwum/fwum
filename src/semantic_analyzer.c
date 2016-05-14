@@ -13,6 +13,7 @@ static void semantic_error(char *error, source_origin origin);
 static func_declaration *analyze_func(parse_source *source);
 static statement *get_expression(parse_source *source, int *indent);
 static struct_declaration *analyze_struct(parse_source *source);
+static statement *parse_simple_expression(linked_list *tokens);
 
 file_contents analyze(parse_source source) {
 	file_contents contents;
@@ -153,6 +154,35 @@ static statement *get_expression(parse_source *source, int *indent) {
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the header
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the body
 	} else {
+		linked_list *accumulator = ll_new();
+		parse_token next = token;
+		while(true) {
+			ll_add_last(accumulator, &token);
+			next = peek_mandatory_token(source);
+			if(equals_string(next.data, ";") || equals_string(next.data, "{") || equals_string(next.data, "}"))
+				break;
+			token = get_mandatory_token(source);
+		}
+		free(expression);
+		expression = parse_simple_expression(accumulator);
+		ll_destroy(accumulator);
+	}
+	return expression;
+}
+
+static statement *parse_simple_expression(linked_list *tokens) {
+	statement *expression = new(expression);
+	expression->children = NULL;
+	expression->data.data = NULL;
+	expression->data.len = 0;
+	int size = ll_size(tokens);
+	parse_token token;
+	switch(size) {
+	case 0:
+		free(expression);
+		return NULL;
+	case 1:
+		token = *((parse_token*)ll_get_first(tokens));
 		expression->data = token.data;
 		switch(token.type) {
 		case WORD:
@@ -168,11 +198,14 @@ static statement *get_expression(parse_source *source, int *indent) {
 			expression->type = CHAR;
 			break;
 		case SYMBOL:
-			printf("Symbol case in get_expression should not have executed\n");
+			printf("Symbol case in parse_simple_expression should not have executed\n");
 			break;
 		}
+		return expression;
+	default:
+		free(expression);
+		return NULL;
 	}
-	return expression;
 }
 
 static void semantic_error(char *error, source_origin origin) {
