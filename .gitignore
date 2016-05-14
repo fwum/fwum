@@ -1,5 +1,6 @@
 /obj/
 /bin/
+/dbg/
 /.vs/
 /FwumDeLang/Debug/
 /Debug/
