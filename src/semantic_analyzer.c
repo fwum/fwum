@@ -145,7 +145,6 @@ static statement *get_expression(parse_source *source, int *indent) {
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the header
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the body
 	} else {
-		token = get_mandatory_token(source);
 		expression->data = token.data;
 		switch(token.type) {
 		case WORD:
