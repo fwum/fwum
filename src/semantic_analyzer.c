@@ -272,7 +272,6 @@ static statement *parse_simple_expression(linked_list *tokens) {
 								while(ll_get_first(op2) != current)
 									ll_remove_first(op2);
 								ll_remove_first(op2);
-								ll_remove_first(op2);
 								statement *expression = new(expression);
 								expression->data = new_slice("");
 								expression->children = ll_new();
