@@ -61,10 +61,10 @@ void dump(file_contents contents) {
         while(ll_iter_has_next(&iterator)) {
             func_declaration *current = ll_iter_next(&iterator);
 			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
-            printf("PARAMETERS:\n");
-			dump_node(current->parameters, 1);
-            printf("BODY:\n");
-			dump_node(current->root->children, 1);
+            printf("\tPARAMETERS:\n");
+			dump_node(current->parameters, 2);
+            printf("\tBODY:\n");
+			dump_node(current->root->children, 2);
 		}
 	}
 
