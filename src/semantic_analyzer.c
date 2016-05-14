@@ -198,8 +198,57 @@ static statement *parse_simple_expression(linked_list *tokens) {
 			break;
 		}
 		return expression;
-	default:
-		return NULL;
+	default: {
+		int paren_level = 0;
+		linked_iter iterator = ll_iter_head(tokens);
+		ll_iter_next(&iterator);
+		bool is_index = true, is_call = true;
+		ll_iter_next(&iterator);
+		parse_token *second = ll_iter_next(&iterator);
+		if(equals_string(second->data, "(")) {
+			is_index = false;
+		} else if(equals_string(second->data, "[")) {
+			is_call = false;
+		} else {
+			is_index = is_call = false;
+		}
+		while((is_index || is_call) && ll_iter_has_next(&iterator)) {
+			parse_token *token = ll_iter_next(&iterator);
+			if(equals_string(token->data, "(") || equals_string(token->data, "[")) {
+				paren_level += 1;
+			} else if(paren_level == 0) {
+				is_index = false;
+				is_call = false;
+			} else if(equals_string(token->data, ")") || equals_string(token->data, "]")) {
+				paren_level -= 1;
+			}
+		}
+		if(is_index) {
+			statement *index = new(index);
+			index->type = OP_INDEX;
+			index->data = new_slice("");
+			index->children = ll_new();
+			statement *name = new(name);
+			name->type = NAME;
+			name->data = ((parse_token*)ll_get_first(tokens))->data;
+			name->children = NULL;
+			ll_add_first(index->children, name);
+			linked_list *inside_list = ll_duplicate(tokens);
+			ll_remove_first(inside_list); //Remove name
+			ll_remove_first(inside_list); //Remove [
+			ll_remove_last(inside_list); //Remove ]
+			statement *inside = parse_simple_expression(inside_list);
+			ll_destroy(inside_list);
+			ll_add_last(index->children, inside);
+			return index;
+		} else if(is_call) {
+			//TODO: Parse function call
+			return NULL;
+		} else {
+			//TODO: Parse operators
+			return NULL;
+		}
+	}
 	}
 }
 
