@@ -157,14 +157,16 @@ static statement *get_expression(parse_source *source, int *indent) {
 		linked_list *accumulator = ll_new();
 		parse_token next = token;
 		while(true) {
-			ll_add_last(accumulator, &token);
+			parse_token *allocated = new(allocated);
+			*allocated = token;
+			ll_add_last(accumulator, allocated);
 			next = peek_mandatory_token(source);
 			if(equals_string(next.data, ";") || equals_string(next.data, "{") || equals_string(next.data, "}"))
 				break;
 			token = get_mandatory_token(source);
 		}
 		statement *expression = parse_simple_expression(accumulator);
-		ll_destroy(accumulator);
+		ll_delete_all(accumulator);
 		return expression;
 	}
 }
