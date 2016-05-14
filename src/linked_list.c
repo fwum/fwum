@@ -122,6 +122,14 @@ int ll_size(linked_list *list) {
 	return size;
 }
 
+void *ll_get(linked_list *list, int index) {
+	linked_iter iterator = ll_iter_head(list);
+	for(int i = 0; i < index; i++) {
+		ll_iter_next(&iterator);
+	}
+	return ll_iter_next(&iterator);
+}
+
 /************************
 ITERATOR
 ************************/
