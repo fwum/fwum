@@ -243,8 +243,33 @@ static statement *parse_simple_expression(linked_list *tokens) {
 			ll_add_last(index->children, inside);
 			return index;
 		} else if(is_call) {
-			//TODO: Parse function call
-			return NULL;
+			linked_list *accumulator = ll_new();
+			linked_iter iterator = ll_iter_head(tokens);
+			statement *call = new(call);
+			call->type = FUNC_CALL;
+			call->data = ((parse_token*)ll_iter_next(&iterator))->data;
+			call->children = ll_new();
+			int paren_level = 0;
+			ll_iter_next(&iterator); //Discard opening parenthesis
+			for(parse_token *current = ll_iter_next(&iterator); ll_iter_has_next(&iterator); current = ll_iter_next(&iterator)) {
+				if(paren_level == 0 && (equals_string(current->data, ",") || equals_string(current->data, ")"))) {
+					statement *parameter = parse_simple_expression(accumulator);
+					if(parameter != NULL)
+						ll_add_last(call->children, parameter);
+					ll_clear(accumulator);
+				} else {
+					ll_add_last(accumulator, current);
+				}
+				if(equals_string(current->data, "("))
+					paren_level += 1;
+				else if(equals_string(current->data, ")"))
+					paren_level -= 1;
+			}
+			statement *parameter = parse_simple_expression(accumulator);
+			if(parameter != NULL)
+				ll_add_last(call->children, parameter);
+			ll_destroy(accumulator);
+			return call;
 		} else {
 			linked_list *operator = get_node();
 			linked_iter level = ll_iter_head(operator);
