@@ -62,9 +62,9 @@ void dump(file_contents contents) {
             func_declaration *current = ll_iter_next(&iterator);
 			printf("FUNC: %s | TYPE : %s\n", evaluate(current->name), evaluate(current->type));
             printf("PARAMETERS:\n");
-			dump_node(current->parameters, 0);
+			dump_node(current->parameters, 1);
             printf("BODY:\n");
-			dump_node(current->root->children, 0);
+			dump_node(current->root->children, 1);
 		}
 	}
 
@@ -74,11 +74,11 @@ void dump(file_contents contents) {
 Print an AST node to stdout (recursive)
 */
 void dump_node(linked_list *list, int indentation) {
-	for(int i = 0; i < indentation; i++) {
-		printf("\t");
-    }
     linked_iter iterator = ll_iter_head(list);
     while(ll_iter_has_next(&iterator)) {
+        for(int i = 0; i < indentation; i++) {
+    		printf("\t");
+        }
         statement *state = ll_iter_next(&iterator);
         printf("%s", statement_to_string(state->type));
     	printf(": %s\n", evaluate(state->data));
