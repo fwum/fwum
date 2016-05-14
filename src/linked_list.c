@@ -112,6 +112,16 @@ void ll_delete_all(linked_list *list) {
 	ll_destroy(list);
 }
 
+int ll_size(linked_list *list) {
+	int size = 0;
+	linked_iter iter = ll_iter_head(list);
+	while(ll_iter_has_next(&iter)) {
+		ll_iter_next(&iter);
+		size += 1;
+	}
+	return size;
+}
+
 /************************
 ITERATOR
 ************************/
