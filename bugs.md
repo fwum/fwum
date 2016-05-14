@@ -1,1 +1,1 @@
-- The parser segfaults on `a((b))`, due to a null token in the token list
+- The parser can't handle 2 character operators

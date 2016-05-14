@@ -1,6 +1,6 @@
 #TODO
 
-- Parse variable initialization correctly
+- Implement two character operators
 
 - Implement type requirements and member requirements
 

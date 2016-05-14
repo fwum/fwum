@@ -17,10 +17,9 @@ func main(argc int, argv char) int {
 				break;
 			}
 		}
-		"a";
 		'q';
 	}
-	returnVal = ((1) + 2);
+	returnVal := ((1) + 2);
 	returnVal = 1 + 2 * 3;
 	returnVal = (1 + 2) * 3;
 	if b {
