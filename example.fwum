@@ -28,7 +28,7 @@ func main(argc int, argv char) int {
 	}*/
 	while a {
 		if b {
-			c[d]
+			c[d + 1]
 		}
 	}
 }

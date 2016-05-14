@@ -246,7 +246,48 @@ static statement *parse_simple_expression(linked_list *tokens) {
 			//TODO: Parse function call
 			return NULL;
 		} else {
-			//TODO: Parse operators
+			linked_list *operator = get_node();
+			linked_iter level = ll_iter_head(operator);
+			while(ll_iter_has_next(&level)) {
+				int paren_level = 0;
+				linked_list *currentLevel = ll_iter_next(&level);
+				linked_iter iterator = ll_iter_head(tokens);
+				for(parse_token *current = ll_iter_next(&iterator); ll_iter_has_next(&iterator); current = ll_iter_next(&iterator)) {
+					char currentChar = current->data.data[0];
+					if(currentChar == '(') {
+						paren_level += 1;
+					} else if(currentChar == ')') {
+						paren_level -= 1;
+					}
+					if(paren_level == 0) {
+						linked_iter innerMost = ll_iter_head(currentLevel);
+						while(ll_iter_has_next(&innerMost)) {
+							operator_node *currentOperator = ll_iter_next(&innerMost);
+							printf("%s\n", (currentOperator->data));
+							if(equals_string(current->data, currentOperator->data)) {
+								linked_list *op1 = ll_duplicate(tokens);
+								while(ll_get_last(op1) != current)
+									ll_remove_last(op1);
+								ll_remove_last(op1);
+								linked_list *op2 = tokens;
+								while(ll_get_first(op2) != current)
+									ll_remove_first(op2);
+								ll_remove_first(op2);
+								ll_remove_first(op2);
+								statement *expression = new(expression);
+								expression->data = new_slice("");
+								expression->children = ll_new();
+								expression->type = currentOperator->operatorType;
+								statement *op1_exp = parse_simple_expression(op1);
+								statement *op2_exp = parse_simple_expression(op2);
+								ll_add_last(expression->children, op1_exp);
+								ll_add_last(expression->children, op2_exp);
+								return expression;
+							}
+						}
+					}
+				}
+			}
 			return NULL;
 		}
 	}
