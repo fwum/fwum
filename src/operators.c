@@ -34,7 +34,7 @@ static void add_level(linked_list *list, int number_args, ...) {
 	linked_list *current = ll_new();
 	va_list args;
 	va_start(args, number_args);
-	for(int i = 0; i < number_args; i++) {
+	for(int i = 0; i < number_args / 2; i++) {
 		char *operator = va_arg(args, char*);
 		statement_type type = va_arg(args, statement_type);
 		ll_add_last(current, new_operator_node(operator, type));
