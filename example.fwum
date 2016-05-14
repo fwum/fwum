@@ -27,11 +27,13 @@ func main(argc int, argv char) int {
 		(a(1));
 	}*/
 	while a(b, c) {
-	a(b);
+		a(b);
 		if b {
 			c[d + 1 * 2];
+			continue;
 		}
 	}
+	return 0;
 }
 
 func notmain() newval {

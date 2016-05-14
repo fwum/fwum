@@ -153,6 +153,22 @@ static statement *get_expression(parse_source *source, int *indent) {
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the header
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the body
 		return expression;
+	} else if(equals_string(token.data, "break") || equals_string(token.data, "continue")) {
+		statement *expression = new(expression);
+		expression->type = equals_string(token.data, "break") ? BREAK : CONTINUE;
+		expression->data = new_slice("");
+		expression->children = NULL;
+		parse_token next = get_mandatory_token(source);
+		if(!equals_string(next.data, ";"))
+			semantic_error("Expected a semicolon after a break or continue", next.origin);
+		return expression;
+	} else if(equals_string(token.data, "return")) {
+		statement *expression = new(expression);
+		expression->type = RETURN;
+		expression->data = new_slice("");
+		expression->children = ll_new();
+		ll_add_last(expression->children, get_expression(source, indent));
+		return expression;
 	} else {
 		linked_list *accumulator = ll_new();
 		parse_token next = token;
