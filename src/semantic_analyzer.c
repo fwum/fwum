@@ -192,11 +192,11 @@ static statement *get_expression(parse_source *source, int *indent) {
 }
 
 static statement *parse_simple_expression(linked_list *tokens) {
-	int size = ll_size(tokens);
 	while(equals_string(((parse_token*)ll_get_first(tokens))->data, "(") && equals_string(((parse_token*)ll_get_last(tokens))->data, ")")) {
 		ll_remove_first(tokens);
 		ll_remove_last(tokens);
 	}
+	int size = ll_size(tokens);
 	parse_token token;
 	switch(size) {
 	case 0:
