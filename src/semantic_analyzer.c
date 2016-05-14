@@ -161,8 +161,12 @@ static statement *get_expression(parse_source *source, int *indent) {
 			*allocated = token;
 			ll_add_last(accumulator, allocated);
 			next = peek_mandatory_token(source);
-			if(equals_string(next.data, ";") || equals_string(next.data, "{") || equals_string(next.data, "}"))
+			if(equals_string(next.data, "{") || equals_string(next.data, "}"))
 				break;
+			if(equals_string(next.data, ";")) {
+				get_mandatory_token(source);
+				break;
+			}
 			token = get_mandatory_token(source);
 		}
 		statement *expression = parse_simple_expression(accumulator);
