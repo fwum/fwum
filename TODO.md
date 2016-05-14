@@ -1,22 +1,19 @@
 #TODO
 
-
-- Implement index operator
+- Parse index operator and function call with left-value as an expression
 
 - Parse variable initialization correctly
-
-- Handle End-Of-File while parsing structs
 
 - Implement `break`, `continue`, and `return`
 
 - Implement type requirements and member requirements
 
-- Implement for loops
+- Implement semantic verification of if, while, and for loop headers
 
 - Basic C backend
 
-- Parse pointers correctly
+- Add type decorators
 
 - Make sure the dot operator is converted into the pointer operator where necessary
 
-- Implement preprocessor that runs between the tokenizer and semantic analyzer that evaluates directives and imports external sources
+- Add top-level items like imports, namespace declarations, and exports
