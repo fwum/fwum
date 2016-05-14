@@ -24,6 +24,7 @@ dbg/:
 clean:
 	@rm -r obj/
 	@rm -r bin/
+	@rm -r dbg/
 
 bin/dbg: $(DBG_FILES)
 	@$(CC) $(LD_FLAGS) -g -o $@ $^
