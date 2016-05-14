@@ -203,7 +203,6 @@ static statement *parse_simple_expression(linked_list *tokens) {
 	default: {
 		int paren_level = 0;
 		linked_iter iterator = ll_iter_head(tokens);
-		ll_iter_next(&iterator);
 		bool is_index = true, is_call = true;
 		ll_iter_next(&iterator);
 		parse_token *second = ll_iter_next(&iterator);
