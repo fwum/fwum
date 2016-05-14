@@ -1,3 +1,4 @@
+//Make the MSVC compile without complaining about the standard library
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -18,6 +19,7 @@ static int tests();
 int main(int argc, char **argv) {
 	#ifdef DO_TESTS
 	int test_results = tests();
+	//Only execute the program if the tests pass
 	if(test_results != 0) {
 		return test_results;
 	}
@@ -39,6 +41,7 @@ int main(int argc, char **argv) {
 #include "linked_list.h"
 #include "hashmap.h"
 #include "stdio.h"
+//A group of related tests with its own pass / fail counter
 DEFSTRUCT(test_set);
 struct test_set {
 	char *name;
