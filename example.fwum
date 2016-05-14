@@ -32,3 +32,11 @@ func main(argc int, argv char) int {
 		}
 	}
 }
+
+func notmain() newval {
+	b
+}
+
+struct emptystruct {
+
+}
