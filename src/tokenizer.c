@@ -24,11 +24,9 @@ parse_source start_parse(char *data, char *filename) {
 }
 
 optional peek_token(parse_source *source) {
-	int pos = source->pos;
-	int line = source->line;
+	parse_source init = *source;
 	optional op = get_token(source);
-	source->pos = pos;
-	source->line = line;
+	*source = init;
 	return op;
 }
 
