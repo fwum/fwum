@@ -123,14 +123,12 @@ static func_declaration *analyze_func(parse_source *source) {
 
 
 static statement *get_expression(parse_source *source, int *indent) {
-	statement *expression = new(expression);
-	expression->children = NULL;
-	expression->data.data = NULL;
-	expression->data.len = 0;
 	parse_token token = get_mandatory_token(source);
 	if(equals_string(token.data, "{")) {
+		statement *expression = new(expression);
 		expression->type = BLOCK;
 		expression->children = ll_new();
+		expression->data = new_slice("");
 		int finished = *indent - 1;
 		*indent += 1;
 		while(*indent != finished) {
@@ -138,12 +136,12 @@ static statement *get_expression(parse_source *source, int *indent) {
 			if(state != NULL)
 				ll_add_last(expression->children, state);
 		}
+		return expression;
 	} else if(equals_string(token.data, "}")) {
 		*indent -= 1;
-		free(expression);
 		return NULL;
-	} else if(equals_string(token.data, "if") || equals_string(token.data, "while")
-		|| equals_string(token.data, "for")) {
+	} else if(equals_string(token.data, "if") || equals_string(token.data, "while") || equals_string(token.data, "for")) {
+		statement *expression = new(expression);
 		if(equals_string(token.data, "if"))
 			expression->type = IF;
 		else if(equals_string(token.data, "while"))
@@ -151,8 +149,10 @@ static statement *get_expression(parse_source *source, int *indent) {
 		else if(equals_string(token.data, "for"))
 			expression->type = FOR;
 		expression->children = ll_new();
+		expression->data = new_slice("");
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the header
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the body
+		return expression;
 	} else {
 		linked_list *accumulator = ll_new();
 		parse_token next = token;
@@ -163,11 +163,10 @@ static statement *get_expression(parse_source *source, int *indent) {
 				break;
 			token = get_mandatory_token(source);
 		}
-		free(expression);
-		expression = parse_simple_expression(accumulator);
+		statement *expression = parse_simple_expression(accumulator);
 		ll_destroy(accumulator);
+		return expression;
 	}
-	return expression;
 }
 
 static statement *parse_simple_expression(linked_list *tokens) {
