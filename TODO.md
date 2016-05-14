@@ -1,7 +1,5 @@
 #TODO
 
-- Handle parens around an expression correctly
-
 - Parse index operator and function call with left-value as an expression
 
 - Parse variable initialization correctly
