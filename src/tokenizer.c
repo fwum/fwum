@@ -31,7 +31,7 @@ optional peek_token(parse_source *source) {
 }
 
 parse_token peek_mandatory_token(parse_source *source) {
-	 optional next = peek_token(source);
+	optional next = peek_token(source);
 	if(!op_has(next)) {
 		tokenizer_error("Unexpected End of File encountered", source->filename, source->line);
 		exit(-1);
