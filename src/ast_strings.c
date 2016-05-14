@@ -51,6 +51,8 @@ statement_type statement_from_slice(slice string) {
 		return OP_NOT_EQUAL;
 	} else if(equals_string(string, "OP_ASSIGN")) {
 		return OP_ASSIGN;
+	} else if(equals_string(string, "OP_INIT")) {
+		return OP_INIT;
 	} else if(equals_string(string, "OP_MEMBER")) {
 		return OP_MEMBER;
 	} else if(equals_string(string, "OP_GETREF")) {
@@ -181,6 +183,9 @@ char *statement_to_string(statement_type type) {
         case OP_ASSIGN:
         	return "OP_ASSIGN";
         break;
+		case OP_INIT:
+			return "OP_INIT";
+		break;
         case OP_MEMBER:
         	return "OP_MEMBER";
         break;

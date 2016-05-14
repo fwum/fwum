@@ -17,7 +17,7 @@ static operator_node *new_operator_node(char *data, statement_type type) {
 
 linked_list* get_node() {
 	linked_list *list = ll_new();
-	add_level(list, 2, "=", OP_ASSIGN);
+	add_level(list, 4, "=", OP_ASSIGN, ":=", OP_INIT);
 	add_level(list, 4, "||", OP_BOOL_OR, "|", OP_BIT_OR);
 	add_level(list, 4, "^^", OP_BOOL_XOR, "^", OP_BIT_XOR);
 	add_level(list, 4, "&&", OP_BOOL_AND, "&", OP_BIT_AND);
