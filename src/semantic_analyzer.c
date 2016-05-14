@@ -133,7 +133,9 @@ static statement *get_expression(parse_source *source, int *indent) {
 		int finished = *indent - 1;
 		*indent += 1;
 		while(*indent != finished) {
-			ll_add_last(expression->children, get_expression(source, indent));
+			statement *state = get_expression(source, indent);
+			if(state != NULL)
+				ll_add_last(expression->children, state);
 		}
 	} else if(equals_string(token.data, "}")) {
 		*indent -= 1;
