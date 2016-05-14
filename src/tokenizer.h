@@ -54,6 +54,15 @@ Guaranteed to return a token without removing it from the source
 */
 parse_token peek_mandatory_token(parse_source *source);
 /*
+Peek the next token without removing it from the source
+optional of a parse_token
+*/
+optional peek_token_ahead(parse_source *source, int number_tokens);
+/*
+Guaranteed to return a token without removing it from the source
+*/
+parse_token peek_mandatory_token_ahead(parse_source *source, int number_tokens);
+/*
 Guaranteed to return a token
 Will exit the compiler with an error message if one is not found
 */

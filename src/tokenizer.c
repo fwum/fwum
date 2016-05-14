@@ -43,6 +43,29 @@ parse_token peek_mandatory_token(parse_source *source) {
 	}
 }
 
+optional peek_token_ahead(parse_source *source, int number_tokens) {
+    parse_source init = *source;
+    optional op;
+    for(int i = 0; i < number_tokens; i++)
+	   op = get_token(source);
+	*source = init;
+	return op;
+}
+
+parse_token peek_mandatory_token_ahead(parse_source *source, int number_tokens) {
+    optional next = peek_token_ahead(source, number_tokens);
+    if(!op_has(next)) {
+        tokenizer_error("Unexpected End of File encountered", source->filename, source->line);
+        exit(-1);
+    } else {
+        parse_token *token = op_get(next);
+        parse_token value = *token;
+        free(token);
+        return value;
+    }
+}
+
+
 optional get_token(parse_source *source) {
     enum {M_NONE, M_WORD, M_NUM, M_STRING, M_CHAR, M_COMMENT_LINE, M_COMMENT_MULTI} parse_mode;
     parse_mode = M_NONE;
