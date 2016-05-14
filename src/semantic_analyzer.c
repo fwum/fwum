@@ -141,8 +141,14 @@ static statement *get_expression(parse_source *source, int *indent) {
 		*indent -= 1;
 		free(expression);
 		return NULL;
-	} else if(equals_string(token.data, "if")) {
-		expression->type = IF;
+	} else if(equals_string(token.data, "if") || equals_string(token.data, "while")
+		|| equals_string(token.data, "for")) {
+		if(equals_string(token.data, "if"))
+			expression->type = IF;
+		else if(equals_string(token.data, "while"))
+			expression->type = WHILE;
+		else if(equals_string(token.data, "for"))
+			expression->type = FOR;
 		expression->children = ll_new();
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the header
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the body
