@@ -1,1 +1,1 @@
-- The operators returned by get_node are not always valid
+- The parser does not recognize semicolons as line terminators
