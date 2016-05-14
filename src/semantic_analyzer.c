@@ -263,7 +263,6 @@ static statement *parse_simple_expression(linked_list *tokens) {
 						linked_iter innerMost = ll_iter_head(currentLevel);
 						while(ll_iter_has_next(&innerMost)) {
 							operator_node *currentOperator = ll_iter_next(&innerMost);
-							printf("%s\n", (currentOperator->data));
 							if(equals_string(current->data, currentOperator->data)) {
 								linked_list *op1 = ll_duplicate(tokens);
 								while(ll_get_last(op1) != current)
