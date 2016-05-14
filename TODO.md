@@ -1,7 +1,5 @@
 #TODO
 
-- Parse index operator and function call with left-value as an expression
-
 - Parse variable initialization correctly
 
 - Implement type requirements and member requirements
@@ -15,3 +13,9 @@
 - Make sure the dot operator is converted into the pointer operator where necessary
 
 - Add top-level items like imports, namespace declarations, and exports
+
+- Create a linker to parse external source files and produce a single output
+
+- Bootstrap the compiler in Fwum
+
+- Parse index operator and function call with left-value as an expression
