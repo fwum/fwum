@@ -26,5 +26,7 @@ func main(argc int, argv char) int {
 	if b {
 		(a(1));
 	}*/
-	a b
+	if a {
+		b
+	}
 }
