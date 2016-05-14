@@ -1,1 +1,1 @@
-- The parser segfaults on `a((b))``
+- The parser segfaults on `a((b))`, due to a null token in the token list
