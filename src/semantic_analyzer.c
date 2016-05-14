@@ -171,19 +171,16 @@ static statement *get_expression(parse_source *source, int *indent) {
 }
 
 static statement *parse_simple_expression(linked_list *tokens) {
-	statement *expression = new(expression);
-	expression->children = NULL;
-	expression->data.data = NULL;
-	expression->data.len = 0;
 	int size = ll_size(tokens);
 	parse_token token;
 	switch(size) {
 	case 0:
-		free(expression);
 		return NULL;
 	case 1:
 		token = *((parse_token*)ll_get_first(tokens));
+		statement *expression = new(expression);
 		expression->data = token.data;
+		expression->children = NULL;
 		switch(token.type) {
 		case WORD:
 			expression->type = NAME;
@@ -203,7 +200,6 @@ static statement *parse_simple_expression(linked_list *tokens) {
 		}
 		return expression;
 	default:
-		free(expression);
 		return NULL;
 	}
 }
