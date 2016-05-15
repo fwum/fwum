@@ -40,4 +40,9 @@ Convert the slice to a string separate from the source
 Useful if the string will be destroyed or the slice must be printed to stdout
 */
 char* evaluate(slice s1);
+/*
+Gets a hash value for the slice
+Useful for insertion into the hashmap
+*/
+int slice_hash(slice s);
 #endif

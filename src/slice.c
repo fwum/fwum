@@ -70,3 +70,18 @@ bool slice_contains(slice s1, char c) {
 	}
 	return false;
 }
+
+int slice_hash(slice s) {
+	unsigned hash;
+	int i;
+    for(hash = i = 0; i < s.len; ++i)
+    {
+        hash += s.data[i];
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+    }
+    hash += (hash << 3);
+    hash ^= (hash >> 11);
+    hash += (hash << 15);
+    return hash;
+}
