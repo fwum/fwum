@@ -1,7 +1,5 @@
 #TODO
 
-- Implement two character operators
-
 - Implement type requirements and member requirements
 
 - Implement semantic verification of if, while, and for loop headers
