@@ -109,10 +109,15 @@ static int tests() {
 	{
 		start_test_set("Hash map");
 		hash_map *map = hm_new();
-		for(int i = 0; i < 10; i++)
-			hm_put(map, i, box_int(i * i));
-		test_assert(*((int*)hm_get(map, 5)) == 25, "Hash map put and get");
-		test_assert(!hm_has(map, 11), "Hash map contains");
+		int *five;
+		for(int i = 0; i < 10; i++) {
+			if(i == 5)
+				five = box_int(i);
+			hm_put(map, i, i == 5 ? five : box_int(i), box_int(i * i));
+		}
+		test_assert(*((int*)hm_get(map, 5, five)) == 25, "Hash map put and get");
+		test_assert(!hm_has(map, 11, box_int(11)), "Hash map contains");
+		test_assert(!hm_has(map, 5, box_int(5)), "Hash map contains with identical hash");
 		end_test_set();
 	}
 	{
