@@ -101,5 +101,5 @@ bool is_numeric(slice s) {
 			}
 		}
 	}
-	return true;
+	return s.len > 0;
 }
