@@ -36,6 +36,10 @@ Checks to see if the slice contains the character
 */
 bool slice_contains(slice s1, char c);
 /*
+Checks to see if a slice is a numeric value
+*/
+bool is_numeric(slice s);
+/*
 Convert the slice to a string separate from the source
 Useful if the string will be destroyed or the slice must be printed to stdout
 */

@@ -85,3 +85,21 @@ int slice_hash(slice s) {
     hash += (hash << 15);
     return hash;
 }
+
+bool is_numeric(slice s) {
+	bool period = false;
+	for(int i = 0; i < s.len; i++) {
+		if(s.data[i] > '9' || s.data[i] < '0') {
+			if(s.data[i] == '.') {
+				if(period) {
+					return false;
+				} else {
+					period = true;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+	return true;
+}
