@@ -1,4 +1,4 @@
-#include "semantic_analyzer.h"
+#include "parser.h"
 #include "slice.h"
 #include "util.h"
 #include "printing.h"

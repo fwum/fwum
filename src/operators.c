@@ -1,5 +1,5 @@
 #include "operators.h"
-#include "semantic_analyzer.h"
+#include "parser.h"
 #include "util.h"
 #include "linked_list.h"
 #include <stdlib.h>

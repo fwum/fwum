@@ -4,7 +4,7 @@
 #endif
 
 #include "tokenizer.h"
-#include "semantic_analyzer.h"
+#include "parser.h"
 #include "io.h"
 #include "printing.h"
 #include "optional.h"

@@ -1,5 +1,5 @@
 #include "ast_strings.h"
-#include "semantic_analyzer.h"
+#include "parser.h"
 #include <stdlib.h>
 
 statement_type statement_from_slice(slice string) {
