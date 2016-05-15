@@ -1,5 +1,5 @@
-#ifndef LEXICAL_ANALYZER_H_
-#define LEXICAL_ANALYZER_H_
+#ifndef PARSER_H_
+#define PARSER_H_
 #include "util.h"
 #include "tokenizer.h"
 #include "linked_list.h"
