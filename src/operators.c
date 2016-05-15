@@ -47,7 +47,7 @@ bool is_operator(slice op) {
 	linked_list *outer = get_node();
 	linked_iter iterator = ll_iter_head(outer);
 	while(ll_iter_has_next(&iterator)) {
-		linked_list *inner = ll_iter_next(ll_iter_next(&iterator));
+		linked_list *inner = ll_iter_next(&iterator);
 		linked_iter inner_iterator = ll_iter_head(inner);
 		while(ll_iter_has_next(&inner_iterator)) {
 			operator_node *current = ll_iter_next(&inner_iterator);
