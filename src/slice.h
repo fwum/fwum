@@ -2,6 +2,7 @@
 #define SLICE_H_
 #include <stdbool.h>
 #include "util.h"
+#include "optional.h"
 DEFSTRUCT(slice);
 /*
 Create a slice of a string for much faster string manipulation
@@ -49,4 +50,8 @@ Gets a hash value for the slice
 Useful for insertion into the hashmap
 */
 int slice_hash(slice s);
+/*
+Parses an int from a slice
+*/
+optional parse_int(slice s);
 #endif

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "slice.h"
 #include "util.h"
+#include "optional.h"
 
 slice new_slice(char* string) {
 	return make_slice(string, strlen(string));
@@ -102,4 +103,19 @@ bool is_numeric(slice s) {
 		}
 	}
 	return s.len > 0;
+}
+
+optional parse_int(slice s) {
+	if(!is_numeric(s) || slice_contains(s, '.'))
+		return op_empty();
+	else {
+		int value = 0;
+		for(int i = 0; i < s.len; i++) {
+			value *= 10;
+			value += s.data[i] - '0';
+		}
+		int *boxed = new(boxed);
+		*boxed = value;
+		return op_wrap(boxed);
+	}
 }
