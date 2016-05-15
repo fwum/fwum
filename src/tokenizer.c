@@ -2,6 +2,7 @@
 #include "slice.h"
 #include "linked_list.h"
 #include "optional.h"
+#include "operators.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -118,8 +119,13 @@ optional get_token(parse_source *source) {
                 parse_mode = M_CHAR;
                 token_begin = i + 1;
             } else {
-                source->pos = i + 1;
-                return new_token(make_slice(&(source->data[i]), 1), SYMBOL, source->filename, source->line);
+                if(i < source->length - 1 && is_operator(make_slice(&(source->data[i]), 2))) {
+                    source->pos = i + 2;
+                    return new_token(make_slice(&(source->data[i]), 2), SYMBOL, source->filename, source->line);
+                } else {
+                    source->pos = i + 1;
+                    return new_token(make_slice(&(source->data[i]), 1), SYMBOL, source->filename, source->line);
+                }
             }
             break;
         //Continue until the end of the word is reached, then add it as a token
