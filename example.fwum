@@ -20,6 +20,7 @@ func main(argc int, argv char) int {
 		'q';
 	}
 	returnVal := ((1) + 2);
+	b := returnVal;
 	returnVal = 1 + 2 * 3;
 	returnVal = (1 + 2) * 3;
 	if b {
