@@ -1,6 +1,6 @@
 #ifndef OPERATOR_H_
 #define OPERATOR_H_
-#include "semantic_analyzer.h"
+#include "parser.h"
 #include "linked_list.h"
 #include "util.h"
 

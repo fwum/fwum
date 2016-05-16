@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+optional op_empty() {
+	return op_wrap(NULL);
+}
+
 optional op_wrap(void *data) {
 	optional op;
 	op.data = data;

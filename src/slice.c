@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "slice.h"
 #include "util.h"
+#include "optional.h"
 
 slice new_slice(char* string) {
 	return make_slice(string, strlen(string));
@@ -69,4 +70,58 @@ bool slice_contains(slice s1, char c) {
 		}
 	}
 	return false;
+}
+
+int slice_hash(slice s) {
+	unsigned hash;
+	int i;
+    for(hash = i = 0; i < s.len; ++i)
+    {
+        hash += s.data[i];
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+    }
+    hash += (hash << 3);
+    hash ^= (hash >> 11);
+    hash += (hash << 15);
+    return hash;
+}
+
+bool is_numeric(slice s) {
+	bool period = false;
+	for(int i = 0; i < s.len; i++) {
+		if(s.data[i] > '9' || s.data[i] < '0') {
+			if(s.data[i] == '.') {
+				if(period) {
+					return false;
+				} else {
+					period = true;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+	return s.len > 0;
+}
+
+optional parse_int(slice s) {
+	if(!is_numeric(s) || slice_contains(s, '.'))
+		return op_empty();
+	else {
+		int value = 0;
+		for(int i = 0; i < s.len; i++) {
+			value *= 10;
+			value += s.data[i] - '0';
+		}
+		int *boxed = new(boxed);
+		*boxed = value;
+		return op_wrap(boxed);
+	}
+}
+
+bool slice_eq_voidptr(void *slice1, void *slice2) {
+	slice *a = slice1;
+	slice *b = slice2;
+	return equals(*a, *b);
 }

@@ -2,6 +2,7 @@
 #define SLICE_H_
 #include <stdbool.h>
 #include "util.h"
+#include "optional.h"
 DEFSTRUCT(slice);
 /*
 Create a slice of a string for much faster string manipulation
@@ -36,8 +37,25 @@ Checks to see if the slice contains the character
 */
 bool slice_contains(slice s1, char c);
 /*
+Checks to see if a slice is a numeric value
+*/
+bool is_numeric(slice s);
+/*
 Convert the slice to a string separate from the source
 Useful if the string will be destroyed or the slice must be printed to stdout
 */
 char* evaluate(slice s1);
+/*
+Gets a hash value for the slice
+Useful for insertion into the hashmap
+*/
+int slice_hash(slice s);
+/*
+Parses an int from a slice
+*/
+optional parse_int(slice s);
+/*
+Useful for hashmap, mostly
+*/
+bool slice_eq_voidptr(void *slice1, void *slice2);
 #endif

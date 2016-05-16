@@ -1,7 +1,7 @@
 #ifndef PRINTING_H_
 #define PRINTING_H_
 #include "tokenizer.h"
-#include "semantic_analyzer.h"
+#include "parser.h"
 /*
 Print the created AST to stdout, mostly for debugging purposes
 */

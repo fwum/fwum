@@ -10,7 +10,7 @@ struct point {
 }
 
 
-func main(argc int, argv char) int {
+func main(argc i32, argv u8) int {
 	if a {
 		while a {
 			if c {
@@ -20,6 +20,8 @@ func main(argc int, argv char) int {
 		'q';
 	}
 	returnVal := ((1) + 2);
+	b := returnVal;
+	a := argc;
 	returnVal = 1 + 2 * 3;
 	returnVal = (1 + 2) * 3;
 	if b {

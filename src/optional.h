@@ -9,6 +9,7 @@ struct optional {
 	bool has;
 };
 
+optional op_empty();
 optional op_wrap(void *data);
 void *op_get(optional op);
 bool op_has(optional op);
