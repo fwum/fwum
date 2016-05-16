@@ -46,4 +46,5 @@ struct statement {
 	linked_list *children;
 };
 file_contents parse(parse_source tokens);
+void semantic_error(char *error, source_origin origin);
 #endif

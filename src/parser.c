@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-static void semantic_error(char *error, source_origin origin);
 static func_declaration *analyze_func(parse_source *source);
 static statement *get_expression(parse_source *source, int *indent);
 static struct_declaration *analyze_struct(parse_source *source);
