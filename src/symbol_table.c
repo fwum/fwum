@@ -23,7 +23,7 @@ bool st_contains(symbol_table *table, slice *name) {
     }
 }
 
-slice *st_get_type(symbol_table *table, slice *name) {
+type *st_get_type(symbol_table *table, slice *name) {
     slice *got = hm_get(table->symbols, slice_hash(*name), name);
     if(got != NULL) {
         return got;
@@ -34,6 +34,6 @@ slice *st_get_type(symbol_table *table, slice *name) {
     }
 }
 
-void st_put(symbol_table *table, slice *name, slice *type) {
+void st_put(symbol_table *table, slice *name, type *type) {
     hm_put(table->symbols, slice_hash(*name), name, type);
 }

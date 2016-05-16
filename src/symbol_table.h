@@ -4,6 +4,7 @@
 #include "hashmap.h"
 #include "stdbool.h"
 #include "slice.h"
+#include "types.h"
 
 DEFSTRUCT(symbol_table);
 DEFSTRUCT(symbol_entry);
@@ -16,6 +17,6 @@ struct symbol_table {
 symbol_table *st_new();
 symbol_table *st_sub_scope(symbol_table *parent);
 bool st_contains(symbol_table *table, slice *name);
-slice *st_get_type(symbol_table *table, slice *name);
-void st_put(symbol_table *table, slice *name, slice *type);
+type *st_get_type(symbol_table *table, slice *name);
+void st_put(symbol_table *table, slice *name, type *type);
 #endif
