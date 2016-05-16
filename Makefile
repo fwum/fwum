@@ -5,7 +5,11 @@ LD_FLAGS :=
 CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized -DDO_TESTS
 CC := gcc
 run: build
-	@bin/./out example.fwum
+	@bin/./out example.fwum example.c
+
+example: run
+	gcc example.c -o bin/example
+	./bin/example
 
 build: obj/ bin/ bin/out
 

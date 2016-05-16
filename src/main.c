@@ -29,13 +29,17 @@ int main(int argc, char **argv) {
 	if(argc <= 1) {
 		printf("No input files.\n");
 		return -1;
+	} if(argc <= 2) {
+		printf("No output files.\n");
+		return -1;
 	} else {
 		FILE* file = fopen(argv[1], "r");
 		char *contents = read_file(file);
 		parse_source source = start_parse(contents, argv[1]);
 		file_contents parsed = parse(source);
 		analyze(parsed);
-		output(parsed, stdout);
+		FILE* out = fopen(argv[2], "w");
+		output(parsed, out);
 		return 0;
 	}
 }
