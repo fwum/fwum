@@ -59,8 +59,8 @@ slice type_to_string(type t) {
             str[0] = 'f';
             break;
         }
-        str[1] = num.bits / 10;
-        str[2] = num.bits % 10;
+        str[1] = '0' + num.bits / 10;
+        str[2] = '0' + num.bits % 10;
         return new_slice(str);
     } else {
         return t.data.declared->name;
