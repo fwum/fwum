@@ -1,5 +1,7 @@
 #TODO
 
+- Consider removing stack_init and heap_init
+
 - Three character operators
 
 - Special operator behavior (`==` takes 2 types but returns bool)
