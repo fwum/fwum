@@ -15,7 +15,7 @@ static statement *get_expression(parse_source *source, int *indent);
 static struct_declaration *analyze_struct(parse_source *source);
 static statement *parse_simple_expression(linked_list *tokens);
 
-file_contents analyze(parse_source source) {
+file_contents parse(parse_source source) {
 	file_contents contents;
 	contents.structs = ll_new();
 	contents.functions = ll_new();

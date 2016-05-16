@@ -45,5 +45,5 @@ struct statement {
 	statement_type type;
 	linked_list *children;
 };
-file_contents analyze(parse_source tokens);
+file_contents parse(parse_source tokens);
 #endif
