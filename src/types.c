@@ -1,5 +1,6 @@
 #include "types.h"
 #include "slice.h"
+#include "util.h"
 
 type get_type(file_contents context, slice type_descriptor) {
     char first = type_descriptor.data[0];
@@ -41,4 +42,27 @@ type make_numeric_type(numeric_type kind, int bits) {
     t.bits = bits;
     t.type = kind;
     return t;
+}
+
+slice type_to_string(type t) {
+    if(t.is_numeric) {
+        char *str = string(3);
+        primitive num = t.data.numeric;
+        switch(num.type) {
+        case UNSIGNED:
+            str[0] = 'u';
+            break;
+        case SIGNED:
+            str[0] = 'i';
+            break;
+        case FLOAT:
+            str[0] = 'f';
+            break;
+        }
+        str[1] = num.bits / 10;
+        str[2] = num.bits % 10;
+        return new_slice(str);
+    } else {
+        return t.data->declared.name;
+    }
 }

@@ -24,4 +24,5 @@ struct type {
 
 type get_type(file_contents context, slice type_descriptor);
 type make_numeric_type(numeric_type kind, int bits);
+slice type_to_string(type t);
 #endif
