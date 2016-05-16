@@ -63,6 +63,6 @@ slice type_to_string(type t) {
         str[2] = num.bits % 10;
         return new_slice(str);
     } else {
-        return t.data->declared.name;
+        return t.data.declared->name;
     }
 }
