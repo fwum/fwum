@@ -1,5 +1,7 @@
 #TODO
 
+- Special operator behavior (`==` takes 2 types but returns bool)
+
 - Type inference from function returns and struct members
 
 - Implement semantic verification of if, while, and for loop headers
