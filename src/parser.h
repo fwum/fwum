@@ -44,6 +44,7 @@ struct statement {
 	slice data;
 	statement_type type;
 	linked_list *children;
+	source_origin origin;
 };
 file_contents parse(parse_source tokens);
 void semantic_error(char *error, source_origin origin);
