@@ -1,5 +1,5 @@
-#ifndef PARSER_H_
-#define PARSER_H_
+#ifndef PARSER_FILE_H_
+#define PARSER_FILE_H_
 #include "util.h"
 #include "tokenizer.h"
 #include "linked_list.h"
