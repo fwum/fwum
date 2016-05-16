@@ -66,3 +66,13 @@ slice type_to_string(type t) {
         return t.data.declared->name;
     }
 }
+
+bool type_equals(type t1, type t2) {
+    if(t1.is_numeric != t2.is_numeric)
+        return false;
+    if(t1.is_numeric) {
+        return t1.data.numeric.bits == t2.data.numeric.bits && t1.data.numeric.type == t2.data.numeric.type;
+    } else {
+        return t1.data.declared == t2.data.declared;
+    }
+}
