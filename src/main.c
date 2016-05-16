@@ -35,7 +35,6 @@ int main(int argc, char **argv) {
 		parse_source source = start_parse(contents, argv[1]);
 		file_contents parsed = parse(source);
 		analyze(parsed);
-		dump(parsed);
 		output(parsed, stdout);
 		return 0;
 	}
