@@ -8,9 +8,11 @@ DEFSTRUCT(primitive);
 DEFSTRUCT(struct_type);
 DEFSTRUCT(type);
 
+typedef enum {SIGNED, UNSIGNED, FLOAT} numeric_type;
+
 struct primitive {
     int bits;
-    enum {SIGNED, UNSIGNED, FLOAT} type;
+    numeric_type type;
 };
 struct type {
     union {
@@ -21,4 +23,5 @@ struct type {
 };
 
 type get_type(file_contents context, slice type_descriptor);
+type make_numeric_type(numeric_type kind, int bits);
 #endif

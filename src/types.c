@@ -34,3 +34,11 @@ type get_type(file_contents context, slice type_descriptor) {
     }
     return t;
 }
+
+type make_numeric_type(numeric_type kind, int bits) {
+    type t;
+    t.is_numeric = true;
+    t.bits = bits;
+    t.type = kind;
+    return t;
+}
