@@ -9,6 +9,7 @@
 #include "printing.h"
 #include "optional.h"
 #include "semantic_analyzer.h"
+#include "c_backend.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,6 +36,7 @@ int main(int argc, char **argv) {
 		file_contents parsed = parse(source);
 		analyze(parsed);
 		dump(parsed);
+		output(parsed, stdout);
 		return 0;
 	}
 }
