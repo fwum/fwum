@@ -24,7 +24,7 @@ bool st_contains(symbol_table *table, slice *name) {
 }
 
 type *st_get_type(symbol_table *table, slice *name) {
-    slice *got = hm_get(table->symbols, slice_hash(*name), name);
+    type *got = hm_get(table->symbols, slice_hash(*name), name);
     if(got != NULL) {
         return got;
     } else if(table->parent != NULL) {
