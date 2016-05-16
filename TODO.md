@@ -1,6 +1,6 @@
 #TODO
 
-- Implement type requirements and member requirements
+- Type inference from function returns and struct members
 
 - Implement semantic verification of if, while, and for loop headers
 
