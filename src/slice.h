@@ -54,4 +54,8 @@ int slice_hash(slice s);
 Parses an int from a slice
 */
 optional parse_int(slice s);
+/*
+Useful for hashmap, mostly
+*/
+bool slice_eq_voidptr(void *slice1, void *slice2);
 #endif

@@ -119,3 +119,9 @@ optional parse_int(slice s) {
 		return op_wrap(boxed);
 	}
 }
+
+bool slice_eq_voidptr(void *slice1, void *slice2) {
+	slice *a = slice1;
+	slice *b = slice2;
+	return equals(*a, *b);
+}
