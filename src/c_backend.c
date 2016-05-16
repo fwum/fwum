@@ -11,7 +11,8 @@ static void binary_op(statement *expr, char *operator, FILE *stream);
 void output(file_contents contents, FILE *stream) {
     fprintf(stream, "#include <stdio.h>\n\
     #include <stdlib.h>\n \
-    typedef byte u8; \n \
+    typedef unsigned char u8; \n \
+    typedef char i8; \n \
     typedef unsigned short u16;\n \
     typedef short i16;\n \
     typedef unsigned u32; \n \
