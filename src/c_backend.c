@@ -163,7 +163,10 @@ static void output_node(statement *expr, FILE *stream) {
         binary_op(expr, "=", stream);
         break;
 	case OP_INIT:
-		//TODO: OP INIT
+		output_node(ll_get_first(expr->children), stream);
+        statement *name = ll_get_first(expr->children);
+        fprintf(stream, "; %s=", evaluate(name->data));
+        output_node(ll_get_last(expr->children), stream);
 	break;
     case OP_MEMBER:
         binary_op(expr, ".", stream);
