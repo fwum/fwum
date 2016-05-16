@@ -4,11 +4,23 @@
 #include "util.h"
 
 static int get_hash(int key);
+static bool void_ptr_equals(void *a, void *b);
+
+static bool void_ptr_equals(void *a, void *b) {
+	return a == b;
+}
 
 hash_map *hm_new() {
 	hash_map *map = new(map);
+	map->eq = &void_ptr_equals;
 	for(int i = 0; i < HASHMAP_ENTRY_LENGTH; i++)
 		map->entries[i].head = map->entries[i].tail = NULL;
+	return map;
+}
+
+hash_map *hm_new_eqfunc(bool (*eq)(void*, void*)) {
+	hash_map *map = hm_new();
+	map->eq = eq;
 	return map;
 }
 
@@ -27,7 +39,7 @@ void *hm_get(hash_map *map, int hash, void *key) {
 	linked_iter iterator = ll_iter_head(&data);
 	while(ll_iter_has_next(&iterator)) {
 		hash_entry *entry = ll_iter_next(&iterator);
-		if(entry->hash == hash && entry->key == key) {
+		if(entry->hash == hash && map->eq(entry->key, key)) {
 			return entry->value;
 		}
 	}
