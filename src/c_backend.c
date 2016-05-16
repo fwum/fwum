@@ -251,7 +251,13 @@ static void output_node(statement *expr, FILE *stream) {
         fprintf(stream, " %s", evaluate(expr->data));
     break;
     case ROOT:
-    	output_node(ll_get_first(expr->children), stream);
+        fprintf(stream, "{\n");
+        iterator = ll_iter_head(expr->children);
+        while(ll_iter_has_next(&iterator)) {
+            output_node(ll_iter_next(&iterator), stream);
+            fprintf(stream, ";\n");
+        }
+        fprintf(stream, "}");
     break;
     case STRING:
     	fprintf(stream, "(\"%s\")", evaluate(expr->data));
