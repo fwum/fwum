@@ -11,18 +11,15 @@ static void binary_op(statement *expr, char *operator, FILE *stream);
 void output(file_contents contents, FILE *stream) {
     fprintf(stream, "#include <stdio.h>\n\
     #include <stdlib.h>\n \
-    #include <stdint.h>\n \
-    typedef i8 int8_t;\n \
-    typedef i16 int16_t;\n \
-    typedef i32 int32_t;\n \
-    typedef i64 int64_t;\n \
-    typedef u8 unt8_t;\n \
-    typedef u16 unt16_t;\n \
-    typedef u32 unt32_t;\n \
-    typedef u64 unt64_t;\n \
-    typedef f32 float;\n \
-    typedef f64 double;\n \
-    ");
+    typedef byte u8; \n \
+    typedef unsigned short u16;\n \
+    typedef short i16;\n \
+    typedef unsigned u32; \n \
+    typedef int i32;\n \
+    typedef unsigned long u64; \n \
+    typedef long i64; \n \
+    typedef float f32;\n \
+    typedef double f64;\n");
     output_forward_declarations(contents, stream);
     linked_iter structs = ll_iter_head(contents.structs);
     while(ll_iter_has_next(&structs)) {
