@@ -6,6 +6,7 @@ static void output_forward_declarations(file_contents contents, FILE *stream);
 static void output_struct(struct_declaration *dec, FILE *stream);
 
 void output(file_contents contents, FILE *stream) {
+    fprintf(stream, "#include <stdio.h>\n#include <stdlib.h>\n");
     output_forward_declarations(contents, stream);
     linked_iter structs = ll_iter_head(contents.structs);
     while(ll_iter_has_next(&structs)) {
