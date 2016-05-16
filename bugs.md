@@ -1,1 +1,1 @@
-- The parser can't handle 2 character operators
+- Identical values with different addresses are not equal to the hashmap
