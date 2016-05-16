@@ -340,7 +340,7 @@ static statement *parse_simple_expression(linked_list *tokens) {
 	}
 }
 
-static void semantic_error(char *error, source_origin origin) {
+void semantic_error(char *error, source_origin origin) {
 	fprintf(stderr, "Error encountered while analyzing %s at line %d:\n%s\n", origin.filename, origin.line, error);
 	exit(-1);
 }
