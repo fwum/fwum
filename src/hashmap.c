@@ -39,5 +39,5 @@ bool hm_has(hash_map *map, int hash, void *key){
 }
 
 static int get_hash(int key) {
-	return key % HASHMAP_ENTRY_LENGTH;
+	return abs(key) % HASHMAP_ENTRY_LENGTH;
 }
