@@ -1,8 +1,9 @@
 #include "symbol_table.h"
+#include "slice.h"
 
 symbol_table *st_new() {
     symbol_table *table = new(table);
-    table->symbols = hm_new();
+    table->symbols = hm_new_eqfunc(&slice_eq_voidptr);
     table->parent = NULL;
     return table;
 }
