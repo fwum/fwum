@@ -25,10 +25,10 @@ func main(argc i32, argv u8) i32 {
 	returnVal = 1 + 2 * 3;
 	returnVal = (1 + 2) * 3;
 	if returnVal == 9 {
-		printf("It works!");
+		printf("It works!\n");
 	} 
 	if returnVal != 9 {
-		printf("Nope!");
+		printf("Nope!\n");
 	}
 	return 0;
 }
