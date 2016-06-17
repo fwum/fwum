@@ -11,24 +11,18 @@ struct point {
 
 
 func main(argc i32, argv u8) i32 {
-	a := 1;
-	c := 1;
-	if a {
-		while a {
-			if c {
-				break;
-			}
+	a := 0;
+	b := 24;
+	printf("Please enter a number:\n");
+	while a != b {
+		scanf("%d", #a);	
+		if a > b {
+			printf("Too high. Enter another:\n");
+		}
+		if a < b {
+			printf("Too low. Enter another:\n");
 		}
 	}
-	returnVal := ((1) + 2);
-	b := returnVal;
-	returnVal = 1 + 2 * 3;
-	returnVal = (1 + 2) * 3;
-	if returnVal == 9 {
-		printf("It works!\n");
-	} 
-	if returnVal != 9 {
-		printf("Nope!\n");
-	}
+	printf("Correct!");
 	return 0;
 }
