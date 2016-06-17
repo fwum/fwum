@@ -33,11 +33,6 @@ void output(file_contents contents, FILE *stream) {
         output_func_header(dec, stream);
         fprintf(stream, ";\n");
     }
-    structs = ll_iter_head(contents.structs);
-    while(ll_iter_has_next(&structs)) {
-        struct_declaration *dec = ll_iter_next(&structs);
-        output_struct(dec, stream);
-    }
     funcs = ll_iter_head(contents.functions);
     while(ll_iter_has_next(&funcs)) {
         func_declaration *dec = ll_iter_next(&funcs);

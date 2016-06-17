@@ -1,1 +1,1 @@
-- Structs are placed in the C file twice
+- Functions are not printed to the output file
