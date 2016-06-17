@@ -1,4 +1,5 @@
 #TODO
+- Implement pointers
 
 - Consider removing stack_init and heap_init
 
