@@ -4,14 +4,15 @@ DBG_FILES := $(addprefix dbg/,$(notdir $(C_FILES:.c=.o)))
 LD_FLAGS :=
 CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized -DDO_TESTS
 CC := gcc
-run: build
-	@bin/./out example.fwum example.c
-	@$(CC) example.c -o example
+
+run: example
 	@./example
 
-example: run
-	gcc example.c -o bin/example
-	./bin/example
+example.c: example.fwum build
+	@/bin/./out example.fwum example.c
+
+example: example.c
+	@gcc example.c -o example
 
 build: obj/ bin/ bin/out
 
