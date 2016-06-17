@@ -11,8 +11,8 @@ struct point {
 
 
 func main(argc i32, argv u8) i32 {
-	a := 1
-	c := 1
+	a := 1;
+	c := 1;
 	if a {
 		while a {
 			if c {
@@ -24,9 +24,6 @@ func main(argc i32, argv u8) i32 {
 	b := returnVal;
 	returnVal = 1 + 2 * 3;
 	returnVal = (1 + 2) * 3;
-	b := 1;
-	if b {
-		//(a(1));
-	}
+	printf("%d", returnVal);
 	return 0;
 }
