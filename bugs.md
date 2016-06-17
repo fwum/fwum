@@ -1,1 +1,1 @@
-- Identical values with different addresses are not equal to the hashmap
+- Structs are placed in the C file twice
