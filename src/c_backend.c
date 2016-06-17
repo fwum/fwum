@@ -75,6 +75,7 @@ static void output_func_header(func_declaration *dec, FILE *stream) {
 }
 
 static void output_node(statement *expr, FILE *stream) {
+	linked_iter iterator;
     switch(expr->type) {
     case OP_ADD:
     	binary_op(expr, "+", stream);
@@ -189,6 +190,14 @@ static void output_node(statement *expr, FILE *stream) {
         fprintf(stream, "break");
     break;
     case FUNC_CALL:
+		fprintf(stream, "%s(", evaluate(expr->data));
+		iterator = ll_iter_head(expr->children);
+		while(ll_iter_has_next(&iterator)) {
+			statement *next = ll_iter_next(&iterator);
+			output_node(next, stream);
+			if(ll_iter_has_next(&iterator)) fprintf(stream, ",");
+			else fprintf(stream, ")");
+		}
     	//TODO: FUNC CALL BACKEND
     break;
     case STACK_INIT:
