@@ -24,6 +24,11 @@ func main(argc i32, argv u8) i32 {
 	b := returnVal;
 	returnVal = 1 + 2 * 3;
 	returnVal = (1 + 2) * 3;
-	printf("%d", returnVal);
+	if returnVal == 9 {
+		printf("It works!");
+	} 
+	if returnVal != 9 {
+		printf("Nope!");
+	}
 	return 0;
 }
