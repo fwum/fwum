@@ -6,4 +6,5 @@
 /Debug/
 out.exe.stackdump
 example.c
-a.*
+example
+example.exe

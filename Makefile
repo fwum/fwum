@@ -6,6 +6,8 @@ CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-pro
 CC := gcc
 run: build
 	@bin/./out example.fwum example.c
+	@$(CC) example.c -o example
+	@./example
 
 example: run
 	gcc example.c -o bin/example
