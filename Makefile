@@ -9,7 +9,7 @@ run: example
 	@./example
 
 example.c: example.fwum build
-	@/bin/./out example.fwum example.c
+	@bin/./out example.fwum example.c
 
 example: example.c
 	@gcc example.c -o example
