@@ -10,8 +10,6 @@
 
 - Implement semantic verification of if, while, and for loop headers
 
-- Basic C backend
-
 - Add type decorators
 
 - Make sure the dot operator is converted into the pointer operator where necessary
