@@ -61,3 +61,7 @@ bool is_operator(slice op) {
 	free(outer);
 	return false;
 }
+
+bool is_unary_operator(slice op) {
+	return equals_string(op, "$") || equals_string(op, "#");
+}
