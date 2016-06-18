@@ -168,10 +168,12 @@ static void output_node(statement *expr, FILE *stream) {
     case OP_GETREF:
         fprintf(stream, "&(");
         output_node(ll_get_first(expr->children), stream);
+		fprintf(stream, ")");
         break;
     case OP_DEREF:
         fprintf(stream, "*(");
         output_node(ll_get_first(expr->children), stream);
+		fprintf(stream, ")");
         break;
     case OP_INDEX:
     	output_node(ll_get_first(expr->children), stream);
@@ -196,8 +198,8 @@ static void output_node(statement *expr, FILE *stream) {
 			statement *next = ll_iter_next(&iterator);
 			output_node(next, stream);
 			if(ll_iter_has_next(&iterator)) fprintf(stream, ",");
-			else fprintf(stream, ")");
 		}
+		fprintf(stream, ")");
     	//TODO: FUNC CALL BACKEND
     break;
     case STACK_INIT:
