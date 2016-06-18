@@ -13,4 +13,5 @@ struct operator_node {
 
 linked_list *get_node();
 bool is_operator(slice op);
+bool is_unary_operator(slice op);
 #endif

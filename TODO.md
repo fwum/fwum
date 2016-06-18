@@ -1,11 +1,17 @@
 #TODO
 - Add origin to the AST nodes
 
+- Implement pointers
+
+- Consider removing stack_init and heap_init
+
+- Three character operators
+
+- Special operator behavior (`==` takes 2 types but returns bool)
+
 - Type inference from function returns and struct members
 
 - Implement semantic verification of if, while, and for loop headers
-
-- Basic C backend
 
 - Add type decorators
 

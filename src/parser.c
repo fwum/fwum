@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+static statement *parse_func_call(linked_list *tokens);
+static statement *parse_array_index(linked_list *tokens);
 static func_declaration *analyze_func(parse_source *source);
 static statement *get_expression(parse_source *source, int *indent);
 static struct_declaration *analyze_struct(parse_source *source);
@@ -248,96 +250,113 @@ static statement *parse_simple_expression(linked_list *tokens) {
 			}
 		}
 		if(is_index) {
-			statement *index = new(index);
-			index->type = OP_INDEX;
-			index->data = new_slice("");
-			index->children = ll_new();
-			statement *name = new(name);
-			name->type = NAME;
-			name->data = ((parse_token*)ll_get_first(tokens))->data;
-			name->children = NULL;
-			ll_add_first(index->children, name);
-			linked_list *inside_list = ll_duplicate(tokens);
-			ll_remove_first(inside_list); //Remove name
-			ll_remove_first(inside_list); //Remove [
-			ll_remove_last(inside_list); //Remove ]
-			statement *inside = parse_simple_expression(inside_list);
-			ll_destroy(inside_list);
-			ll_add_last(index->children, inside);
-			return index;
+			return parse_array_index(tokens);
 		} else if(is_call) {
-			linked_list *accumulator = ll_new();
-			linked_iter iterator = ll_iter_head(tokens);
-			statement *call = new(call);
-			call->type = FUNC_CALL;
-			call->data = ((parse_token*)ll_iter_next(&iterator))->data;
-			call->children = ll_new();
+			return parse_func_call(tokens);
+		}
+		linked_list *operator = get_node();
+		linked_iter level = ll_iter_head(operator);
+		while(ll_iter_has_next(&level)) {
 			int paren_level = 0;
-			ll_iter_next(&iterator); //Discard opening parenthesis
+			linked_list *currentLevel = ll_iter_next(&level);
+			linked_iter iterator = ll_iter_head(tokens);
 			for(parse_token *current = ll_iter_next(&iterator); ll_iter_has_next(&iterator); current = ll_iter_next(&iterator)) {
-				if(paren_level == 0 && (equals_string(current->data, ",") || equals_string(current->data, ")"))) {
-					statement *parameter = parse_simple_expression(accumulator);
-					if(parameter != NULL)
-						ll_add_last(call->children, parameter);
-					ll_clear(accumulator);
-				} else {
-					ll_add_last(accumulator, current);
-				}
-				if(equals_string(current->data, "("))
+				char currentChar = current->data.data[0];
+				if(currentChar == '(') {
 					paren_level += 1;
-				else if(equals_string(current->data, ")"))
+				} else if(currentChar == ')') {
 					paren_level -= 1;
-			}
-			statement *parameter = parse_simple_expression(accumulator);
-			if(parameter != NULL)
-				ll_add_last(call->children, parameter);
-			ll_destroy(accumulator);
-			return call;
-		} else {
-			linked_list *operator = get_node();
-			linked_iter level = ll_iter_head(operator);
-			while(ll_iter_has_next(&level)) {
-				int paren_level = 0;
-				linked_list *currentLevel = ll_iter_next(&level);
-				linked_iter iterator = ll_iter_head(tokens);
-				for(parse_token *current = ll_iter_next(&iterator); ll_iter_has_next(&iterator); current = ll_iter_next(&iterator)) {
-					char currentChar = current->data.data[0];
-					if(currentChar == '(') {
-						paren_level += 1;
-					} else if(currentChar == ')') {
-						paren_level -= 1;
-					}
-					if(paren_level == 0) {
-						linked_iter innerMost = ll_iter_head(currentLevel);
-						while(ll_iter_has_next(&innerMost)) {
-							operator_node *currentOperator = ll_iter_next(&innerMost);
-							if(equals_string(current->data, currentOperator->data)) {
-								linked_list *op1 = ll_duplicate(tokens);
-								while(ll_get_last(op1) != current)
-									ll_remove_last(op1);
+				}
+				if(paren_level != 0) continue;
+				linked_iter innerMost = ll_iter_head(currentLevel);
+				while(ll_iter_has_next(&innerMost)) {
+					operator_node *currentOperator = ll_iter_next(&innerMost);
+					if(equals_string(current->data, currentOperator->data)) {
+						if(!is_unary_operator(new_slice(currentOperator->data))) {
+							linked_list *op1 = ll_duplicate(tokens);
+							while(ll_get_last(op1) != current)
 								ll_remove_last(op1);
-								linked_list *op2 = tokens;
-								while(ll_get_first(op2) != current)
-									ll_remove_first(op2);
+							ll_remove_last(op1);
+							linked_list *op2 = tokens;
+							while(ll_get_first(op2) != current)
 								ll_remove_first(op2);
-								statement *expression = new(expression);
-								expression->data = new_slice("");
-								expression->children = ll_new();
-								expression->type = currentOperator->operatorType;
-								statement *op1_exp = parse_simple_expression(op1);
-								statement *op2_exp = parse_simple_expression(op2);
-								ll_add_last(expression->children, op1_exp);
-								ll_add_last(expression->children, op2_exp);
-								return expression;
-							}
+							ll_remove_first(op2);
+							statement *expression = new(expression);
+							expression->data = new_slice("");
+							expression->children = ll_new();
+							expression->type = currentOperator->operatorType;
+							statement *op1_exp = parse_simple_expression(op1);
+							statement *op2_exp = parse_simple_expression(op2);
+							ll_add_last(expression->children, op1_exp);
+							ll_add_last(expression->children, op2_exp);
+							return expression;
+						} else {
+							statement *expression = new(expression);
+							expression->data = new_slice(currentOperator->data);
+							expression->type = currentOperator->operatorType;
+							linked_list *rest = ll_duplicate(tokens);
+							ll_remove_first(rest);
+							expression->children = ll_new();
+							ll_add_first(expression->children, parse_simple_expression(rest));
+							return expression;
 						}
 					}
 				}
 			}
-			return NULL;
+		}
+		return NULL;
 		}
 	}
+}
+
+static statement *parse_array_index(linked_list *tokens) {
+	statement *index = new(index);
+	index->type = OP_INDEX;
+	index->data = new_slice("");
+	index->children = ll_new();
+	statement *name = new(name);
+	name->type = NAME;
+	name->data = ((parse_token*)ll_get_first(tokens))->data;
+	name->children = NULL;
+	ll_add_first(index->children, name);
+	linked_list *inside_list = ll_duplicate(tokens);
+	ll_remove_first(inside_list); //Remove name
+	ll_remove_first(inside_list); //Remove [
+	ll_remove_last(inside_list); //Remove ]
+	statement *inside = parse_simple_expression(inside_list);
+	ll_destroy(inside_list);
+	ll_add_last(index->children, inside);
+	return index;
+}
+
+static statement *parse_func_call(linked_list *tokens) {
+	linked_list *accumulator = ll_new();
+	linked_iter iterator = ll_iter_head(tokens);
+	statement *call = new(call);
+	call->type = FUNC_CALL;
+	call->data = ((parse_token*)ll_iter_next(&iterator))->data;
+	call->children = ll_new();
+	int paren_level = 0;
+	ll_iter_next(&iterator); //Discard opening parenthesis
+	for(parse_token *current = ll_iter_next(&iterator); ll_iter_has_next(&iterator); current = ll_iter_next(&iterator)) {
+		if(paren_level == 0 && (equals_string(current->data, ",") || equals_string(current->data, ")"))) {
+			statement *parameter = parse_simple_expression(accumulator);
+			if(parameter != NULL)
+				ll_add_last(call->children, parameter);
+			ll_clear(accumulator);
+		} else {
+			ll_add_last(accumulator, current);
+		}
+		if(equals_string(current->data, "("))
+			paren_level += 1;
+		else if(equals_string(current->data, ")"))
+			paren_level -= 1;
 	}
+	statement *parameter = parse_simple_expression(accumulator);
+	if(parameter != NULL)
+		ll_add_last(call->children, parameter);
+	ll_destroy(accumulator);
+	return call;
 }
 
 void semantic_error(char *error, source_origin origin) {

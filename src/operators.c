@@ -27,6 +27,7 @@ linked_list* get_node() {
 	add_level(list, 4, "*", OP_MULT, "/", OP_DIV);
 	add_level(list, 2, "**", OP_EXP);
 	add_level(list, 2, ".", OP_MEMBER);
+	add_level(list, 4, "$", OP_DEREF, "#", OP_GETREF);
 	return list;
 }
 
@@ -60,4 +61,7 @@ bool is_operator(slice op) {
 	}
 	free(outer);
 	return false;
+}
+bool is_unary_operator(slice op) {
+	return equals_string(op, "$") || equals_string(op, "#");
 }
