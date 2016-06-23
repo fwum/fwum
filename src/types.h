@@ -6,10 +6,16 @@
 #include <stdbool.h>
 DEFSTRUCT(primitive);
 DEFSTRUCT(struct_type);
+DEFSTRUCT(wrapped_type);
 DEFSTRUCT(type);
 
 typedef enum {SIGNED, UNSIGNED, FLOAT} numeric_type;
+typedef enum {PRIMITIVE, STRUCT, WRAPPED} data_type;
 
+struct wrapped_type {
+	type *typeOf;
+	bool isPtr;
+};
 struct primitive {
     int bits;
     numeric_type type;
@@ -18,8 +24,9 @@ struct type {
     union {
         primitive numeric;
         struct_declaration *declared;
+		wrapped_type wrapper;
     } data;
-    bool is_numeric;
+    data_type kind;
 };
 
 type get_type(file_contents context, slice type_descriptor);
