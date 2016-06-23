@@ -5,12 +5,12 @@ LD_FLAGS :=
 CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized -DDO_TESTS
 CC := gcc
 
-run: bin/out
+run: bin/ obj/ bin/out
 	@bin/./out example.fwum example.c
-	gcc example.c -o example	
+	@gcc example.c -o example
 	@./example
 
-debug: dbg/ bin/dbg
+debug:bin/ dbg/ bin/dbg
 	@gdb bin/dbg
 
 bin/:
@@ -23,9 +23,9 @@ dbg/:
 	@mkdir dbg
 
 clean:
-	@rm -r obj/
-	@rm -r bin/
-	@rm -r dbg/
+	@rm -rf obj/
+	@rm -rf bin/
+	@rm -rf dbg/
 
 bin/dbg: $(DBG_FILES)
 	@$(CC) $(LD_FLAGS) -g -o $@ $^
