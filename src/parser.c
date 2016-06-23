@@ -15,6 +15,7 @@ static func_declaration *analyze_func(parse_source *source);
 static statement *get_expression(parse_source *source, int *indent);
 static struct_declaration *analyze_struct(parse_source *source);
 static statement *parse_simple_expression(linked_list *tokens);
+static statement *parse_type_literal(parse_source *source);
 
 file_contents parse(parse_source source) {
 	file_contents contents;
@@ -357,6 +358,24 @@ static statement *parse_func_call(linked_list *tokens) {
 		ll_add_last(call->children, parameter);
 	ll_destroy(accumulator);
 	return call;
+}
+
+static statement *parse_type_literal(parse_source *source) {
+	parse_token token = get_mandatory_token(source);
+	int pointer_levels = 0;
+	while(token.data.data[0] == '*') {
+		pointer_levels ++;
+	}
+	char *type_string = string(token.data.len + pointer_levels);
+	for(int i = 0; i < pointer_levels; i++)
+		type_string[pointer_levels] = '$';
+	for(int i = 0; i < token.data.len; i++)
+		type_string[pointer_levels + i] = token.data.data[i];
+	statement *expr = new(expr);
+	expr->data = new_slice(type_string);
+	expr->type = TYPE;
+	expr->children = NULL;
+	return expr;
 }
 
 void semantic_error(char *error, source_origin origin) {
