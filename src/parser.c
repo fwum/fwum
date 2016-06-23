@@ -85,16 +85,11 @@ static func_declaration *analyze_func(parse_source *source) {
 		name->type = NAME;
 		name->children = ll_new();
 		if(current.type != WORD) {
+			printf("%s\n", evaluate(current.data));
 			semantic_error("Parameter names must be a valid identifier", current.origin);
 		}
 		name->data = current.data;
-		current = get_mandatory_token(source);
-		statement *param_type = new(param_type);
-		if(current.type != WORD) {
-			semantic_error("Parameter types must be valid identifiers.", current.origin);
-		}
-		param_type->data = current.data;
-		param_type->type = TYPE;
+		statement *param_type = parse_type_literal(source);
 		ll_add_first(name->children, param_type);
 		param_type->children = NULL;
 		ll_add_last(func->parameters, name);
@@ -363,8 +358,9 @@ static statement *parse_func_call(linked_list *tokens) {
 static statement *parse_type_literal(parse_source *source) {
 	parse_token token = get_mandatory_token(source);
 	int pointer_levels = 0;
-	while(token.data.data[0] == '*') {
+	while(token.data.data[0] == '$') {
 		pointer_levels ++;
+		token = get_mandatory_token(source);
 	}
 	char *type_string = string(token.data.len + pointer_levels);
 	for(int i = 0; i < pointer_levels; i++)
