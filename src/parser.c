@@ -48,17 +48,17 @@ static struct_declaration *analyze_struct(parse_source *source) {
 	while(current.data.data[0] != '}')	{
 		struct_member *member = new(member);
 		if(current.type != WORD) {
-			semantic_error("Struct members must be declared as <value> <type>;", current.origin);
+			semantic_error("Struct members must be declared as <name> <type>;", current.origin);
 		}
 		member->name = current.data;
 		current = get_mandatory_token(source);
 		if(current.type != WORD) {
-			semantic_error("Struct members must be declared as <value> <type>;",current.origin);
+			semantic_error("Struct members must be declared as <name> <type>;",current.origin);
 		}
 		member->type = current.data;
 		current = get_mandatory_token(source);
 		if(current.data.data[0] != ';') {
-			semantic_error("Struct members must be declared as <value> <type>;", current.origin);
+			semantic_error("Struct members must be declared as <name> <type>;", current.origin);
 		}
 		ll_add_last(dec->members, member);
 		current = get_mandatory_token(source);
