@@ -1,7 +1,7 @@
 #TODO
 - Add origin to the AST nodes
 
-- Implement pointers
+- Implement pointers in the frontend
 
 - Consider removing stack_init and heap_init
 
