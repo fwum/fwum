@@ -7,7 +7,7 @@ type get_type(file_contents context, slice type_descriptor) {
     char first = type_descriptor.data[0];
     slice amt = make_slice(type_descriptor.data + 1, type_descriptor.len - 1);
     type t;
-    if(first == '*') {
+    if(first == '$') {
         t.kind = WRAPPED;
         t.data.wrapper.isPtr = true;
         t.data.wrapper.typeOf = new(t.data.wrapper.typeOf);
