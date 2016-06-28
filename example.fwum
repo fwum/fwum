@@ -13,11 +13,12 @@ func incr(a $i32) void {
     $a = $a + 1;
 }
 
-func main(argc i32, argv u8) i32 {
-	printf("Counting to ten...");
-	a := 1;
-	while(a <= 10) {
-		printf("%d\n", a);
+func main(argc i32, argv $$u8) i32 {
+	printf("My command line args:\n");
+	a := 0;
+	while(a < argc) {
+        b := argv[a];
+		printf("%s\n", b);
         incr(@a);
 	}
 	return 0;
