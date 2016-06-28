@@ -2,13 +2,19 @@ C_FILES := $(wildcard src/*.c)
 OBJ_FILES := $(addprefix obj/,$(notdir $(C_FILES:.c=.o)))
 DBG_FILES := $(addprefix dbg/,$(notdir $(C_FILES:.c=.o)))
 LD_FLAGS :=
-CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized -DDO_TESTS
+CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized
 CC := gcc
 
 run: bin/ obj/ bin/out
 	@bin/./out example.fwum example.c
 	@gcc example.c -o example
-	
+
+test: clean add_tests bin/ obj/ bin/out
+	@bin/./out example.fwum example.c
+
+add_tests:
+	$(eval CC_FLAGS := $(CC_FLAGS) -DDO_TESTS)
+
 debug:bin/ dbg/ bin/dbg
 	@gdb bin/dbg
 
