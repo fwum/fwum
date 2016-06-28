@@ -96,7 +96,7 @@ static type get_node_type(symbol_table *context, statement *expr) {
     case OP_GETREF:
        return reference(rightmost_type(context, expr));
     case OP_INDEX:
-       return index(leftmost_type(context, expr));
+       return get_index(leftmost_type(context, expr));
     case FUNC_CALL:
        return *st_get_type(context, &(expr->data));
     default: {

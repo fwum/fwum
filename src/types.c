@@ -125,7 +125,7 @@ type dereference(type t) {
     //TODO: Generate an error if t is not a pointer
     return *(t.data.wrapper.typeOf);
 }
-type index(type t) {
+type get_index(type t) {
     //TODO: Generate an error if t is not an array
     return dereference(t);
 }
