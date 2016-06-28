@@ -5,13 +5,11 @@
 
 - Three character operators
 
-- Arithmetic operators
+- Arithmetic assignment operators
 
 - Type inference from struct members
 
-- Implement semantic verification of if, while, and for loop headers
-
-- Add type decorators
+- Parse and output for loops
 
 - Make sure the dot operator is converted into the pointer operator where necessary
 
@@ -32,3 +30,5 @@
 - Add support for namespacing
 
 - Add the ability to create unions
+
+- Basic generics with autoboxing
