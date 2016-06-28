@@ -110,3 +110,23 @@ bool type_equals(type t1, type t2) {
         return false;
     }
 }
+
+type reference(type t) {
+    type ptr;
+    ptr.kind = WRAPPED;
+    type *boxed = new(boxed);
+    *boxed = t;
+    ptr.data.wrapper.typeOf = boxed;
+    ptr.data.wrapper.isPtr = true;
+    return ptr;
+}
+
+type dereference(type t) {
+    //TODO: Generate an error if t is not a pointer
+    return *(t.data.wrapper.typeOf);
+}
+type index(type t) {
+    //TODO: Generate an error if t is not an array
+    return dereference(t);
+}
+

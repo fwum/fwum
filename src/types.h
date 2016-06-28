@@ -31,6 +31,9 @@ struct type {
 
 type get_type(file_contents context, slice type_descriptor);
 type make_numeric_type(numeric_type kind, int bits);
+type reference(type t);
+type dereference(type t);
+type index(type t);
 bool type_equals(type t1, type t2);
 slice type_to_string(type t);
 #endif
