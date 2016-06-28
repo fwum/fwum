@@ -7,6 +7,8 @@
 
 - Three character operators
 
+- Arithmetic operators
+
 - Special operator behavior (`==` takes 2 types but returns bool)
 
 - Type inference from function returns and struct members
