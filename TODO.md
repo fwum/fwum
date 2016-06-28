@@ -2,8 +2,6 @@
 
 - Add origin to the AST nodes
 
-- Implement pointers in the frontend
-
 - Consider removing stack_init and heap_init
 
 - Three character operators
