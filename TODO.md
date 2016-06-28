@@ -7,7 +7,7 @@
 
 - Arithmetic operators
 
-- Type inference from function returns and struct members
+- Type inference from struct members
 
 - Implement semantic verification of if, while, and for loop headers
 

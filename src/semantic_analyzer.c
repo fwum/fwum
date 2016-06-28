@@ -11,9 +11,21 @@ static type rightmost_type(symbol_table *context, statement *expr);
 
 void analyze(file_contents contents) {
     linked_iter iterator = ll_iter_head(contents.functions);
+    symbol_table *funcReturns = st_new();
     while(ll_iter_has_next(&iterator)) {
         func_declaration *dec = ll_iter_next(&iterator);
-        symbol_table *symbols = st_new();
+        type returnType = get_type(contents, dec->type);
+        type *boxedType = new(boxedType);
+        *boxedType = returnType;
+        slice *boxedSlice = new(boxedSlice);
+        *boxedSlice = dec->name;
+        st_put(funcReturns, boxedSlice, boxedType);
+        dec->type = type_to_string(returnType);
+    }
+    iterator = ll_iter_head(contents.functions);
+    while(ll_iter_has_next(&iterator)) {
+        func_declaration *dec = ll_iter_next(&iterator);
+        symbol_table *symbols = st_sub_scope(funcReturns);
         linked_iter params = ll_iter_head(dec->parameters);
         while(ll_iter_has_next(&params)) {
             statement *param = ll_iter_next(&params);
@@ -85,6 +97,8 @@ static type get_node_type(symbol_table *context, statement *expr) {
        return reference(rightmost_type(context, expr));
     case OP_INDEX:
        return index(leftmost_type(context, expr));
+    case FUNC_CALL:
+       return *st_get_type(context, &(expr->data));
     default: {
         type t;
         linked_iter iterator = ll_iter_head(expr->children);
