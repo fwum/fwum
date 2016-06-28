@@ -55,8 +55,14 @@ slice type_to_string(type t) {
     case PRIMITIVE:
     //TODO: handle numbers with greater >99 bits
     {
-        char *str = string(3);
         primitive num = t.data.numeric;
+        int digits = 0;
+        int temp = num.bits;
+        while(temp > 0) {
+            temp /= 10;
+            digits ++;
+        }
+        char *str = string(digits + 1);
         switch(num.type) {
         case UNSIGNED:
             str[0] = 'u';
@@ -68,8 +74,11 @@ slice type_to_string(type t) {
             str[0] = 'f';
             break;
         }
-        str[1] = '0' + num.bits / 10;
-        str[2] = '0' + num.bits % 10;
+        temp = num.bits;
+        for(int i = 0; i < digits; i++) {
+            str[digits - i] = '0' + num.bits % 10;
+            num.bits /= 10;
+        }
         return new_slice(str);
     }
     case WRAPPED: {
