@@ -6,6 +6,8 @@
 
 static type get_node_type(symbol_table *context, statement *expr);
 static void analyze_node(symbol_table *context, statement *node);
+static type leftmost_type(symbol_table *context, statement *expr);
+static type rightmost_type(symbol_table *context, statement *expr);
 
 void analyze(file_contents contents) {
     linked_iter iterator = ll_iter_head(contents.functions);
@@ -65,6 +67,24 @@ static type get_node_type(symbol_table *context, statement *expr) {
             return make_numeric_type(FLOAT, 32);
         else
             return make_numeric_type(SIGNED, 32);
+    case OP_ASSIGN:
+        return rightmost_type(context, expr);
+    case OP_BOOL_OR:
+    case OP_BOOL_XOR:
+    case OP_BOOL_AND:
+    case OP_EQUAL:
+    case OP_NOT_EQUAL:
+    case OP_GREATER:
+    case OP_LESS:
+    case OP_GREATER_EQUAL:
+    case OP_LESS_EQUAL:
+        return make_numeric_type(SIGNED, 8);
+    case OP_DEREF:
+       return dereference(rightmost_type(context, expr));
+    case OP_GETREF:
+       return reference(rightmost_type(context, expr));
+    case OP_INDEX:
+       return index(leftmost_type(context, expr));
     default: {
         type t;
         linked_iter iterator = ll_iter_head(expr->children);
@@ -81,3 +101,15 @@ static type get_node_type(symbol_table *context, statement *expr) {
     }
     }
 }
+
+static type leftmost_type(symbol_table *context, statement *expr) {
+    statement *left = ll_get_first(expr->children);
+    return get_node_type(context, left);
+}
+
+
+static type rightmost_type(symbol_table *context, statement *expr) {
+    statement *right = ll_get_last(expr->children);
+    return get_node_type(context, right);
+}
+

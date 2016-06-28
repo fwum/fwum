@@ -1,6 +1,4 @@
 #TODO
-- Index, reference, and dereference operators should affect types
-
 - Add origin to the AST nodes
 
 - Consider removing stack_init and heap_init
@@ -8,8 +6,6 @@
 - Three character operators
 
 - Arithmetic operators
-
-- Special operator behavior (`==` takes 2 types but returns bool)
 
 - Type inference from function returns and struct members
 
