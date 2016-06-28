@@ -24,3 +24,5 @@
 - Bootstrap the compiler in Fwum
 
 - Parse index operator and function call with left-value as an expression
+
+- Add the ability to inline C code
