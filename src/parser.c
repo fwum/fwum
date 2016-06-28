@@ -126,7 +126,7 @@ static statement *get_expression(parse_source *source, int *indent) {
 		expression->type = BLOCK;
 		expression->children = ll_new();
 		expression->data = new_slice("");
-		int finished = *indent - 1;
+		int finished = *indent;
 		*indent += 1;
 		while(*indent != finished) {
 			statement *state = get_expression(source, indent);
