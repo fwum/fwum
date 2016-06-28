@@ -18,6 +18,7 @@ void analyze(file_contents contents) {
             statement *param_type = ll_get_first(param->children);
             slice type_name = param_type->data;
             type type_val = get_type(contents, type_name);
+            param_type->data = type_to_string(type_val);
             type *boxed_type = new(boxed_type);
             *boxed_type = type_val;
             st_put(symbols, &(param->data), boxed_type);
