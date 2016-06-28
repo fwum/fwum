@@ -26,6 +26,8 @@
 
 - Create a linker to parse external source files and produce a single output
 
+- Add a basic reference counting implementation
+
 - Bootstrap the compiler in Fwum
 
 - Parse index operator and function call with left-value as an expression
