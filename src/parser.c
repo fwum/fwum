@@ -364,7 +364,7 @@ static statement *parse_type_literal(parse_source *source) {
 	}
 	char *type_string = string(token.data.len + pointer_levels);
 	for(int i = 0; i < pointer_levels; i++)
-		type_string[pointer_levels] = '$';
+		type_string[i] = '$';
 	for(int i = 0; i < token.data.len; i++)
 		type_string[pointer_levels + i] = token.data.data[i];
 	statement *expr = new(expr);
