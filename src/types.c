@@ -76,8 +76,8 @@ slice type_to_string(type t) {
         slice innerString = type_to_string(*(t.data.wrapper.typeOf));
         char *newString = string(innerString.len + 1);
         for(int i = 0; i < innerString.len; i++)
-            newString[i + 1] = innerString.data[i];
-        newString[0] = '*';
+            newString[i] = innerString.data[i];
+        newString[innerString.len] = '*';
         return new_slice(newString);
     }
     case STRUCT:
