@@ -1,2 +1,1 @@
-- Return types of functions are not parsed as type definitions
 - Not all unary operators have the correct unary designation
