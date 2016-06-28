@@ -1,7 +1,5 @@
 #TODO
 
-- Change get reference operator to `@`
-
 - Add origin to the AST nodes
 
 - Implement pointers in the frontend
