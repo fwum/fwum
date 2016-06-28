@@ -8,8 +8,7 @@ CC := gcc
 run: bin/ obj/ bin/out
 	@bin/./out example.fwum example.c
 	@gcc example.c -o example
-	@./example
-
+	
 debug:bin/ dbg/ bin/dbg
 	@gdb bin/dbg
 
