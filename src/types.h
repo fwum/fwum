@@ -10,7 +10,7 @@ DEFSTRUCT(wrapped_type);
 DEFSTRUCT(type);
 
 typedef enum {SIGNED, UNSIGNED, FLOAT} numeric_type;
-typedef enum {PRIMITIVE, STRUCT, WRAPPED} data_type;
+typedef enum {PRIMITIVE, STRUCT, WRAPPED, VOID} data_type;
 
 struct wrapped_type {
 	type *typeOf;

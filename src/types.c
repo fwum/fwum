@@ -28,6 +28,8 @@ type get_type(file_contents context, slice type_descriptor) {
             t.data.numeric.type = FLOAT;
             break;
         }
+    } else if(equals_string(type_descriptor, "void")) {
+        t.kind = VOID;
     } else {
         t.kind = STRUCT;
         t.data.declared = NULL;
@@ -91,6 +93,8 @@ slice type_to_string(type t) {
     }
     case STRUCT:
         return t.data.declared->name;
+    case VOID:
+        return new_slice("void");
     default:
         return new_slice("");
     }
