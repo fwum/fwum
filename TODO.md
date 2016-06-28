@@ -26,3 +26,9 @@
 - Parse index operator and function call with left-value as an expression
 
 - Add the ability to inline C code
+
+- Add the ability to create enums
+
+- Add support for namespacing
+
+- Add the ability to create unions
