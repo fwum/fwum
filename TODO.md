@@ -1,4 +1,5 @@
 #TODO
+- Index, reference, and dereference operators should affect types
 
 - Add origin to the AST nodes
 
