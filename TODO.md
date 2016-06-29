@@ -1,7 +1,7 @@
 #TODO
 
 ##Critical to bootstrapping
-- Add top-level items like imports, namespace declarations, and exports
+- Add import statements
 - Create a linker to parse external source files and produce a single output
 - Bootstrap the compiler in Fwum
 - Add the ability to inline C code
@@ -16,6 +16,8 @@
 - Parse index operator and function call with left-value as an expression
 - Add support for namespacing
 - Constants
+- Visibility Operators
+- Inheritance
 ##Noncritical
 - Arithmetic assignment operators
 - Add the ability to create enums
