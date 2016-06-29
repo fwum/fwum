@@ -3,8 +3,6 @@
 
 - Consider removing stack_init and heap_init
 
-- Three character operators
-
 - Arithmetic assignment operators
 
 - Type inference from struct members
