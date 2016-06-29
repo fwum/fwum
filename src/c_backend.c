@@ -206,7 +206,9 @@ static void output_node(statement *expr, FILE *stream) {
     	//TODO: STACK INIT BACKEND
     break;
     case HEAP_INIT:
-    	//TODO: HEAP INIT BACKEND
+        fprintf(stream, "malloc(sizeof(");
+        output_node(ll_get_first(expr->children), stream);
+        fprintf(stream, "))");
     break;
     case IF:
     	fprintf(stream, "if(");
