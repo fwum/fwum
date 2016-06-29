@@ -231,7 +231,16 @@ static void output_node(statement *expr, FILE *stream) {
         output_node(ll_get_last(expr->children), stream);
         break;
     case FOR:
-    	//TODO: FOR BACKEND
+        iterator = ll_iter_head(expr->children);
+        output_node(ll_iter_next(&iterator), stream);
+    	fprintf(stream, ";for(");
+        for(int i = 0; i < 2; i++) {
+            fprintf(stream, ";");
+            output_node(ll_iter_next(&iterator), stream);
+        }
+        fprintf(stream, ")");
+        output_node(ll_iter_next(&iterator), stream);
+        break;
     break;
     case FOREACH:
         fprintf(stream, "for(");

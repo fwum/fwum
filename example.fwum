@@ -15,11 +15,9 @@ func incr(a $i32) void {
 
 func main(argc i32, argv $$u8) i32 {
 	printf("My command line args:\n");
-	a := 0;
-	while(a < argc) {
+    for a := 0; a < argc; a = a + 1 {
         b := argv[a];
-		printf("%s\n", b);
-        incr(@a);
-	}
+        printf("%s\n", b);
+    }
 	return 0;
 }

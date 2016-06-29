@@ -149,6 +149,10 @@ static statement *get_expression(parse_source *source, int *indent) {
 		expression->children = ll_new();
 		expression->data = new_slice("");
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the header
+        if(expression->type == FOR) {
+            ll_add_last(expression->children, get_expression(source, indent)); //Add the header
+            ll_add_last(expression->children, get_expression(source, indent)); //Add the header
+        }
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the body
 		return expression;
 	} else if(equals_string(token.data, "break") || equals_string(token.data, "continue")) {

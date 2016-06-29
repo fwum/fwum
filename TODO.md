@@ -9,8 +9,6 @@
 
 - Type inference from struct members
 
-- Parse and output for loops
-
 - Make sure the dot operator is converted into the pointer operator where necessary
 
 - Add top-level items like imports, namespace declarations, and exports
