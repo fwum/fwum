@@ -11,7 +11,7 @@ static type rightmost_type(symbol_table *context, statement *expr);
 
 void analyze(file_contents contents) {
     linked_iter iterator = ll_iter_head(contents.functions);
-    symbol_table *funcReturns = st_new();
+    symbol_table *toplevelSymbols = st_new();
     while(ll_iter_has_next(&iterator)) {
         func_declaration *dec = ll_iter_next(&iterator);
         type returnType = get_type(contents, dec->type);
@@ -19,13 +19,25 @@ void analyze(file_contents contents) {
         *boxedType = returnType;
         slice *boxedSlice = new(boxedSlice);
         *boxedSlice = dec->name;
-        st_put(funcReturns, boxedSlice, boxedType);
+        st_put(toplevelSymbols, boxedSlice, boxedType);
         dec->type = type_to_string(returnType);
+    }
+    iterator = ll_iter_head(contents.structs);
+    while(ll_iter_has_next(&iterator)) {
+        struct_declaration *dec = ll_iter_next(&iterator);
+        type structType;
+        structType.kind = STRUCT;
+        structType.data.declared = dec;
+        type *boxedType = new(boxedType);
+        *boxedType = structType;
+        slice *boxedSlice = new(boxedSlice);
+        *boxedSlice = dec->name;
+        st_put(toplevelSymbols, boxedSlice, boxedType);
     }
     iterator = ll_iter_head(contents.functions);
     while(ll_iter_has_next(&iterator)) {
         func_declaration *dec = ll_iter_next(&iterator);
-        symbol_table *symbols = st_sub_scope(funcReturns);
+        symbol_table *symbols = st_sub_scope(toplevelSymbols);
         linked_iter params = ll_iter_head(dec->parameters);
         while(ll_iter_has_next(&params)) {
             statement *param = ll_iter_next(&params);
