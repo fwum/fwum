@@ -1,8 +1,6 @@
 #TODO
 
 ##Critical to bootstrapping
-- Consider removing stack_init and heap_init and replacing it with a different stack/heap system
-
 - Type inference from struct members
 - Make sure the dot operator is converted into the pointer operator where necessary
 - Add top-level items like imports, namespace declarations, and exports
