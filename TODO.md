@@ -8,6 +8,7 @@
 - Basic generics with autoboxing
 - Add the ability to create unions
 - Global variables
+- Create an object file format to speed up partial recompilation
 ##Critical to usefulness
 - Make sure the dot operator is converted into the pointer operator where necessary
 - Error module
