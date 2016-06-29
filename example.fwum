@@ -5,8 +5,8 @@ MULTI LINE COMMENT
 //cimport stdio.h;
 
 struct point {
-	x int;
-	y int;
+	x i32;
+	y i32;
 }
 
 func incr(a $i32) void {
