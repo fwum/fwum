@@ -232,7 +232,7 @@ static statement *parse_simple_expression(linked_list *tokens) {
         if(size == 2 && equals_string(((parse_token*)ll_get_first(tokens))->data, "new")) {
             type = STACK_INIT;
             init = true;
-        } else if(size == 2 && equals_string(((parse_token*)ll_get_first(tokens))->data, "new-ref")) {
+        } else if(size == 2 && equals_string(((parse_token*)ll_get_first(tokens))->data, "newref")) {
             type = HEAP_INIT; 
             init = true;
         }
