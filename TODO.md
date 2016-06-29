@@ -2,7 +2,6 @@
 
 ##Critical to bootstrapping
 - Error module
-- Type inference from struct members
 - Make sure the dot operator is converted into the pointer operator where necessary
 - Add top-level items like imports, namespace declarations, and exports
 - Create a linker to parse external source files and produce a single output

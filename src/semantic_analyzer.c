@@ -12,16 +12,6 @@ static type rightmost_type(symbol_table *context, statement *expr);
 void analyze(file_contents contents) {
     linked_iter iterator = ll_iter_head(contents.functions);
     symbol_table *toplevelSymbols = st_new();
-    while(ll_iter_has_next(&iterator)) {
-        func_declaration *dec = ll_iter_next(&iterator);
-        type returnType = get_type(contents, dec->type);
-        type *boxedType = new(boxedType);
-        *boxedType = returnType;
-        slice *boxedSlice = new(boxedSlice);
-        *boxedSlice = dec->name;
-        st_put(toplevelSymbols, boxedSlice, boxedType);
-        dec->type = type_to_string(returnType);
-    }
     iterator = ll_iter_head(contents.structs);
     while(ll_iter_has_next(&iterator)) {
         struct_declaration *dec = ll_iter_next(&iterator);
@@ -34,6 +24,16 @@ void analyze(file_contents contents) {
         *boxedSlice = dec->name;
         st_put(toplevelSymbols, boxedSlice, boxedType);
     }
+    while(ll_iter_has_next(&iterator)) {
+        func_declaration *dec = ll_iter_next(&iterator);
+        type returnType = get_type(toplevelSymbols, dec->type);
+        type *boxedType = new(boxedType);
+        *boxedType = returnType;
+        slice *boxedSlice = new(boxedSlice);
+        *boxedSlice = dec->name;
+        st_put(toplevelSymbols, boxedSlice, boxedType);
+        dec->type = type_to_string(returnType);
+    }
     iterator = ll_iter_head(contents.functions);
     while(ll_iter_has_next(&iterator)) {
         func_declaration *dec = ll_iter_next(&iterator);
@@ -43,7 +43,7 @@ void analyze(file_contents contents) {
             statement *param = ll_iter_next(&params);
             statement *param_type = ll_get_first(param->children);
             slice type_name = param_type->data;
-            type type_val = get_type(contents, type_name);
+            type type_val = get_type(symbols, type_name);
             param_type->data = type_to_string(type_val);
             type *boxed_type = new(boxed_type);
             *boxed_type = type_val;
@@ -113,6 +113,21 @@ static type get_node_type(symbol_table *context, statement *expr) {
        return *st_get_type(context, &(expr->data));
     case HEAP_INIT:
        return reference(*st_get_type(context, &((parse_token*)ll_get_first(expr->children))->data));
+    case OP_MEMBER: {
+        type left = leftmost_type(context, expr);
+        statement *right = ll_get_last(expr->children);
+        slice name = right->data;
+        //TODO: Errors if the dot operator is invalid
+        struct_declaration *dec = left.data.declared;
+        linked_iter iterator = ll_iter_head(dec->members);
+        while(ll_iter_has_next(&iterator)) {
+            struct_member *member = ll_iter_next(&iterator);
+            if(equals(member->name, name)) {
+                return get_type(context, member->type);
+            }
+        }
+    }
+
     default: {
         type t;
         linked_iter iterator = ll_iter_head(expr->children);
