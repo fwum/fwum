@@ -14,6 +14,39 @@ symbol_table *st_sub_scope(symbol_table *parent) {
     return table;
 }
 
+type get_type(symbol_table *context, slice type_descriptor) {
+    char first = type_descriptor.data[0];
+    slice amt = make_slice(type_descriptor.data + 1, type_descriptor.len - 1);
+    type t;
+    if(first == '$') {
+        t.kind = WRAPPED;
+        t.data.wrapper.isPtr = true;
+        t.data.wrapper.typeOf = new(t.data.wrapper.typeOf);
+        *t.data.wrapper.typeOf = get_type(context, make_slice(type_descriptor.data + 1, type_descriptor.len - 1));
+    } else if((first == 'u' || first == 'i' || first == 'f') && is_numeric(amt)) {
+        t.kind = PRIMITIVE;
+        optional op = parse_int(amt);
+		int size = *((int*)op_get(op));
+        t.data.numeric.bits = size;
+        switch(first) {
+        case 'u':
+            t.data.numeric.type = UNSIGNED;
+            break;
+        case 'i':
+            t.data.numeric.type = SIGNED;
+            break;
+        case 'f':
+            t.data.numeric.type = FLOAT;
+            break;
+        }
+    } else if(equals_string(type_descriptor, "void")) {
+        t.kind = VOID;
+    } else {
+        t = *st_get_type(context, &type_descriptor);
+    }
+    return t;
+}
+
 bool st_contains(symbol_table *table, slice *name) {
     if(hm_has(table->symbols, slice_hash(*name), name)) {
         return true;

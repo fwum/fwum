@@ -16,6 +16,7 @@ struct symbol_table {
 
 symbol_table *st_new();
 symbol_table *st_sub_scope(symbol_table *parent);
+type get_type(symbol_table *context, slice type_descriptor);
 bool st_contains(symbol_table *table, slice *name);
 type *st_get_type(symbol_table *table, slice *name);
 void st_put(symbol_table *table, slice *name, type *type);

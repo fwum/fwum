@@ -3,46 +3,6 @@
 #include "util.h"
 #include <stdbool.h>
 
-type get_type(file_contents context, slice type_descriptor) {
-    char first = type_descriptor.data[0];
-    slice amt = make_slice(type_descriptor.data + 1, type_descriptor.len - 1);
-    type t;
-    if(first == '$') {
-        t.kind = WRAPPED;
-        t.data.wrapper.isPtr = true;
-        t.data.wrapper.typeOf = new(t.data.wrapper.typeOf);
-        *t.data.wrapper.typeOf = get_type(context, make_slice(type_descriptor.data + 1, type_descriptor.len - 1));
-    } else if((first == 'u' || first == 'i' || first == 'f') && is_numeric(amt)) {
-        t.kind = PRIMITIVE;
-        optional op = parse_int(amt);
-		int size = *((int*)op_get(op));
-        t.data.numeric.bits = size;
-        switch(first) {
-        case 'u':
-            t.data.numeric.type = UNSIGNED;
-            break;
-        case 'i':
-            t.data.numeric.type = SIGNED;
-            break;
-        case 'f':
-            t.data.numeric.type = FLOAT;
-            break;
-        }
-    } else if(equals_string(type_descriptor, "void")) {
-        t.kind = VOID;
-    } else {
-        t.kind = STRUCT;
-        t.data.declared = NULL;
-        linked_list *structs = context.structs;
-        linked_iter iterator = ll_iter_head(structs);
-        while(ll_iter_has_next(&iterator)) {
-            struct_declaration *dec = ll_iter_next(&iterator);
-            if(equals(type_descriptor, dec->name))
-                t.data.declared = dec;
-        }
-    }
-    return t;
-}
 
 type make_numeric_type(numeric_type kind, int bits) {
     type t;
