@@ -111,6 +111,8 @@ static type get_node_type(symbol_table *context, statement *expr) {
        return get_index(leftmost_type(context, expr));
     case FUNC_CALL:
        return *st_get_type(context, &(expr->data));
+    case HEAP_INIT:
+       return reference(*st_get_type(context, &((parse_token*)ll_get_first(expr->children))->data));
     default: {
         type t;
         linked_iter iterator = ll_iter_head(expr->children);
