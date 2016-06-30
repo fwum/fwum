@@ -24,6 +24,7 @@ linked_list *ll_new();
 linked_list *ll_duplicate(linked_list *list);
 void ll_add_first(linked_list *list, void *value);
 void ll_add_last(linked_list *list, void *value);
+void ll_concat(linked_list *mutated, linked_list *newItems);
 void *ll_get_first(linked_list *list);
 void *ll_get_last(linked_list *list);
 void *ll_get(linked_list *list, int index);
