@@ -3,6 +3,7 @@
 MULTI LINE COMMENT
 */
 //cimport stdio.h;
+import math;
 
 struct point {
 	x i32;

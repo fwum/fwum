@@ -5,14 +5,19 @@
 #include "linked_list.h"
 
 DEFSTRUCT(file_contents);
+DEFSTRUCT(import_declaration);
 DEFSTRUCT(struct_declaration);
 DEFSTRUCT(struct_member);
 DEFSTRUCT(func_declaration);
 DEFSTRUCT(statement);
 DEFSTRUCT(parameter);
 struct file_contents {
+    linked_list *imports;
 	linked_list *structs;
 	linked_list *functions;
+};
+struct import_declaration {
+    slice name;
 };
 struct struct_declaration {
 	slice name;

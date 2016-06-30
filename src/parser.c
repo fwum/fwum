@@ -16,9 +16,11 @@ static statement *get_expression(parse_source *source, int *indent);
 static struct_declaration *analyze_struct(parse_source *source);
 static statement *parse_simple_expression(linked_list *tokens);
 static statement *parse_type_literal(parse_source *source);
+static import_declaration *parse_import(parse_source *source);
 
 file_contents parse(parse_source source) {
 	file_contents contents;
+    contents.imports = ll_new();
 	contents.structs = ll_new();
 	contents.functions = ll_new();
 	optional op = get_token(&source);
@@ -30,7 +32,10 @@ file_contents parse(parse_source source) {
 		} else if(equals(current.data, new_slice("func"))) {
 			func_declaration *func = analyze_func(&source);
 			ll_add_last(contents.functions, func);
-		}
+		} else if(equals(current.data, new_slice("import"))) {
+            import_declaration *imp = parse_import(&source);
+            ll_add_last(contents.imports, imp);
+        } //TODO: Throw an error for an unexpected token
 		op = get_token(&source);
 	}
 	return contents;
@@ -401,3 +406,15 @@ void semantic_error(char *error, source_origin origin) {
 	fprintf(stderr, "Error encountered while analyzing %s at line %d:\n%s\n", origin.filename, origin.line, error);
 	exit(-1);
 }
+
+static import_declaration *parse_import(parse_source *source) {
+    parse_token current = get_mandatory_token(source);
+    import_declaration *imp = new(imp);
+    imp->name = current.data;
+    current = get_mandatory_token(source);
+    if(!equals_string(current.data, ";")) {
+        semantic_error("Expected semicolon after import statement", current.origin);
+    }
+    return imp;
+}
+

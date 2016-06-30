@@ -1,7 +1,6 @@
 #TODO
 
 ##Critical to bootstrapping
-- Add import statements
 - Create a linker to parse external source files and produce a single output
 - Basic generics with autoboxing
 - Add the ability to create enums

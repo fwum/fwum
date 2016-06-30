@@ -44,6 +44,13 @@ static void print_token(parse_token *current) {
 Print the created AST to stdout, mostly for debugging purposes
 */
 void dump(file_contents contents) {
+    {
+        linked_iter iterator = ll_iter_head(contents.imports);
+        while(ll_iter_has_next(&iterator)) {
+            import_declaration *import = ll_iter_next(&iterator);
+            printf("IMPORT: %s\n", evaluate(import->name));
+        }
+    }
 	{
 		linked_iter iterator = ll_iter_head(contents.structs);
 		while(ll_iter_has_next(&iterator)) {
