@@ -53,7 +53,7 @@ void ll_add_last(linked_list *list, void *value) {
 void ll_concat(linked_list *mutated, linked_list *newItems) {
     linked_iter iterator = ll_iter_head(newItems);
     while(ll_iter_has_next(&iterator)) {
-        ll_add_last(mutated, ll_iter_next(&iterator);
+        ll_add_last(mutated, ll_iter_next(&iterator));
     }
 }
 
