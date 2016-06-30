@@ -1,7 +1,6 @@
 #TODO
 
 ##Critical to bootstrapping
-- Create a linker to parse external source files and produce a single output
 - Basic generics with autoboxing
 - Add the ability to create enums
 - Global variables
@@ -19,5 +18,7 @@
 - Constants
 - Visibility Operators
 - Inheritance
+- A standard library that the linker can find
+- Custom settings for the linker's include / link paths
 ##Noncritical
 - Arithmetic assignment operators

@@ -10,6 +10,7 @@
 #include "optional.h"
 #include "semantic_analyzer.h"
 #include "c_backend.h"
+#include "linker.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,11 +34,8 @@ int main(int argc, char **argv) {
 		printf("No output files.\n");
 		return -1;
 	} else {
-		FILE* file = fopen(argv[1], "r");
-		char *contents = read_file(file);
-		parse_source source = start_parse(contents, argv[1]);
-		file_contents parsed = parse(source);
-		analyze(parsed);
+        file_contents parsed = start_compile(argv[1]);
+        analyze(parsed);
 		FILE* out = fopen(argv[2], "w");
 		output(parsed, out);
 		return 0;

@@ -3,12 +3,7 @@
 MULTI LINE COMMENT
 */
 //cimport stdio.h;
-import math;
-
-struct point {
-	x i32;
-	y i32;
-}
+import point;
 
 func incr(a $i32) void {
     $a = $a + 1;
