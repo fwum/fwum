@@ -9,12 +9,18 @@ DEFSTRUCT(import_declaration);
 DEFSTRUCT(struct_declaration);
 DEFSTRUCT(struct_member);
 DEFSTRUCT(func_declaration);
+DEFSTRUCT(enum_declaration);
 DEFSTRUCT(statement);
 DEFSTRUCT(parameter);
 struct file_contents {
     linked_list *imports;
 	linked_list *structs;
+    linked_list *enums;
 	linked_list *functions;
+};
+struct enum_declaration {
+    slice name;
+    linked_list *options;//statement*
 };
 struct import_declaration {
     slice name;
