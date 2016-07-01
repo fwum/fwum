@@ -51,6 +51,18 @@ void dump(file_contents contents) {
             printf("IMPORT: %s\n", evaluate(import->name));
         }
     }
+    {
+        linked_iter iterator = ll_iter_head(contents.enums);
+        while(ll_iter_has_next(&iterator)) {
+            enum_declaration *dec = ll_iter_next(&iterator);
+            printf("ENUM: %s\n", evaluate(dec->name));
+            linked_iter items = ll_iter_head(dec->options);
+            while(ll_iter_has_next(&items)) {
+                statement *option = ll_iter_next(&items);
+                printf("\tOPTION: %s\n", evaluate(option->data));
+            }
+        }
+    }
 	{
 		linked_iter iterator = ll_iter_head(contents.structs);
 		while(ll_iter_has_next(&iterator)) {

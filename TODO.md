@@ -3,11 +3,11 @@
 ##Critical to bootstrapping
 - Basic generics with autoboxing
 - Add the ability to create enums
-- Global variables
 - Bootstrap the compiler in Fwum
 - Add the ability to inline C code
 - Add the ability to create unions
 ##Critical to usefulness
+- Global variables
 - Create an object file format to speed up partial recompilation
 - Make sure the dot operator is converted into the pointer operator where necessary
 - Error module

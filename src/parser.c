@@ -17,10 +17,12 @@ static struct_declaration *analyze_struct(parse_source *source);
 static statement *parse_simple_expression(linked_list *tokens);
 static statement *parse_type_literal(parse_source *source);
 static import_declaration *parse_import(parse_source *source);
+static enum_declaration *parse_enum(parse_source *source);
 
 file_contents parse(parse_source source) {
 	file_contents contents;
     contents.imports = ll_new();
+	contents.enums = ll_new();
 	contents.structs = ll_new();
 	contents.functions = ll_new();
 	optional op = get_token(&source);
@@ -35,7 +37,10 @@ file_contents parse(parse_source source) {
 		} else if(equals(current.data, new_slice("import"))) {
             import_declaration *imp = parse_import(&source);
             ll_add_last(contents.imports, imp);
-        } //TODO: Throw an error for an unexpected token
+        } else if(equals(current.data, new_slice("enum"))) {
+			enum_declaration *enm = parse_enum(&source);
+			ll_add_last(contents.enums, enm);
+		}//TODO: Throw an error for an unexpected token
 		op = get_token(&source);
 	}
 	return contents;
@@ -238,7 +243,7 @@ static statement *parse_simple_expression(linked_list *tokens) {
             type = STACK_INIT;
             init = true;
         } else if(size == 2 && equals_string(((parse_token*)ll_get_first(tokens))->data, "newref")) {
-            type = HEAP_INIT; 
+            type = HEAP_INIT;
             init = true;
         }
         if(init) {
@@ -418,3 +423,16 @@ static import_declaration *parse_import(parse_source *source) {
     return imp;
 }
 
+static enum_declaration *parse_enum(parse_source *source) {
+	enum_declaration *dec = new(dec);
+	parse_token current = get_mandatory_token(source);
+	dec->name = current.data;
+	dec->options = ll_new();
+	while(!equals_string(get_mandatory_token(source).data, "}")) {
+		statement *expr = new(expr);
+		current = get_mandatory_token(source);
+		expr->data = current.data;
+		ll_add_last(dec->options, expr);
+	}
+	return dec;
+}

@@ -5,6 +5,10 @@ MULTI LINE COMMENT
 //cimport stdio.h;
 import point;
 
+enum A {
+    Q, X, Z
+}
+
 func incr(a $i32) void {
     $a = $a + 1;
 }
