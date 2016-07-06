@@ -52,6 +52,8 @@ slice type_to_string(type t) {
     }
     case STRUCT:
         return t.data.declared->name;
+    case ENUM:
+        return t.data.enum_dec->name;
     case VOID:
         return new_slice("void");
     default:
@@ -69,6 +71,8 @@ bool type_equals(type t1, type t2) {
         return type_equals(*(t1.data.wrapper.typeOf), *(t2.data.wrapper.typeOf));
     case STRUCT:
         return t1.data.declared == t2.data.declared;
+    case ENUM:
+        return t1.data.enum_dec == t2.data.enum_dec;
     default:
         return false;
     }

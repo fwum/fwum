@@ -10,7 +10,7 @@ DEFSTRUCT(wrapped_type);
 DEFSTRUCT(type);
 
 typedef enum {SIGNED, UNSIGNED, FLOAT} numeric_type;
-typedef enum {PRIMITIVE, STRUCT, WRAPPED, VOID} data_type;
+typedef enum {PRIMITIVE, STRUCT, ENUM, WRAPPED, VOID} data_type;
 
 struct wrapped_type {
 	type *typeOf;
@@ -24,6 +24,7 @@ struct type {
     union {
         primitive numeric;
         struct_declaration *declared;
+        enum_declaration *enum_dec;
 		wrapped_type wrapper;
     } data;
     data_type kind;
