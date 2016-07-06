@@ -1,7 +1,7 @@
 C_FILES := $(wildcard src/*.c)
 OBJ_FILES := $(addprefix obj/,$(notdir $(C_FILES:.c=.o)))
 DBG_FILES := $(addprefix dbg/,$(notdir $(C_FILES:.c=.o)))
-LD_FLAGS :=
+LD_FLAGS := -lm
 CC_FLAGS := -Wall -Wfatal-errors -Werror -pedantic -std=c99 -Wextra -Wdouble-promotion -Wunused-parameter -Wunused -Wuninitialized
 CC := gcc
 
@@ -33,10 +33,10 @@ clean:
 	@rm -rf dbg/
 
 bin/dbg: $(DBG_FILES)
-	@$(CC) $(LD_FLAGS) -g -o $@ $^
+	@$(CC)  -g -o $@ $^ $(LD_FLAGS)
 
 bin/out: $(OBJ_FILES)
-	@$(CC) $(LD_FLAGS) -o $@ $^
+	@$(CC)  -o $@ $^ $(LD_FLAGS) 
 
 dbg/%.o: src/%.c
 	@$(CC) $(CC_FLAGS) -g -c -o $@ $<
