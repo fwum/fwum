@@ -15,7 +15,6 @@ type make_numeric_type(numeric_type kind, int bits) {
 slice type_to_string(type t) {
     switch(t.kind) {
     case PRIMITIVE:
-    //TODO: handle numbers with greater >99 bits
     {
         primitive num = t.data.numeric;
         int digits = 0;
