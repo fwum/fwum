@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -125,3 +126,12 @@ bool slice_eq_voidptr(void *slice1, void *slice2) {
 	slice *b = slice2;
 	return equals(*a, *b);
 }
+
+slice int_to_slice(int number) {
+    int characters = (int)ceil(log10(number));
+    if(number < 0)
+        characters ++;
+    char *str = string(characters);
+    return new_slice(str);
+}
+

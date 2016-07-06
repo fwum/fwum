@@ -58,4 +58,8 @@ optional parse_int(slice s);
 Useful for hashmap, mostly
 */
 bool slice_eq_voidptr(void *slice1, void *slice2);
+/*
+Convert an integer into a slice
+*/
+slice int_to_slice(int number);
 #endif
