@@ -26,7 +26,7 @@ linked_list* get_node() {
 	add_level(list, 6, "+", OP_ADD, "-", OP_SUB, "%", OP_MOD);
 	add_level(list, 4, "*", OP_MULT, "/", OP_DIV);
 	add_level(list, 2, "**", OP_EXP);
-	add_level(list, 2, ".", OP_MEMBER);
+	add_level(list, 4, ".", OP_MEMBER, "::", OP_NAMESPACE);
 	add_level(list, 4, "$", OP_DEREF, "@", OP_GETREF);
 	return list;
 }
