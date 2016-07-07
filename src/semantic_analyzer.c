@@ -72,29 +72,28 @@ void analyze(file_contents contents) {
 static void analyze_node(symbol_table *context, statement *node) {
     switch(node->type) {
         case OP_INIT: {
-                          statement *name = ll_get_first(node->children);
-                          statement *value = ll_get_last(node->children);
-                          type t = get_node_type(context, value);
-                          type *boxed_type = new(boxed_type);
-                          *boxed_type = t;
-                          st_put(context, &(name->data), boxed_type);
-                          name->children = ll_new();
-                          statement *type_statement = new(type_statement);
-                          type_statement->children = NULL;
-                          type_statement->origin = name->origin;
-                          type_statement->type = TYPE;
-                          type_statement->data = type_to_string(t);
-                          ll_add_last(name->children, type_statement);
-                      } break;
-        default:
-                      if(node->children != NULL) {
-                          linked_iter children = ll_iter_head(node->children);
-                          while(ll_iter_has_next(&children)) {
-                              statement *child = ll_iter_next(&children);
-                              analyze_node(context, child);
-                          }
-                      }
-                      break;
+          statement *name = ll_get_first(node->children);
+          statement *value = ll_get_last(node->children);
+          type t = get_node_type(context, value);
+          type *boxed_type = new(boxed_type);
+          *boxed_type = t;
+          st_put(context, &(name->data), boxed_type);
+          name->children = ll_new();
+          statement *type_statement = new(type_statement);
+          type_statement->children = NULL;
+          type_statement->origin = name->origin;
+          type_statement->type = TYPE;
+          type_statement->data = type_to_string(t);
+          ll_add_last(name->children, type_statement);
+      } break;
+    default:
+        if(node->children != NULL) {
+            linked_iter children = ll_iter_head(node->children);
+            while(ll_iter_has_next(&children)) {
+                statement *child = ll_iter_next(&children);
+                analyze_node(context, child);
+            }
+        } break;
     }
 }
 
@@ -130,19 +129,19 @@ static type get_node_type(symbol_table *context, statement *expr) {
         case HEAP_INIT:
             return reference(*st_get_type(context, &((parse_token*)ll_get_first(expr->children))->data));
         case OP_MEMBER: {
-                            type left = leftmost_type(context, expr);
-                            statement *right = ll_get_last(expr->children);
-                            slice name = right->data;
-                            //TODO: Errors if the dot operator is invalid
-                            struct_declaration *dec = left.data.declared;
-                            linked_iter iterator = ll_iter_head(dec->members);
-                            while(ll_iter_has_next(&iterator)) {
-                                struct_member *member = ll_iter_next(&iterator);
-                                if(equals(member->name, name)) {
-                                    return get_type(context, member->type);
-                                }
-                            }
-                        }
+            type left = leftmost_type(context, expr);
+            statement *right = ll_get_last(expr->children);
+            slice name = right->data;
+            //TODO: Errors if the dot operator is invalid
+            struct_declaration *dec = left.data.declared;
+            linked_iter iterator = ll_iter_head(dec->members);
+            while(ll_iter_has_next(&iterator)) {
+                struct_member *member = ll_iter_next(&iterator);
+                if(equals(member->name, name)) {
+                    return get_type(context, member->type);
+                }
+            }
+        }
         case OP_NAMESPACE: {
            type left = leftmost_type(context, expr);
            if(left.kind == ENUM) {
@@ -150,6 +149,18 @@ static type get_node_type(symbol_table *context, statement *expr) {
                int enum_items = ll_size(left.data.enum_dec->options);
                while(pow(2, size) < enum_items)
                    size *= 2;
+               expr->type = NUM;
+               statement *right = ll_get_last(expr->children);
+               slice enum_item = right->data;
+               int position = -1;
+               linked_iter children = ll_iter_head(left.data.enum_dec->options);
+               statement *child;
+               do {
+                   child = ll_iter_next(&children);
+                   position++;
+               } while (!equals(enum_item, child->data));
+               //TODO: handle enum item not found
+               expr->data = int_to_slice(position);
                return make_numeric_type(UNSIGNED, size);
            } else {
                //TODO: handle namespaces
