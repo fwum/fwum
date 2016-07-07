@@ -132,7 +132,7 @@ slice int_to_slice(int number) {
         return new_slice("0");
     else 
     {
-        int characters = (int)ceil(log10(number));
+        int characters = (int)ceil(log10(number)) + 1;
         if(number < 0)
             characters ++;
         char *str = string(characters);
