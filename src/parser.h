@@ -13,10 +13,11 @@ DEFSTRUCT(enum_declaration);
 DEFSTRUCT(statement);
 DEFSTRUCT(parameter);
 struct file_contents {
-    linked_list *imports;
-	linked_list *structs;
-    linked_list *enums;
-	linked_list *functions;
+    linked_list *imports; //import_declaration
+	linked_list *structs; //struct_declaration
+    linked_list *unions; //struct_declaration
+    linked_list *enums; //enum_declaration
+	linked_list *functions; //func_declaration
 };
 struct enum_declaration {
     slice name;

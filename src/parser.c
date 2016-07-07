@@ -23,6 +23,7 @@ file_contents parse(parse_source source) {
 	file_contents contents;
     contents.imports = ll_new();
 	contents.enums = ll_new();
+    contents.unions = ll_new();
 	contents.structs = ll_new();
 	contents.functions = ll_new();
 	optional op = get_token(&source);
@@ -31,6 +32,9 @@ file_contents parse(parse_source source) {
 		if(equals(current.data, new_slice("struct"))) {
 			struct_declaration *dec = analyze_struct(&source);
 			ll_add_last(contents.structs, dec);
+		} else if(equals(current.data, new_slice("union"))) {
+			struct_declaration *dec = analyze_struct(&source);
+			ll_add_last(contents.unions, dec);
 		} else if(equals(current.data, new_slice("func"))) {
 			func_declaration *func = analyze_func(&source);
 			ll_add_last(contents.functions, func);

@@ -25,19 +25,33 @@ void analyze(file_contents contents) {
         st_put(toplevelSymbols, boxedSlice, boxedType);
         dec->type = type_to_string(returnType);
     }
-    //Analyze struct and struct members
+    //analyze struct and struct members
     iterator = ll_iter_head(contents.structs);
     while(ll_iter_has_next(&iterator)) {
         struct_declaration *dec = ll_iter_next(&iterator);
-        type structType;
-        structType.kind = STRUCT;
-        structType.data.declared = dec;
-        type *boxedType = new(boxedType);
-        *boxedType = structType;
-        slice *boxedSlice = new(boxedSlice);
-        *boxedSlice = dec->name;
-        st_put(toplevelSymbols, boxedSlice, boxedType);
+        type structtype;
+        structtype.kind = STRUCT;
+        structtype.data.declared = dec;
+        type *boxedtype = new(boxedtype);
+        *boxedtype = structtype;
+        slice *boxedslice = new(boxedslice);
+        *boxedslice = dec->name;
+        st_put(toplevelSymbols, boxedslice, boxedtype);
     }
+    //analyze unions and union members
+    iterator = ll_iter_head(contents.unions);
+    while(ll_iter_has_next(&iterator)) {
+        struct_declaration *dec = ll_iter_next(&iterator);
+        type structtype;
+        structtype.kind = STRUCT;
+        structtype.data.declared = dec;
+        type *boxedtype = new(boxedtype);
+        *boxedtype = structtype;
+        slice *boxedslice = new(boxedslice);
+        *boxedslice = dec->name;
+        st_put(toplevelSymbols, boxedslice, boxedtype);
+    }
+
     iterator = ll_iter_head(contents.enums);
     while(ll_iter_has_next(&iterator)) {
         enum_declaration *dec = ll_iter_next(&iterator);

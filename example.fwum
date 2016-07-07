@@ -9,6 +9,11 @@ enum A {
     Q, X, Z
 }
 
+union number32 {
+    intVal i32;
+    floatVal f32;
+}
+
 func incr(a $i32) void {
     $a = $a + 1;
 }
