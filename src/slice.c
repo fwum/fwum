@@ -128,10 +128,21 @@ bool slice_eq_voidptr(void *slice1, void *slice2) {
 }
 
 slice int_to_slice(int number) {
-    int characters = (int)ceil(log10(number));
-    if(number < 0)
-        characters ++;
-    char *str = string(characters);
-    return new_slice(str);
+    if(number == 0) 
+        return new_slice("0");
+    else 
+    {
+        int characters = (int)ceil(log10(number));
+        if(number < 0)
+            characters ++;
+        char *str = string(characters);
+        for(int i = characters - 1; number != 0; i--) {
+            str[i] = number % 10 + '0';
+            number /= 10;
+        }
+        if(number < 0)
+            str[0] = '-';
+        return new_slice(str);
+    }
 }
 
