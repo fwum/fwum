@@ -22,6 +22,9 @@ func main(argc i32, argv $$u8) i32 {
     c := new point;
     c.x = 5;
     c.y = 6;
+    l := new number32;
+    l.floatVal = 5;
+    printf("%d\n", l.intVal);
     q := A::X;
     printf("%d\n", q);
 	printf("My command line args:\n");

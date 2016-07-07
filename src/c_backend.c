@@ -3,7 +3,9 @@
 #include "parser.h"
 
 static void output_forward_declarations(file_contents contents, FILE *stream);
+static void output_container(struct_declaration *dec, char *type, FILE *stream);
 static void output_struct(struct_declaration *dec, FILE *stream);
+static void output_union(struct_declaration *dec, FILE *stream);
 static void output_func_header(func_declaration *dec, FILE *stream);
 static void output_node(statement *expr, FILE *stream);
 static void binary_op(statement *expr, char *operator, FILE *stream);
@@ -27,6 +29,12 @@ void output(file_contents contents, FILE *stream) {
         struct_declaration *dec = ll_iter_next(&structs);
         output_struct(dec, stream);
     }
+    linked_iter unions = ll_iter_head(contents.unions);
+    while(ll_iter_has_next(&unions)) {
+        struct_declaration *dec = ll_iter_next(&unions);
+        output_union(dec, stream);
+    }
+
     linked_iter funcs = ll_iter_head(contents.functions);
     while(ll_iter_has_next(&funcs)) {
         func_declaration *dec = ll_iter_next(&funcs);
@@ -50,17 +58,34 @@ static void output_forward_declarations(file_contents contents, FILE *stream) {
         char *name = evaluate(dec->name);
         fprintf(stream, "struct %s;\ntypedef struct %s %s;\n", name, name, name);
     }
+    structs = ll_iter_head(contents.unions);
+    while(ll_iter_has_next(&structs)) {
+        struct_declaration *dec = ll_iter_next(&structs);
+        char *name = evaluate(dec->name);
+        fprintf(stream, "union %s;\ntypedef union %s %s;\n", name, name, name);
+    }
+
 }
 
-static void output_struct(struct_declaration *dec, FILE *stream) {
+static void output_container(struct_declaration *dec, char *type, FILE *stream) {
     char *name = evaluate(dec->name);
-    fprintf(stream, "struct %s {\n", name);
+    fprintf(stream, "%s %s {\n", type, name);
     linked_iter members = ll_iter_head(dec->members);
     while(ll_iter_has_next(&members)) {
         struct_member *mem = ll_iter_next(&members);
         fprintf(stream, "%s %s;\n", evaluate(mem->type), evaluate(mem->name));
     }
     fprintf(stream, "};\n");
+    
+}
+
+
+static void output_struct(struct_declaration *dec, FILE *stream) {
+    output_container(dec, "struct", stream);
+}
+
+static void output_union(struct_declaration *dec, FILE *stream) {
+    output_container(dec, "union", stream);
 }
 
 static void output_func_header(func_declaration *dec, FILE *stream) {
