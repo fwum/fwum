@@ -181,6 +181,9 @@ static void output_node(statement *expr, FILE *stream) {
         output_node(ll_get_last(expr->children), stream);
         fprintf(stream, "]");
         break;
+    case OP_NAMESPACE:
+        //TODO: Internal compiler error
+        break;
     case RETURN:
     	fprintf(stream, "return ");
         output_node(ll_get_first(expr->children), stream);
