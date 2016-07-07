@@ -21,4 +21,4 @@
 ##Noncritical
 - Arithmetic assignment operators
 - Add the ability to inline C code
-
+- Well-formatted C output
