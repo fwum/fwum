@@ -3,7 +3,6 @@
 ##Critical to bootstrapping
 - Basic generics with autoboxing
 - Bootstrap the compiler in Fwum
-- Add the ability to inline C code
 - Add the ability to create unions
 ##Critical to usefulness
 - Global variables
@@ -21,3 +20,5 @@
 - Custom settings for the linker's include / link paths
 ##Noncritical
 - Arithmetic assignment operators
+- Add the ability to inline C code
+
