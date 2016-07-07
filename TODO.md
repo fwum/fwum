@@ -2,7 +2,6 @@
 
 ##Critical to bootstrapping
 - Basic generics with autoboxing
-- Add the ability to create enums
 - Bootstrap the compiler in Fwum
 - Add the ability to inline C code
 - Add the ability to create unions
