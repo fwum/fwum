@@ -3,7 +3,6 @@
 ##Critical to bootstrapping
 - Basic generics with autoboxing
 - Bootstrap the compiler in Fwum
-- Add the ability to create unions
 ##Critical to usefulness
 - Global variables
 - Create an object file format to speed up partial recompilation
