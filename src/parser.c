@@ -18,6 +18,7 @@ static statement *parse_simple_expression(linked_list *tokens);
 static statement *parse_type_literal(parse_source *source);
 static import_declaration *parse_import(parse_source *source);
 static enum_declaration *parse_enum(parse_source *source);
+static statement *parse_single_token(linked_list *list);
 
 file_contents parse(parse_source source) {
 	file_contents contents;
@@ -213,33 +214,11 @@ static statement *parse_simple_expression(linked_list *tokens) {
 		ll_remove_last(tokens);
 	}
 	int size = ll_size(tokens);
-	parse_token token;
 	switch(size) {
 	case 0:
 		return NULL;
 	case 1:
-		token = *((parse_token*)ll_get_first(tokens));
-		statement *expression = new(expression);
-		expression->data = token.data;
-		expression->children = NULL;
-		switch(token.type) {
-		case WORD:
-			expression->type = NAME;
-			break;
-		case NUMBER:
-			expression->type = NUM;
-			break;
-		case STRING_LIT:
-			expression->type = STRING;
-			break;
-		case CHAR_LIT:
-			expression->type = CHAR;
-			break;
-		case SYMBOL:
-			printf("Symbol case in parse_simple_expression should not have executed\n");
-			break;
-		}
-		return expression;
+		return parse_single_token(tokens);
 	default: {
 		if(size == 2) {
 			parse_token *token = ll_get_first(tokens);
@@ -434,4 +413,29 @@ static enum_declaration *parse_enum(parse_source *source) {
 		ll_add_last(dec->options, expr);
 	}
 	return dec;
+}
+
+static statement *parse_single_token(linked_list *tokens) {
+	parse_token token = *((parse_token*)ll_get_first(tokens));
+	statement *expression = new(expression);
+	expression->data = token.data;
+	expression->children = NULL;
+	switch(token.type) {
+	case WORD:
+		expression->type = NAME;
+		break;
+	case NUMBER:
+		expression->type = NUM;
+		break;
+	case STRING_LIT:
+		expression->type = STRING;
+		break;
+	case CHAR_LIT:
+		expression->type = CHAR;
+		break;
+	case SYMBOL:
+		printf("Symbol case in parse_simple_expression should not have executed\n");
+		break;
+	}
+	return expression;
 }
