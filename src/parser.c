@@ -241,24 +241,19 @@ static statement *parse_simple_expression(linked_list *tokens) {
 		}
 		return expression;
 	default: {
-        bool init = false;
-        statement_type type;
-        if(size == 2 && equals_string(((parse_token*)ll_get_first(tokens))->data, "new")) {
-            type = STACK_INIT;
-            init = true;
-        } else if(size == 2 && equals_string(((parse_token*)ll_get_first(tokens))->data, "newref")) {
-            type = HEAP_INIT;
-            init = true;
-        }
-        if(init) {
-            statement *expression = new(expression);
-            expression->children = ll_new();
-            expression->type = type;
-            linked_list *name = ll_duplicate(tokens);
-            ll_remove_first(name);
-            ll_add_first(expression->children, parse_simple_expression(name));
-            return expression;
-        }
+		if(size == 2) {
+			parse_token *token = ll_get_first(tokens);
+			bool isStack;
+	        if((isStack = equals_string(token->data, "new")) || equals_string(token->data, "newref")) {
+	            statement *expression = new(expression);
+	            expression->children = ll_new();
+	            expression->type = isStack ? STACK_INIT : HEAP_INIT;
+	            linked_list *name = ll_duplicate(tokens);
+	            ll_remove_first(name);
+	            ll_add_first(expression->children, parse_simple_expression(name));
+	            return expression;
+	        }
+		}
 		int paren_level = 1;
 		linked_iter iterator = ll_iter_head(tokens);
 		bool is_index = true, is_call = true;
