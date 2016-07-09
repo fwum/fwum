@@ -2,6 +2,7 @@
 
 ##Critical to bootstrapping
 - Basic generics with autoboxing
+    - Parse index operator and function call with left-value as an expression
 - Bootstrap the compiler in Fwum
 ##Critical to usefulness
 - Global variables
@@ -10,7 +11,6 @@
 - Error module
 - Add a basic reference counting implementation
 - Add origin to the AST nodes
-- Parse index operator and function call with left-value as an expression
 - Add support for namespacing
 - Constants
 - Visibility Operators
