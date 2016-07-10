@@ -1,6 +1,7 @@
 #TODO
 
 ##Critical to bootstrapping
+- Else / elseif
 - Basic generics with autoboxing
     - Parse index operator and function call with left-value as an expression
 - Bootstrap the compiler in Fwum
