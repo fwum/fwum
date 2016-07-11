@@ -1,3 +1,5 @@
+import example;
+
 struct point {
     x i32;
     y i32;
