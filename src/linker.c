@@ -13,7 +13,7 @@ static file_contents get_contents(char *filename);
 static char *resolve_name(slice name);
 
 file_contents start_compile(char *file) {
-   build current; 
+   build current;
    current.declarations = hm_new_eqfunc(&slice_eq_voidptr);
    current.composite = get_contents(file);
    continue_build(&current, file, current.composite);
@@ -24,7 +24,7 @@ static void continue_build(build *current, char *filename, file_contents newest)
     slice name_slice = new_slice(filename);
     slice *boxed_slice = new(boxed_slice);
     *boxed_slice = name_slice;
-    hm_put(current->declarations, slice_hash(name_slice), boxed_slice, NULL);
+    hm_put(current->declarations, slice_hash(name_slice), boxed_slice, filename);
     linked_iter iterator = ll_iter_head(newest.imports);
     while(ll_iter_has_next(&iterator)) {
         import_declaration *dec = ll_iter_next(&iterator);
@@ -36,7 +36,7 @@ static void continue_build(build *current, char *filename, file_contents newest)
             file_contents contents = get_contents(filename);
             ll_concat(current->composite.structs, contents.structs);
             ll_concat(current->composite.functions, contents.functions);
-            hm_put(current->declarations, slice_hash(filename_slice), boxed_filename, NULL);
+            hm_put(current->declarations, slice_hash(filename_slice), boxed_filename, filename);
             continue_build(current, filename, contents);
         }
     }
