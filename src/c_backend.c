@@ -252,12 +252,6 @@ static void output_node(statement *expr, FILE *stream) {
         fprintf(stream, "else ");
         output_node(ll_get_first(expr->children), stream);
     	break;
-	case ELSEIF:
-        fprintf(stream, "else if(");
-        output_node(ll_get_first(expr->children), stream);
-        fprintf(stream, ")");
-        output_node(ll_get_last(expr->children), stream);
-        break;
     case WHILE:
         fprintf(stream, "while(");
         output_node(ll_get_first(expr->children), stream);
