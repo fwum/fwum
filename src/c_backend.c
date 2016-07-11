@@ -249,7 +249,7 @@ static void output_node(statement *expr, FILE *stream) {
             output_node(ll_iter_next(&iterator), stream);
         break;
 	case ELSE:
-        fprintf(stream, "else");
+        fprintf(stream, "else ");
         output_node(ll_get_first(expr->children), stream);
     	break;
 	case ELSEIF:
