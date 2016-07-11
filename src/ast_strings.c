@@ -77,8 +77,6 @@ statement_type statement_from_slice(slice string) {
 		return IF;
 	} else if(equals_string(string, "ELSE")) {
 		return ELSE;
-	} else if(equals_string(string, "ELSEIF")) {
-		return ELSEIF;
 	} else if(equals_string(string, "WHILE")) {
 		return WHILE;
 	} else if(equals_string(string, "FOR")) {
@@ -221,9 +219,6 @@ char *statement_to_string(statement_type type) {
         break;
 		case ELSE:
 			return "ELSE";
-		break;
-		case ELSEIF:
-			return "ELSEIF";
 		break;
         case WHILE:
         	return "WHILE";

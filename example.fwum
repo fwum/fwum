@@ -19,18 +19,13 @@ func incr(a $i32) void {
 }
 
 func main(argc i32, argv $$u8) i32 {
-    c := new point;
-    c.x = 5;
-    c.y = 6;
-    l := new number32;
-    l.floatVal = 5;
-    printf("%d\n", l.intVal);
-    q := A::X;
-    printf("%d\n", q);
-	printf("My command line args:\n");
-    for a := 0; a < argc; a = a + 1 {
-        b := argv[a];
-        printf("%s\n", b);
+    a := 0;
+    if a > 0 {
+        printf("POSITIVE");
+    } else if a < 0 {
+        printf("NEGATIVE");
+    } else {
+        printf("ZERO");
     }
 	return 0;
 }

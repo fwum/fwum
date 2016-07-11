@@ -169,6 +169,18 @@ static statement *get_expression(parse_source *source, int *indent) {
             ll_add_last(expression->children, get_expression(source, indent)); //Add the header
         }
 		ll_add_last(expression->children, get_expression(source, indent)); //Add the body
+		if(expression->type == IF) {
+			parse_token next = peek_mandatory_token(source);
+			if(equals_string(next.data, "else")) {
+				get_mandatory_token(source);
+				statement *elseState = new(elseState);
+				elseState->type = ELSE;
+				elseState->children = ll_new();
+				elseState->data = new_slice("");
+				ll_add_last(expression->children, elseState);
+				ll_add_first(elseState->children, get_expression(source, indent));
+			}
+		}
 		return expression;
 	} else if(equals_string(token.data, "break") || equals_string(token.data, "continue")) {
 		statement *expression = new(expression);

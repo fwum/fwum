@@ -76,7 +76,7 @@ static void output_container(struct_declaration *dec, char *type, FILE *stream) 
         fprintf(stream, "%s %s;\n", evaluate(mem->type), evaluate(mem->name));
     }
     fprintf(stream, "};\n");
-    
+
 }
 
 
@@ -241,21 +241,17 @@ static void output_node(statement *expr, FILE *stream) {
         fprintf(stream, "))");
     break;
     case IF:
-    	fprintf(stream, "if(");
-        output_node(ll_get_first(expr->children), stream);
+        iterator = ll_iter_head(expr->children);
+        fprintf(stream, "if(");
+        output_node(ll_iter_next(&iterator), stream);
         fprintf(stream, ")");
-        output_node(ll_get_last(expr->children), stream);
+        while(ll_iter_has_next(&iterator))
+            output_node(ll_iter_next(&iterator), stream);
         break;
 	case ELSE:
-        fprintf(stream, "else");
+        fprintf(stream, "else ");
         output_node(ll_get_first(expr->children), stream);
     	break;
-	case ELSEIF:
-        fprintf(stream, "else if(");
-        output_node(ll_get_first(expr->children), stream);
-        fprintf(stream, ")");
-        output_node(ll_get_last(expr->children), stream);
-        break;
     case WHILE:
         fprintf(stream, "while(");
         output_node(ll_get_first(expr->children), stream);
