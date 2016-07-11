@@ -314,17 +314,23 @@ static statement *parse_array_index(linked_list *tokens) {
 	index->type = OP_INDEX;
 	index->data = new_slice("");
 	index->children = ll_new();
-	statement *name = new(name);
-	name->type = NAME;
-	name->data = ((parse_token*)ll_get_first(tokens))->data;
-	name->children = NULL;
+	linked_list *sublist = ll_new();
+	linked_iter iterator = ll_iter_head(tokens);
+	while(ll_iter_has_next(&iterator)) {
+		parse_token *token = ll_iter_next(&iterator);
+		ll_remove_first(tokens);
+		if(!equals_string(token->data, "["))
+			ll_add_last(sublist, token);
+		else
+			break;
+	}
+	statement *name = parse_simple_expression(sublist);
 	ll_add_first(index->children, name);
 	linked_list *inside_list = ll_duplicate(tokens);
-	ll_remove_first(inside_list); //Remove name
-	ll_remove_first(inside_list); //Remove [
 	ll_remove_last(inside_list); //Remove ]
 	statement *inside = parse_simple_expression(inside_list);
 	ll_destroy(inside_list);
+	ll_destroy(sublist);
 	ll_add_last(index->children, inside);
 	return index;
 }
