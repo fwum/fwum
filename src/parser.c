@@ -19,6 +19,7 @@ static statement *parse_type_literal(parse_source *source);
 static import_declaration *parse_import(parse_source *source);
 static enum_declaration *parse_enum(parse_source *source);
 static statement *parse_single_token(linked_list *list);
+static bool index_or_call(linked_list *list);
 
 file_contents parse(parse_source source) {
 	file_contents contents;
@@ -245,33 +246,13 @@ static statement *parse_simple_expression(linked_list *tokens) {
 	            return expression;
 	        }
 		}
-		int paren_level = 1;
-		linked_iter iterator = ll_iter_head(tokens);
-		bool is_index = true, is_call = true;
-		ll_iter_next(&iterator);
-		parse_token *second = ll_iter_next(&iterator);
-		if(equals_string(second->data, "(")) {
-			is_index = false;
-		} else if(equals_string(second->data, "[")) {
-			is_call = false;
-		} else {
-			is_index = is_call = false;
-		}
-		while((is_index || is_call) && ll_iter_has_next(&iterator)) {
-			parse_token *token = ll_iter_next(&iterator);
-			if(equals_string(token->data, "(") || equals_string(token->data, "[")) {
-				paren_level += 1;
-			} else if(paren_level == 0) {
-				is_index = false;
-				is_call = false;
-			} else if(equals_string(token->data, ")") || equals_string(token->data, "]")) {
-				paren_level -= 1;
+		if(index_or_call(tokens)) {
+			parse_token *token = ll_get_last(tokens);
+			if(equals_string(token->data, "]")) {
+				return parse_array_index(tokens);
+			} else {
+				return parse_func_call(tokens);
 			}
-		}
-		if(is_index) {
-			return parse_array_index(tokens);
-		} else if(is_call) {
-			return parse_func_call(tokens);
 		}
 		linked_list *operator = get_node();
 		linked_iter level = ll_iter_head(operator);
@@ -450,4 +431,28 @@ static statement *parse_single_token(linked_list *tokens) {
 		break;
 	}
 	return expression;
+}
+
+static bool index_or_call(linked_list *list) {
+	int paren_level = 0, bracket_level = 0;
+	linked_iter iterator = ll_iter_head(list);
+	bool possible = false, first = true;
+	while(ll_iter_has_next(&iterator)) {
+		parse_token *token = ll_iter_next(&iterator);
+		if(equals_string(token->data, "(")) {
+			if(paren_level == 0 && !first) possible = true;
+			paren_level ++;
+		} else if(equals_string(token->data, ")")) {
+			paren_level --;
+		} else if(equals_string(token->data, "[")) {
+			if(paren_level == 0) possible = true;
+			bracket_level ++;
+		} else if(equals_string(token->data, "]")) {
+			bracket_level --;
+		} else if(!first && paren_level == 0 && bracket_level == 0) {
+			return false;
+		}
+		if(first) first = false;
+	}
+	return possible;
 }
