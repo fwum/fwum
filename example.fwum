@@ -18,14 +18,11 @@ func incr(a $i32) void {
     $a = $a + 1;
 }
 
+func reflect(a $$u8) $$u8 {
+    return a;
+}
+
 func main(argc i32, argv $$u8) i32 {
-    a := 0;
-    if a > 0 {
-        printf("POSITIVE");
-    } else if a < 0 {
-        printf("NEGATIVE");
-    } else {
-        printf("ZERO");
-    }
+    printf("%s\n", reflect(argv)[argc - 1]);
 	return 0;
 }
